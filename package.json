@@ -1,0 +1,67 @@
+{
+ "name": "ac-selector",
+ "version": "1.0.0",
+ "description": "Selector ui component for react",
+ "keywords": [
+  "react",
+  "react-component",
+  "ac-selector",
+  "iuap-design",
+  "tinper-bee",
+  "Selector"
+ ],
+ "engines": {
+  "node": ">=4.0.0"
+ },
+ "homepage": "https://github.com/GRAMMAC1/ac-selector",
+ "author": "zhonggzh@yonyou.com",
+ "repository": "https://github.com/GRAMMAC1/ac-selector",
+ "bugs": "https://github.com/GRAMMAC1/ac-selector/issues",
+ "license": "MIT",
+ "main": "./build/index.js",
+ "config": {
+  "port": 3000,
+  "commitizen": {
+   "path": "./node_modules/cz-conventional-changelog"
+  }
+ },
+ "scripts": {
+  "dev": "bee-tools run start",
+  "build": "bee-tools run build",
+  "lint": "bee-tools-test run lint",
+  "test": "bee-tools-test run test",
+  "chrome": "bee-tools-test run chrome",
+  "coveralls": "bee-tools-test run coverage",
+  "browsers": "bee-tools-test run browsers",
+  "pub": "bee-tools run pub",
+  "changelog": "bee-tools run changelog"
+ },
+ "dependencies": {
+  "babel-runtime": "^6.23.0",
+  "classnames": "^2.2.5",
+  "install": "^0.12.2",
+  "tinper-bee-core": "^2.0.32"
+ },
+ "devDependencies": {
+  "bee-button": "^2.0.11",
+  "bee-clipboard": "^2.0.2",
+  "bee-drawer": "0.0.2",
+  "bee-layout": "^1.2.7",
+  "bee-panel": "^2.0.1",
+  "bee-table": "^2.0.25-beta.0",
+  "chai": "^3.5.0",
+  "console-polyfill": "^0.2.3",
+  "cz-conventional-changelog": "^2.1.0",
+  "enzyme": "^2.9.1",
+  "es5-shim": "^4.1.16",
+  "react": "^15.3.2",
+  "react-addons-test-utils": "^15.3.2",
+  "react-dom": "^15.3.2",
+  "tinper-bee": "2.0.11"
+ },
+ "peerDependencies": {
+  "react": ">= 15.3.0",
+  "react-dom": ">= 15.3.0",
+  "prop-types": ">= 15.6.0"
+ }
+}

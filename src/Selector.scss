@@ -1,0 +1,136 @@
+// @import "../node_modules/tinper-bee/tinper-bee-core/scss/minxin-variables";
+// @import "../node_modules/tinper-bee-core/scss/minxin-mixins";
+
+// 清除Modal Body的浮动
+.u-modal-body::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+// 覆盖tabs默认样式
+.deptTitle .u-tabs-tab {
+  width: 96px;
+  height: 40px!important;
+  line-height: 40px;
+  text-align: center;
+  padding: 0!important;
+  font-size: 12px;
+  margin-right: 0!important;
+}
+.deptTitle .u-tabs-tab {
+  margin-left: 16px;
+}
+.deptTitle .u-tabs-ink-bar {
+  width: 96px;
+}
+.deptTitle .u-tabs-bar {
+  margin-bottom: 0!important;
+}
+
+.fll {
+  float: left;
+}
+.flr {
+  float: right;
+}
+.clearfix {
+  content: "";
+  display: block;
+  clear: both;
+}
+.selectModalContainer {
+  position: relative;
+}
+.selectModalContainer .selectModalBody {
+  padding: 0!important;
+}
+.selectContainer {
+  width: 1198px;
+  height: 460px;
+  border-top: 1px solid #E4E4E4;
+  border-bottom: 1px solid #E4E4E4;
+  // box-sizing: border-box;
+}
+.headerTitle {
+  font-size: 14px;
+  color: #666;
+}
+.cancelBtn {
+  background:rgba(229,233,236,1);
+  border-radius:4px;
+  margin-right: 15px;
+}
+.left {
+  width: 740px;
+  float: left;
+}
+.right {
+  width: 458px;
+  float: right;
+}
+.deptTitle {
+  margin-bottom: 0;
+}
+.searchWrapper {
+  position: relative;
+  height: 48px;
+  line-height: 48px;
+  color: #ccc;
+  border-bottom: 1px solid #C1C7D0;
+}
+.search {
+  display: inline-block;
+  width: 240px;
+  height: 32px;
+  margin: 8px 0 8px 16px;
+  // line-height: 32px;
+  border-radius: 4px;
+  outline: none;
+  border: 1px solid #D9D9D9;
+}
+.searchIcon {
+  position: absolute;
+  top: 0;
+  left: 218px;
+  cursor: pointer;
+}
+.filterByCapital {
+  height: 40px;
+  line-height: 40px;
+  padding-left: 16px;
+  background: #F7F9FB;
+}
+.filterByCapital>li {
+  float: left;
+  width: 27.84px;
+  cursor: pointer;
+}
+.filterByCapital .choose {
+  color: #F53C32;
+}
+.selectedUser {
+  height: 40px;
+  background: #EBECF0;
+  padding: 0 16px;
+  border-bottom: 1px solid #8993A4;
+  box-sizing: border-box;
+}
+.selectedUser>p:nth-child(2)>span {
+  color: #F53C32;
+  margin-left: 16px;
+  cursor: pointer;
+}
+.deleteIcon {
+  cursor: pointer;
+}
+.myTree {
+  float: left;
+  height: 360px;
+  width: 308px;
+  overflow-y: auto;
+}
+.orgTable {
+  float: left;
+  width: 432px;
+}
