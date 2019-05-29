@@ -330,18 +330,32 @@ var Selector = function (_React$Component) {
             phone: item.mobile,
             email: item.email,
             dept: item.dept,
-            type: item.type
+            type: item.type,
+            typeCode: 0
           };
           return _data;
         });
       }
       if (selectedOtherList.length) {
         otherList = selectedOtherList.map(function (item) {
+          var typeCode = '';
+          switch (item.type) {
+            case '角色':
+              typeCode = 1;
+              break;
+            case '组织':
+              typeCode = 2;
+              break;
+            case '规则':
+              typeCode = 3;
+              break;
+          }
           var _data = {
             type: item.type,
             roleName: item.roleName,
             roleId: item.roleId,
-            roleCode: item.roleCode
+            roleCode: item.roleCode,
+            typeCode: typeCode
           };
           return _data;
         });
@@ -567,15 +581,17 @@ var Selector = function (_React$Component) {
       _tinperBee.Modal,
       {
         onEntered: _this.didFinish,
+        onHide: _this.close,
         show: _this.state.show,
-        width: 1200
-        // containerClassName={'selectModalBody'}
-        , className: 'selectModalContainer',
+        width: 1200,
+        className: 'selectModalContainer',
         backdrop: true
       },
       _react2["default"].createElement(
         _tinperBee.Modal.Header,
-        null,
+        {
+          closeButton: true
+        },
         _react2["default"].createElement(
           'span',
           { className: 'headerTitle' },
@@ -663,12 +679,12 @@ var Selector = function (_React$Component) {
                 { className: 'selectedUser clearfix' },
                 _react2["default"].createElement(
                   'p',
-                  { className: 'fll' },
+                  { className: 'fll mt12' },
                   '\u7528\u6237'
                 ),
                 _react2["default"].createElement(
                   'p',
-                  { className: 'flr' },
+                  { className: 'flr mt12' },
                   '\u5DF2\u9009\uFF1A',
                   _this.state.selectedCount,
                   _react2["default"].createElement(
@@ -694,12 +710,12 @@ var Selector = function (_React$Component) {
                 { className: 'selectedUser clearfix' },
                 _react2["default"].createElement(
                   'p',
-                  { className: 'fll' },
+                  { className: 'fll mt12' },
                   '\u5176\u4ED6'
                 ),
                 _react2["default"].createElement(
                   'p',
-                  { className: 'flr' },
+                  { className: 'flr mt12' },
                   '\u5DF2\u9009\uFF1A',
                   _this.state.selectedOtherCount,
                   _react2["default"].createElement(

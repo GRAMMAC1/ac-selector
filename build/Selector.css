@@ -27,13 +27,13 @@
 .flr {
   float: right; }
 
+.mt12 {
+  margin-top: 12px; }
+
 .clearfix {
   content: "";
   display: block;
   clear: both; }
-
-.selectModalContainer {
-  position: relative; }
 
 .selectModalContainer .selectModalBody {
   padding: 0 !important; }
@@ -79,6 +79,8 @@
   border-radius: 4px;
   outline: none;
   border: 1px solid #D9D9D9; }
+  .search:focus {
+    border: 1px solid #66AEE9; }
 
 .searchIcon {
   position: absolute;
