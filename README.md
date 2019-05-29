@@ -1,12 +1,6 @@
 # ac-selector
 
-[![npm version](https://img.shields.io/npm/v/ac-selector.svg)](https://www.npmjs.com/package/ac-selector)
 [![Build Status](https://img.shields.io/travis/tinper-bee/ac-selector/master.svg)](https://www.travis-ci.org/GRAMMAC1/ac-selector.svg?branch=master)
-[![Coverage Status](https://coveralls.io/repos/github/tinper-bee/ac-selector/badge.svg?branch=master)](https://coveralls.io/github/tinper-bee/ac-selector?branch=master)
-[![devDependency Status](https://img.shields.io/david/dev/tinper-bee/ac-selector.svg)](https://david-dm.org/tinper-bee/ac-selector#info=devDependencies)
-[![NPM downloads](http://img.shields.io/npm/dm/ac-selector.svg?style=flat)](https://npmjs.org/package/ac-selector)
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/tinper-bee/ac-selector.svg)](http://isitmaintained.com/project/tinper-bee/ac-selector "Average time to resolve an issue")
-[![Percentage of issues still open](http://isitmaintained.com/badge/open/tinper-bee/ac-selector.svg)](http://isitmaintained.com/project/tinper-bee/ac-selector "Percentage of issues still open")
 
 ## 简介
 
@@ -47,7 +41,8 @@
     dept:'用户部门',
     email:'用户邮箱',
     phone:'手机号',
-    type:'所属类型(用户、角色、组织或规则)'
+    type:'所属类型(用户、角色、组织或规则)',
+    typeCode: '角色类型编码'
   }
 ```
 * 参数二(otherList)数据结构
@@ -56,7 +51,8 @@
     roleId: '角色id',
     roleCode: '角色code',
     roleName: '角色名称',
-    type: '所属类型(用户、角色、组织或规则)'
+    type: '所属类型(用户、角色、组织或规则)',
+    typeCode: '角色类型编码'
   }
 ```
 

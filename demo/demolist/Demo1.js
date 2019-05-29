@@ -27,7 +27,7 @@ class Demo1 extends Component {
     })
   }
   onConfirm = (userList, otherList) => {
-    console.log(userList, otherList)
+    // console.log(userList, otherList)
     this.setState({
       show: false
     })

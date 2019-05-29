@@ -300,18 +300,32 @@ class Selector extends React.Component {
           phone: item.mobile,
           email: item.email,
           dept: item.dept,
-          type: item.type
+          type: item.type,
+          typeCode: 0
         }
         return _data
       })
     }
     if(selectedOtherList.length) {
       otherList = selectedOtherList.map(item => {
+        let typeCode = ''
+        switch (item.type) {
+          case '角色':
+            typeCode = 1
+            break;
+          case '组织':
+            typeCode = 2
+            break
+          case '规则':
+            typeCode = 3
+            break;
+        }
         let _data = {
           type: item.type,
           roleName: item.roleName,
           roleId: item.roleId,
-          roleCode: item.roleCode
+          roleCode: item.roleCode,
+          typeCode
         }
         return _data
       })
@@ -470,13 +484,15 @@ class Selector extends React.Component {
     return (
         <Modal
           onEntered={_this.didFinish}
+          onHide={_this.close}
           show={_this.state.show}
           width={1200}
-          // containerClassName={'selectModalBody'}
           className={'selectModalContainer'}
           backdrop={true}
         >
-          <Modal.Header>
+          <Modal.Header
+            closeButton
+          >
             <span className={'headerTitle'}>添加消息接收人</span>
           </Modal.Header>
           <Modal.Body
@@ -560,39 +576,33 @@ class Selector extends React.Component {
               <div className={'right'}>
                 <div>
                   <div className={`selectedUser clearfix`}>
-                    <p className={'fll'}>用户</p>
-                    <p className={'flr'}>
+                    <p className={'fll mt12'}>用户</p>
+                    <p className={'flr mt12'}>
                       已选：{_this.state.selectedCount}
                       <span onClick={_this.deSelectAll.bind(this, 1)}>清空</span>
                     </p>
                   </div>
-                  {
-                    <Table 
-                      scroll={{y: 200}}
-                      columns={selectedUserCol}
-                      data={_this.state.selectedUserData}
-                      // hoverContent={_this.hoverDelIcon}
-                      onRowHover={_this.onRowHover}
-                    />
-
-                  }
+                  <Table 
+                    scroll={{y: 200}}
+                    columns={selectedUserCol}
+                    data={_this.state.selectedUserData}
+                    // hoverContent={_this.hoverDelIcon}
+                    onRowHover={_this.onRowHover}
+                  />
                 </div>
                 <div>
                   <div className={`selectedUser clearfix`}>
-                    <p className={'fll'}>其他</p>
-                    <p className={'flr'}>
+                    <p className={'fll mt12'}>其他</p>
+                    <p className={'flr mt12'}>
                       已选：{_this.state.selectedOtherCount}
                       <span onClick={_this.deSelectAll.bind(this, 0)}>清空</span>
                     </p>
                   </div>
-                  {
-
-                    <Table 
-                      scroll={{y: 200}}
-                      columns={selectedUserCol}
-                      data={_this.state.selectedOtherList}
-                    />
-                  }
+                  <Table 
+                    scroll={{y: 200}}
+                    columns={selectedUserCol}
+                    data={_this.state.selectedOtherList}
+                  />
                 </div>
               </div>
             </div>
