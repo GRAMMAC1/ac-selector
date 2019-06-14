@@ -30,6 +30,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -137,29 +141,41 @@ var Selector = function (_React$Component) {
       // if(e.target.keyCode)
     };
 
-    _this2.handleClickSwitchLable = function (index, e) {
-      if (!e.target.innerText) {
-        return;
+    _this2.clickSearch = function () {
+      var searchUrl = void 0;
+      var _this2$props2 = _this2.props,
+          remoteUserUrl = _this2$props2.remoteUserUrl,
+          remoteRoleUrl = _this2$props2.remoteRoleUrl;
+      var _this2$state = _this2.state,
+          activeKey = _this2$state.activeKey,
+          staffInputValue = _this2$state.staffInputValue,
+          roleInputValue = _this2$state.roleInputValue;
+
+      if (activeKey == 1) {
+        searchUrl = '' + remoteUserUrl + staffInputValue;
+      } else {
+        searchUrl = '' + remoteRoleUrl + roleInputValue;
       }
-      e.stopPropagation();
-      _this2.setState({
-        currentIndex: index
+      (0, _request.requestGet)(searchUrl).then(function (response) {
+        var res = response.data;
+        res = res.map(function (item) {
+          item._checked = false;
+          return item;
+        });
+        if (activeKey == 1) {
+          _this2.setState({
+            multiShowList: res
+          });
+        } else {
+          _this2.setState({
+            roleShowList: res
+          });
+        }
       });
     };
 
-    _this2.searchUserByCapital = function (index, e) {
-      e.stopPropagation();
-      var filterIndex = _this2.state.filterIndex;
-
-      if (filterIndex === index) {
-        _this2.setState({
-          filterIndex: ''
-        });
-      } else {
-        _this2.setState({
-          filterIndex: index
-        });
-      }
+    _this2.inputChange = function (type, e) {
+      _this2.setState(_defineProperty({}, type, e.target.value));
     };
 
     _this2.hoverDelIcon = function () {
@@ -181,10 +197,9 @@ var Selector = function (_React$Component) {
     };
 
     _this2.getUserList = function (data) {
-      var _this2$state = _this2.state,
-          selectedUserData = _this2$state.selectedUserData,
-          defaultLabel = _this2$state.defaultLabel,
-          multiShowList = _this2$state.multiShowList;
+      var _this2$state2 = _this2.state,
+          defaultLabel = _this2$state2.defaultLabel,
+          multiShowList = _this2$state2.multiShowList;
 
       var _tempList = [];
       // 清空已选人
@@ -196,7 +211,6 @@ var Selector = function (_React$Component) {
         for (var j = 0; j < data.length; j++) {
           if (multiShowList[i].userid === data[j].userid) {
             multiShowList[i]._checked = true;
-            continue;
           }
         }
       }
@@ -216,24 +230,17 @@ var Selector = function (_React$Component) {
           _tempList.push(_item);
         }
       });
-      selectedUserData = selectedUserData.concat(_tempList);
-      var res = new Map();
-      selectedUserData = selectedUserData.filter(function (item) {
-        return !res.has(item.userid) && res.set(item.userid, 1);
-      });
       _this2.setState({
-        multiShowList: multiShowList,
-        selectedUserData: selectedUserData,
-        currentUserList: data,
-        selectedCount: selectedUserData.length
+        multiShowList: [].concat(_toConsumableArray(multiShowList)),
+        selectedUserData: [].concat(_tempList),
+        selectedCount: _tempList.length
       });
     };
 
     _this2.getRoleList = function (data) {
-      var _this2$state2 = _this2.state,
-          selectedOtherList = _this2$state2.selectedOtherList,
-          roleShowList = _this2$state2.roleShowList,
-          defaultLabel = _this2$state2.defaultLabel;
+      var _this2$state3 = _this2.state,
+          roleShowList = _this2$state3.roleShowList,
+          defaultLabel = _this2$state3.defaultLabel;
 
       var _checkedList = [];
       roleShowList = roleShowList.map(function (item) {
@@ -244,7 +251,6 @@ var Selector = function (_React$Component) {
         for (var j = 0; j < data.length; j++) {
           if (roleShowList[i].roleId === data[j].roleId) {
             roleShowList[i]._checked = true;
-            continue;
           }
         }
       }
@@ -263,12 +269,12 @@ var Selector = function (_React$Component) {
           _checkedList.push(_item);
         }
       });
-      selectedOtherList = selectedOtherList.concat(_checkedList);
-      selectedOtherList = _this2.uniqueByRoleId(selectedOtherList);
+      // selectedOtherList = [..._checkedList]
+      // selectedOtherList = this.uniqueByRoleId(selectedOtherList)
       _this2.setState({
-        selectedOtherList: selectedOtherList,
+        selectedOtherList: [].concat(_checkedList),
         roleShowList: roleShowList,
-        selectedOtherCount: selectedOtherList.length
+        selectedOtherCount: _checkedList.length
       });
     };
 
@@ -310,15 +316,24 @@ var Selector = function (_React$Component) {
     };
 
     _this2.close = function () {
+      // 清空上一次用户状态
+      _this2.setState({
+        activeKey: '1',
+        multiShowList: [],
+        roleShowList: [],
+        selectedUserData: [],
+        selectedOtherList: [],
+        selectedCount: 0,
+        selectedOtherCount: 0,
+        isLoading: true
+      });
       _this2.props.onClose();
     };
 
     _this2.confirm = function () {
-      var _this2$state3 = _this2.state,
-          selectedUserData = _this2$state3.selectedUserData,
-          selectedOtherList = _this2$state3.selectedOtherList,
-          multiShowList = _this2$state3.multiShowList,
-          roleShowList = _this2$state3.roleShowList;
+      var _this2$state4 = _this2.state,
+          selectedUserData = _this2$state4.selectedUserData,
+          selectedOtherList = _this2$state4.selectedOtherList;
 
       var userList = [],
           otherList = [];
@@ -360,20 +375,13 @@ var Selector = function (_React$Component) {
           return _data;
         });
       }
-      // 重置_checked属性
-      multiShowList = multiShowList.map(function (item) {
-        item._checked = false;
-        return item;
-      });
-      roleShowList = roleShowList.map(function (item) {
-        item._checked = false;
-        return item;
-      });
       _this2.setState({
+        isLoading: true,
+        activeKey: '1',
+        multiShowList: [],
+        roleShowList: [],
         selectedOtherList: [],
         selectedUserData: [],
-        multiShowList: multiShowList,
-        roleShowList: roleShowList,
         selectedCount: 0,
         selectedOtherCount: 0
       });
@@ -407,7 +415,7 @@ var Selector = function (_React$Component) {
               isLoading: false
             });
           })["catch"](function (error) {
-            console.error(error);
+            throw new Error(error);
           });
         } else {
           _this2.setState({
@@ -464,7 +472,9 @@ var Selector = function (_React$Component) {
     };
 
     _this2.treeOnSelect = function (info) {
-      (0, _request.requestGet)('/message-platform-web/user/org/user?pageSize=40&pageNo=1&orgIds=[' + info + ']').then(function (response) {
+      var remoteOrgUrl = _this2.props.remoteOrgUrl;
+
+      (0, _request.requestGet)('http://iuap-message-platform-web.test.app.yyuap.com/message-platform-web/user/org/user?pageSize=40&pageNo=1&orgIds=[' + info + ']').then(function (response) {
         if (response.status === 1) {
           var _newList = response.data.map(function (item) {
             return {
@@ -492,19 +502,19 @@ var Selector = function (_React$Component) {
     _this2.state = {
       show: false,
       isLoading: true,
-      currentIndex: 0, // 默认类型
       filterIndex: '', // 根据首字母筛选用户
       selectedCount: 0, // 当前已选择的总数量
       selectedOtherCount: 0, //当前已选择的非用户数量
       selectedUserData: [], // 已选用户
       selectedOtherList: [], // 已选非用户List
       defaultLabel: '用户', // 默认显示的标签页
-      currentUserList: [], // 当前选中的用户
       multiShowList: [], // 用户列表
       roleShowList: [], // 角色列表
       orgShowList: [], // 规则列表
       orgTreeList: [], // 规则🌲
-      activeKey: '1' // 当前激活的tab
+      activeKey: '1', // 当前激活的tab
+      staffInputValue: '',
+      roleInputValue: ''
     };
     return _this2;
   }
@@ -518,10 +528,20 @@ var Selector = function (_React$Component) {
 
   // 搜索
 
-  // 切换标签
-
   // 按首字母开头查找
-
+  // searchUserByCapital = (index, e) => {
+  //   e.stopPropagation()
+  //   let { filterIndex } = this.state
+  //   if(filterIndex === index) {
+  //     this.setState({
+  //       filterIndex: ''
+  //     })
+  //   } else {
+  //     this.setState({
+  //       filterIndex: index
+  //     })
+  //   }
+  // }
   // 动态渲染删除图标
 
   // 删除某一项
@@ -548,24 +568,21 @@ var Selector = function (_React$Component) {
 
 
   Selector.prototype.render = function render() {
-    var _this3 = this;
-
     var _this = this;
     var multiSelect = {
       type: 'checkbox'
-    };
-    var filterList = _colmuns.filterCaptial.map(function (item, index) {
-      return _react2["default"].createElement(
-        'li',
-        {
-          key: 'alphabet-' + index,
-          className: _this.state.filterIndex === index ? 'choose' : null,
-          onClick: _this.searchUserByCapital.bind(_this3, index)
-        },
-        item
-      );
-    });
-    var loopData = function loopData(data) {
+      // const filterList = filterCaptial.map((item,index) => {
+      //   return (
+      //     <li 
+      //       key={`alphabet-${index}`}
+      //       className={_this.state.filterIndex === index ? 'choose' : null}
+      //       onClick={_this.searchUserByCapital.bind(this, index)} 
+      //     >
+      //       {item}
+      //     </li>
+      //   ) 
+      // })
+    };var loopData = function loopData(data) {
       return data.map(function (item) {
         if (item.childs) {
           return _react2["default"].createElement(
@@ -585,6 +602,7 @@ var Selector = function (_React$Component) {
         show: _this.state.show,
         width: 1200,
         className: 'selectModalContainer',
+        dialogClassName: 'selectDialog',
         backdrop: true
       },
       _react2["default"].createElement(
@@ -626,16 +644,11 @@ var Selector = function (_React$Component) {
                 _react2["default"].createElement(
                   'div',
                   { className: 'searchWrapper' },
-                  _react2["default"].createElement('input', { type: 'text', onKeyUp: _this.search, placeholder: '请输入您要查找的用户', className: 'search' }),
-                  _react2["default"].createElement(_tinperBee.Icon, { className: 'searchIcon', type: 'uf-search' })
-                ),
-                _react2["default"].createElement(
-                  'ul',
-                  { className: 'filterByCapital clearfix' },
-                  filterList
+                  _react2["default"].createElement('input', { value: _this.state.staffInputValue, onChange: _this.inputChange.bind(this, 'staffInputValue'), type: 'text', onKeyUp: _this.search, placeholder: '请输入您要查找的用户', className: 'search' }),
+                  _react2["default"].createElement(_tinperBee.Icon, { onClick: _this.clickSearch, className: 'searchIcon', type: 'uf-search' })
                 ),
                 _react2["default"].createElement(MultiSelectTable, {
-                  scroll: { y: 400 },
+                  scroll: { y: 360 },
                   columns: _colmuns.multiColumns,
                   multiSelect: multiSelect,
                   getSelectedDataFunc: _this.getUserList,
@@ -648,11 +661,11 @@ var Selector = function (_React$Component) {
                 _react2["default"].createElement(
                   'div',
                   { className: 'searchWrapper' },
-                  _react2["default"].createElement('input', { type: 'text', placeholder: '请输入您要查找的角色', onKeyUp: _this.search, className: 'search' }),
-                  _react2["default"].createElement(_tinperBee.Icon, { className: 'searchIcon', type: 'uf-search' })
+                  _react2["default"].createElement('input', { value: _this.state.roleInputValue, onChange: _this.inputChange.bind(this, 'roleInputValue'), type: 'text', placeholder: '请输入您要查找的角色', onKeyUp: _this.search, className: 'search' }),
+                  _react2["default"].createElement(_tinperBee.Icon, { onClick: _this.clickSearch, className: 'searchIcon', type: 'uf-search' })
                 ),
                 _react2["default"].createElement(MultiSelectTable, {
-                  scroll: { y: 400 },
+                  scroll: { y: 360 },
                   columns: _colmuns.roleMultiCol,
                   multiSelect: multiSelect,
                   getSelectedDataFunc: _this.getRoleList,

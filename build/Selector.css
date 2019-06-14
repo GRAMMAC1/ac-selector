@@ -3,6 +3,9 @@
   display: block;
   clear: both; }
 
+.selectDialog {
+  padding-left: 0 !important; }
+
 .deptTitle .u-tabs-tab {
   width: 96px;
   height: 40px !important;
@@ -75,6 +78,7 @@
   display: inline-block;
   width: 240px;
   height: 32px;
+  padding-left: 8px;
   margin: 8px 0 8px 16px;
   border-radius: 4px;
   outline: none;
