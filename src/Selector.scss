@@ -1,5 +1,3 @@
-// @import "../node_modules/tinper-bee/tinper-bee-core/scss/minxin-variables";
-// @import "../node_modules/tinper-bee-core/scss/minxin-mixins";
 
 // 清除Modal Body的浮动
 .u-modal-body::after {
@@ -7,7 +5,9 @@
   display: block;
   clear: both;
 }
-
+.selectDialog {
+  padding-left: 0!important;
+}
 // 覆盖tabs默认样式
 .deptTitle .u-tabs-tab {
   width: 96px;
@@ -83,6 +83,7 @@
   display: inline-block;
   width: 240px;
   height: 32px;
+  padding-left: 8px;
   margin: 8px 0 8px 16px;
   // line-height: 32px;
   border-radius: 4px;

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Modal,Button,Icon,Checkbox,Loading,Tabs,Tree } from 'tinper-bee'
 import Table from 'bee-table';
 import multiSelect from 'tinper-bee/lib/multiSelect'
-import { selectedUserCol, roleMultiCol, orgCol, multiColumns, filterCaptial } from './colmuns'
+import { selectedUserCol, roleMultiCol, orgCol, multiColumns } from './colmuns'
 import { requestGet } from './request'
 
 let MultiSelectTable = multiSelect(Table, Checkbox)
@@ -38,19 +38,19 @@ class Selector extends React.Component {
     this.state = {
       show: false,
       isLoading: true,
-      currentIndex: 0, // 默认类型
       filterIndex: '', // 根据首字母筛选用户
       selectedCount: 0, // 当前已选择的总数量
       selectedOtherCount: 0, //当前已选择的非用户数量
       selectedUserData: [], // 已选用户
       selectedOtherList: [], // 已选非用户List
       defaultLabel: '用户', // 默认显示的标签页
-      currentUserList: [], // 当前选中的用户
       multiShowList: [], // 用户列表
       roleShowList: [], // 角色列表
       orgShowList: [], // 规则列表
       orgTreeList: [], // 规则🌲
       activeKey: '1', // 当前激活的tab
+      staffInputValue: '',
+      roleInputValue: ''
     }
   }
 
@@ -122,30 +122,52 @@ class Selector extends React.Component {
     }
     // if(e.target.keyCode)
   } 
-  // 切换标签
-  handleClickSwitchLable = (index, e) => {
-    if(!e.target.innerText) {
-      return 
+  clickSearch = () => {
+    let searchUrl
+    const { remoteUserUrl, remoteRoleUrl } = this.props
+    const { activeKey,staffInputValue,roleInputValue } = this.state
+    if(activeKey == 1) {
+      searchUrl = `${remoteUserUrl}${staffInputValue}`
+    } else {
+      searchUrl = `${remoteRoleUrl}${roleInputValue}`
     }
-    e.stopPropagation()
+    requestGet(searchUrl).then(response => {
+      let res = response.data
+      res = res.map(item => {
+        item._checked = false
+        return item
+      })
+      if(activeKey == 1) {
+        this.setState({
+          multiShowList: res
+        })
+      } else {
+        this.setState({
+          roleShowList: res
+        })
+      }
+    })
+  }
+  
+  inputChange = (type,e) => {
     this.setState({
-      currentIndex: index
+      [type]: e.target.value
     })
   }
   // 按首字母开头查找
-  searchUserByCapital = (index, e) => {
-    e.stopPropagation()
-    let { filterIndex } = this.state
-    if(filterIndex === index) {
-      this.setState({
-        filterIndex: ''
-      })
-    } else {
-      this.setState({
-        filterIndex: index
-      })
-    }
-  }
+  // searchUserByCapital = (index, e) => {
+  //   e.stopPropagation()
+  //   let { filterIndex } = this.state
+  //   if(filterIndex === index) {
+  //     this.setState({
+  //       filterIndex: ''
+  //     })
+  //   } else {
+  //     this.setState({
+  //       filterIndex: index
+  //     })
+  //   }
+  // }
   // 动态渲染删除图标
   hoverDelIcon = () => {
     return (
@@ -166,7 +188,7 @@ class Selector extends React.Component {
   }
   // 获得选择的用户列表
   getUserList = (data) => {
-    let { selectedUserData,defaultLabel,multiShowList } = this.state
+    let { defaultLabel,multiShowList } = this.state
     let _tempList = []
     // 清空已选人
     multiShowList = multiShowList.map(item => {
@@ -177,7 +199,6 @@ class Selector extends React.Component {
       for(let j = 0; j < data.length; j ++) {
         if(multiShowList[i].userid === data[j].userid) {
           multiShowList[i]._checked = true
-          continue
         }
       }
     }
@@ -197,21 +218,15 @@ class Selector extends React.Component {
         _tempList.push(_item)
       }
     })
-    selectedUserData = selectedUserData.concat(_tempList)
-    const res = new Map()
-    selectedUserData = selectedUserData.filter(item => {
-      return !res.has(item.userid) && res.set(item.userid ,1)
-    })
     this.setState({
-      multiShowList,
-      selectedUserData,
-      currentUserList: data,
-      selectedCount: selectedUserData.length
+      multiShowList: [...multiShowList],
+      selectedUserData: [..._tempList],
+      selectedCount: _tempList.length
     })
   }
   // 获取角色列表
   getRoleList = (data) => {
-    let { selectedOtherList, roleShowList, defaultLabel } = this.state
+    let { roleShowList, defaultLabel } = this.state
     let _checkedList = []
     roleShowList = roleShowList.map(item => {
       item._checked = false
@@ -221,7 +236,6 @@ class Selector extends React.Component {
       for(let j = 0; j < data.length; j ++) {
         if(roleShowList[i].roleId === data[j].roleId) {
           roleShowList[i]._checked = true
-          continue
         }
       }
     }
@@ -239,12 +253,12 @@ class Selector extends React.Component {
         }
         _checkedList.push(_item)
     }})
-    selectedOtherList = selectedOtherList.concat(_checkedList)
-    selectedOtherList = this.uniqueByRoleId(selectedOtherList)
+    // selectedOtherList = [..._checkedList]
+    // selectedOtherList = this.uniqueByRoleId(selectedOtherList)
     this.setState({
-      selectedOtherList,
+      selectedOtherList: [..._checkedList],
       roleShowList,
-      selectedOtherCount: selectedOtherList.length
+      selectedOtherCount: _checkedList.length
     })
   }
   // 角色->数组根据roleId属性去重
@@ -284,13 +298,24 @@ class Selector extends React.Component {
   }
   // 关闭模态框
   close = () => {
+    // 清空上一次用户状态
+    this.setState({
+      activeKey: '1',
+      multiShowList: [],
+      roleShowList: [],
+      selectedUserData: [],
+      selectedOtherList: [],
+      selectedCount: 0,
+      selectedOtherCount: 0,
+      isLoading: true
+    })
     this.props.onClose()
   }
   /**
    * @description 确认选人
    */
   confirm = () => {
-    let { selectedUserData,selectedOtherList,multiShowList,roleShowList } = this.state
+    let { selectedUserData,selectedOtherList } = this.state
     let userList = [], otherList = []
     if(selectedUserData.length) {
       userList = selectedUserData.map(item => {
@@ -330,20 +355,13 @@ class Selector extends React.Component {
         return _data
       })
     }
-    // 重置_checked属性
-    multiShowList = multiShowList.map(item => {
-      item._checked = false
-      return item
-    })
-    roleShowList = roleShowList.map(item => {
-      item._checked = false
-      return item
-    })
     this.setState({
+      isLoading: true,
+      activeKey: '1',
+      multiShowList: [],
+      roleShowList: [],
       selectedOtherList: [],
       selectedUserData: [],
-      multiShowList,
-      roleShowList,
       selectedCount: 0,
       selectedOtherCount: 0
     })
@@ -376,9 +394,9 @@ class Selector extends React.Component {
             isLoading: false
           })
         }).catch(error => {
-          console.error(error)
-        })
-      } else {
+        throw new Error(error)
+      })
+    } else {
         this.setState({
           defaultLabel: '角色',
           isLoading: false
@@ -431,7 +449,8 @@ class Selector extends React.Component {
   }
   // tree select
   treeOnSelect = (info) => {
-    requestGet(`/message-platform-web/user/org/user?pageSize=40&pageNo=1&orgIds=[${info}]`).then(response => {
+    const { remoteOrgUrl } = this.props
+    requestGet(`http://iuap-message-platform-web.test.app.yyuap.com/message-platform-web/user/org/user?pageSize=40&pageNo=1&orgIds=[${info}]`).then(response => {
       if(response.status === 1) {
         let _newList = response.data.map(item => {
           return {
@@ -460,17 +479,17 @@ class Selector extends React.Component {
     const multiSelect = {
       type: 'checkbox'
     }
-    const filterList = filterCaptial.map((item,index) => {
-      return (
-        <li 
-          key={`alphabet-${index}`}
-          className={_this.state.filterIndex === index ? 'choose' : null}
-          onClick={_this.searchUserByCapital.bind(this, index)} 
-        >
-          {item}
-        </li>
-      ) 
-    })
+    // const filterList = filterCaptial.map((item,index) => {
+    //   return (
+    //     <li 
+    //       key={`alphabet-${index}`}
+    //       className={_this.state.filterIndex === index ? 'choose' : null}
+    //       onClick={_this.searchUserByCapital.bind(this, index)} 
+    //     >
+    //       {item}
+    //     </li>
+    //   ) 
+    // })
     const loopData = data => data.map(item => {
       if(item.childs) {
         return (
@@ -488,6 +507,7 @@ class Selector extends React.Component {
           show={_this.state.show}
           width={1200}
           className={'selectModalContainer'}
+          dialogClassName={'selectDialog'}
           backdrop={true}
         >
           <Modal.Header
@@ -511,14 +531,14 @@ class Selector extends React.Component {
                     key={1} 
                   >
                     <div className={'searchWrapper'}>
-                      <input type='text' onKeyUp={_this.search} placeholder={'请输入您要查找的用户'} className={'search'} />
-                      <Icon className={'searchIcon'} type='uf-search' />
+                      <input value={_this.state.staffInputValue} onChange={_this.inputChange.bind(this, 'staffInputValue')} type='text' onKeyUp={_this.search} placeholder={'请输入您要查找的用户'} className={'search'} />
+                      <Icon onClick={_this.clickSearch} className={'searchIcon'} type='uf-search' />
                     </div>
-                    <ul className={`filterByCapital clearfix`}>
+                    {/* <ul className={`filterByCapital clearfix`}>
                       {filterList}
-                    </ul>
+                    </ul> */}
                     <MultiSelectTable 
-                      scroll={{y: 400}}
+                      scroll={{y: 360}}
                       columns={multiColumns}
                       multiSelect={multiSelect}
                       getSelectedDataFunc={_this.getUserList}
@@ -527,11 +547,11 @@ class Selector extends React.Component {
                   </TabPane>
                   <TabPane tab={'角色'} key={2} >
                     <div className={'searchWrapper'}>
-                      <input type='text' placeholder={'请输入您要查找的角色'} onKeyUp={_this.search} className={'search'} />
-                      <Icon className={'searchIcon'} type='uf-search' />
+                      <input value={_this.state.roleInputValue} onChange={_this.inputChange.bind(this, 'roleInputValue')} type='text' placeholder={'请输入您要查找的角色'} onKeyUp={_this.search} className={'search'} />
+                      <Icon onClick={_this.clickSearch} className={'searchIcon'} type='uf-search' />
                     </div>
                     <MultiSelectTable 
-                      scroll={{y: 400}}
+                      scroll={{y: 360}}
                       columns={roleMultiCol}
                       multiSelect={multiSelect}
                       getSelectedDataFunc={_this.getRoleList}
@@ -542,7 +562,7 @@ class Selector extends React.Component {
                     // <TabPane tab={'组织'} key={3}>
                     //   <div className={'searchWrapper'}>
                     //     <input type='text' placeholder={'请输入您要查找的组织'} className={'search'} />
-                    //     <Icon className={'searchIcon'} type='uf-search' />
+                    //     <Icon onClick={_this.clickSearch} className={'searchIcon'} type='uf-search' />
                     //   </div>
                     //   <div className={'clearfix'}>
                     //     <div className={'myTree'}>

@@ -48,6 +48,7 @@ return (
     onClose={_this.onCancel}
     remoteUserUrl={'http://iuap-message-platform-web.test.app.yyuap.com/message-platform-web/user/staff/search?pageSize=40&pageNo=1&keyword='}
     remoteRoleUrl={'http://iuap-message-platform-web.test.app.yyuap.com/message-platform-web/user/role/search?pageSize=40&pageNo=1&keyword='}
+    remoteOrgUrl={'http://iuap-message-platform-web.test.app.yyuap.com/message-platform-web/user/org/user?pageSize=40&pageNo=1&orgIds='}
   />
   <Button onClick={_this.show} colors={'primary'}>显示</Button>
   <Button onClick={_this.close}>关闭</Button>
