@@ -17,4 +17,4 @@ before_install:
   - npm install -g bee-tools
   - npm install -g commitizen
   
-script:  bee-tools run build
+script:  npm run build

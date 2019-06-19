@@ -1,6 +1,6 @@
 # ac-selector
 
-[![Build Status](https://img.shields.io/travis/tinper-bee/ac-selector/master.svg)](https://www.travis-ci.org/GRAMMAC1/ac-selector.svg?branch=master)
+[![Build Status](https://travis-ci.org/GRAMMAC1/ac-selector.svg?branch=master)](https://travis-ci.org/GRAMMAC1/ac-selector)
 
 ## 简介
 

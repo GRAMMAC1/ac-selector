@@ -154,20 +154,6 @@ class Selector extends React.Component {
       [type]: e.target.value
     })
   }
-  // 按首字母开头查找
-  // searchUserByCapital = (index, e) => {
-  //   e.stopPropagation()
-  //   let { filterIndex } = this.state
-  //   if(filterIndex === index) {
-  //     this.setState({
-  //       filterIndex: ''
-  //     })
-  //   } else {
-  //     this.setState({
-  //       filterIndex: index
-  //     })
-  //   }
-  // }
   // 动态渲染删除图标
   hoverDelIcon = () => {
     return (
@@ -176,12 +162,34 @@ class Selector extends React.Component {
   }
   // 删除某一项
   delItem = () => {
-    let { selectedUserData } = this.state
-    selectedUserData.splice(this.delIndex, 1)
-    this.setState({
-      selectedUserData,
-      selectedCount: selectedUserData.length
-    })
+    let { activeKey } = this.state
+    if(activeKey === '1') {
+      let { multiShowList,selectedUserData } = this.state
+      multiShowList = multiShowList.map(item => {
+        if(item.userid === selectedUserData[this.delIndex].userid) {
+          item._checked = false
+          return item
+        }
+      })
+      selectedUserData.splice(this.delIndex, 1)
+      this.setState({
+        selectedUserData: [...selectedUserData],
+        selectedCount: selectedUserData.length
+      })
+    } else if(activeKey === '2') {
+      let { roleShowList,selectedOtherList } = this.state
+      roleShowList = roleShowList.map(item => {
+        if(item.roleId === selectedOtherList[this.delIndex].roleId) {
+          item._checked = false
+          return item
+        }
+      })
+      selectedOtherList.splice(this.delIndex, 1)
+      this.setState({
+        selectedOtherList: [...selectedOtherList],
+        selectedOtherCount: selectedOtherList.length
+      })
+    }
   }
   onRowHover = (index) => {
     this.delIndex = index
@@ -253,8 +261,6 @@ class Selector extends React.Component {
         }
         _checkedList.push(_item)
     }})
-    // selectedOtherList = [..._checkedList]
-    // selectedOtherList = this.uniqueByRoleId(selectedOtherList)
     this.setState({
       selectedOtherList: [..._checkedList],
       roleShowList,
@@ -296,9 +302,8 @@ class Selector extends React.Component {
       })
     }
   }
-  // 关闭模态框
-  close = () => {
-    // 清空上一次用户状态
+  // 重置state
+  reset = () => {
     this.setState({
       activeKey: '1',
       multiShowList: [],
@@ -307,8 +312,15 @@ class Selector extends React.Component {
       selectedOtherList: [],
       selectedCount: 0,
       selectedOtherCount: 0,
-      isLoading: true
+      isLoading: true,
+      staffInputValue: '',
+      roleInputValue: ''
     })
+  }
+  // 关闭模态框
+  close = () => {
+    // 清空上一次用户状态
+    this.reset()
     this.props.onClose()
   }
   /**
@@ -355,16 +367,7 @@ class Selector extends React.Component {
         return _data
       })
     }
-    this.setState({
-      isLoading: true,
-      activeKey: '1',
-      multiShowList: [],
-      roleShowList: [],
-      selectedOtherList: [],
-      selectedUserData: [],
-      selectedCount: 0,
-      selectedOtherCount: 0
-    })
+    this.reset()
     console.log(userList, otherList)
     this.props.onConfirm(userList, otherList)
   }
@@ -479,17 +482,6 @@ class Selector extends React.Component {
     const multiSelect = {
       type: 'checkbox'
     }
-    // const filterList = filterCaptial.map((item,index) => {
-    //   return (
-    //     <li 
-    //       key={`alphabet-${index}`}
-    //       className={_this.state.filterIndex === index ? 'choose' : null}
-    //       onClick={_this.searchUserByCapital.bind(this, index)} 
-    //     >
-    //       {item}
-    //     </li>
-    //   ) 
-    // })
     const loopData = data => data.map(item => {
       if(item.childs) {
         return (
@@ -606,7 +598,7 @@ class Selector extends React.Component {
                     scroll={{y: 200}}
                     columns={selectedUserCol}
                     data={_this.state.selectedUserData}
-                    // hoverContent={_this.hoverDelIcon}
+                    hoverContent={_this.hoverDelIcon}
                     onRowHover={_this.onRowHover}
                   />
                 </div>
@@ -622,6 +614,8 @@ class Selector extends React.Component {
                     scroll={{y: 200}}
                     columns={selectedUserCol}
                     data={_this.state.selectedOtherList}
+                    hoverContent={_this.hoverDelIcon}
+                    onRowHover={_this.onRowHover}
                   />
                 </div>
               </div>
