@@ -183,13 +183,41 @@ var Selector = function (_React$Component) {
     };
 
     _this2.delItem = function () {
-      var selectedUserData = _this2.state.selectedUserData;
+      var activeKey = _this2.state.activeKey;
 
-      selectedUserData.splice(_this2.delIndex, 1);
-      _this2.setState({
-        selectedUserData: selectedUserData,
-        selectedCount: selectedUserData.length
-      });
+      if (activeKey === '1') {
+        var _this2$state2 = _this2.state,
+            multiShowList = _this2$state2.multiShowList,
+            selectedUserData = _this2$state2.selectedUserData;
+
+        multiShowList = multiShowList.map(function (item) {
+          if (item.userid === selectedUserData[_this2.delIndex].userid) {
+            item._checked = false;
+            return item;
+          }
+        });
+        selectedUserData.splice(_this2.delIndex, 1);
+        _this2.setState({
+          selectedUserData: [].concat(_toConsumableArray(selectedUserData)),
+          selectedCount: selectedUserData.length
+        });
+      } else if (activeKey === '2') {
+        var _this2$state3 = _this2.state,
+            roleShowList = _this2$state3.roleShowList,
+            selectedOtherList = _this2$state3.selectedOtherList;
+
+        roleShowList = roleShowList.map(function (item) {
+          if (item.roleId === selectedOtherList[_this2.delIndex].roleId) {
+            item._checked = false;
+            return item;
+          }
+        });
+        selectedOtherList.splice(_this2.delIndex, 1);
+        _this2.setState({
+          selectedOtherList: [].concat(_toConsumableArray(selectedOtherList)),
+          selectedOtherCount: selectedOtherList.length
+        });
+      }
     };
 
     _this2.onRowHover = function (index) {
@@ -197,9 +225,9 @@ var Selector = function (_React$Component) {
     };
 
     _this2.getUserList = function (data) {
-      var _this2$state2 = _this2.state,
-          defaultLabel = _this2$state2.defaultLabel,
-          multiShowList = _this2$state2.multiShowList;
+      var _this2$state4 = _this2.state,
+          defaultLabel = _this2$state4.defaultLabel,
+          multiShowList = _this2$state4.multiShowList;
 
       var _tempList = [];
       // 清空已选人
@@ -238,9 +266,9 @@ var Selector = function (_React$Component) {
     };
 
     _this2.getRoleList = function (data) {
-      var _this2$state3 = _this2.state,
-          roleShowList = _this2$state3.roleShowList,
-          defaultLabel = _this2$state3.defaultLabel;
+      var _this2$state5 = _this2.state,
+          roleShowList = _this2$state5.roleShowList,
+          defaultLabel = _this2$state5.defaultLabel;
 
       var _checkedList = [];
       roleShowList = roleShowList.map(function (item) {
@@ -269,8 +297,6 @@ var Selector = function (_React$Component) {
           _checkedList.push(_item);
         }
       });
-      // selectedOtherList = [..._checkedList]
-      // selectedOtherList = this.uniqueByRoleId(selectedOtherList)
       _this2.setState({
         selectedOtherList: [].concat(_checkedList),
         roleShowList: roleShowList,
@@ -315,8 +341,7 @@ var Selector = function (_React$Component) {
       }
     };
 
-    _this2.close = function () {
-      // 清空上一次用户状态
+    _this2.reset = function () {
       _this2.setState({
         activeKey: '1',
         multiShowList: [],
@@ -325,15 +350,22 @@ var Selector = function (_React$Component) {
         selectedOtherList: [],
         selectedCount: 0,
         selectedOtherCount: 0,
-        isLoading: true
+        isLoading: true,
+        staffInputValue: '',
+        roleInputValue: ''
       });
+    };
+
+    _this2.close = function () {
+      // 清空上一次用户状态
+      _this2.reset();
       _this2.props.onClose();
     };
 
     _this2.confirm = function () {
-      var _this2$state4 = _this2.state,
-          selectedUserData = _this2$state4.selectedUserData,
-          selectedOtherList = _this2$state4.selectedOtherList;
+      var _this2$state6 = _this2.state,
+          selectedUserData = _this2$state6.selectedUserData,
+          selectedOtherList = _this2$state6.selectedOtherList;
 
       var userList = [],
           otherList = [];
@@ -375,16 +407,7 @@ var Selector = function (_React$Component) {
           return _data;
         });
       }
-      _this2.setState({
-        isLoading: true,
-        activeKey: '1',
-        multiShowList: [],
-        roleShowList: [],
-        selectedOtherList: [],
-        selectedUserData: [],
-        selectedCount: 0,
-        selectedOtherCount: 0
-      });
+      _this2.reset();
       console.log(userList, otherList);
       _this2.props.onConfirm(userList, otherList);
     };
@@ -528,20 +551,6 @@ var Selector = function (_React$Component) {
 
   // 搜索
 
-  // 按首字母开头查找
-  // searchUserByCapital = (index, e) => {
-  //   e.stopPropagation()
-  //   let { filterIndex } = this.state
-  //   if(filterIndex === index) {
-  //     this.setState({
-  //       filterIndex: ''
-  //     })
-  //   } else {
-  //     this.setState({
-  //       filterIndex: index
-  //     })
-  //   }
-  // }
   // 动态渲染删除图标
 
   // 删除某一项
@@ -553,6 +562,8 @@ var Selector = function (_React$Component) {
   // 角色->数组根据roleId属性去重
 
   // 清空选择人
+
+  // 重置state
 
   // 关闭模态框
 
@@ -571,18 +582,8 @@ var Selector = function (_React$Component) {
     var _this = this;
     var multiSelect = {
       type: 'checkbox'
-      // const filterList = filterCaptial.map((item,index) => {
-      //   return (
-      //     <li 
-      //       key={`alphabet-${index}`}
-      //       className={_this.state.filterIndex === index ? 'choose' : null}
-      //       onClick={_this.searchUserByCapital.bind(this, index)} 
-      //     >
-      //       {item}
-      //     </li>
-      //   ) 
-      // })
-    };var loopData = function loopData(data) {
+    };
+    var loopData = function loopData(data) {
       return data.map(function (item) {
         if (item.childs) {
           return _react2["default"].createElement(
@@ -710,9 +711,9 @@ var Selector = function (_React$Component) {
               _react2["default"].createElement(_beeTable2["default"], {
                 scroll: { y: 200 },
                 columns: _colmuns.selectedUserCol,
-                data: _this.state.selectedUserData
-                // hoverContent={_this.hoverDelIcon}
-                , onRowHover: _this.onRowHover
+                data: _this.state.selectedUserData,
+                hoverContent: _this.hoverDelIcon,
+                onRowHover: _this.onRowHover
               })
             ),
             _react2["default"].createElement(
@@ -741,7 +742,9 @@ var Selector = function (_React$Component) {
               _react2["default"].createElement(_beeTable2["default"], {
                 scroll: { y: 200 },
                 columns: _colmuns.selectedUserCol,
-                data: _this.state.selectedOtherList
+                data: _this.state.selectedOtherList,
+                hoverContent: _this.hoverDelIcon,
+                onRowHover: _this.onRowHover
               })
             )
           )

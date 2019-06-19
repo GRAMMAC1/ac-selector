@@ -118,7 +118,9 @@
   margin-left: 16px;
   cursor: pointer; }
 
-.deleteIcon {
+.u-row-hover .deleteIcon {
+  font-size: 12px;
+  color: #54698D;
   cursor: pointer; }
 
 .myTree {
