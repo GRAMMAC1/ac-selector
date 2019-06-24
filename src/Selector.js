@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Modal,Button,Icon,Checkbox,Loading,Tabs,Tree } from 'tinper-bee'
+import { Modal,Button,Icon,Checkbox,Loading,Tabs,Tree,Pagination } from 'tinper-bee'
 import Table from 'bee-table';
 import multiSelect from 'tinper-bee/lib/multiSelect'
-import { selectedUserCol, roleMultiCol, orgCol, multiColumns } from './colmuns'
+import { selectedUserCol,roleMultiCol,orgCol,multiColumns } from './colmuns'
 import { requestGet } from './request'
 
 let MultiSelectTable = multiSelect(Table, Checkbox)
@@ -20,7 +20,9 @@ const propTypes = {
   onClose: PropTypes.func.isRequired,
   remoteUserUrl: PropTypes.string.isRequired,
   remoteRoleUrl: PropTypes.string.isRequired,
-  remoteOrgUrl: PropTypes.string
+  remoteOrgUrl: PropTypes.string,
+  selectedUser: PropTypes.array,
+  selectedOther: PropTypes.array
 }
 
 const defaultProps = {
@@ -29,7 +31,9 @@ const defaultProps = {
   onClose: noop,
   remoteUserUrl: '',
   remoteRoleUrl: '',
-  remoteOrgUrl: ''
+  remoteOrgUrl: '',
+  selectedUser: [],
+  selectedOther: []
 }
 
 class Selector extends React.Component {
@@ -50,26 +54,57 @@ class Selector extends React.Component {
       orgTreeList: [], // 规则🌲
       activeKey: '1', // 当前激活的tab
       staffInputValue: '',
-      roleInputValue: ''
+      roleInputValue: '',
+
     }
   }
 
   componentWillReceiveProps(nextProps) {
+    let _newOtherList = nextProps.selectedOther.map(item => {
+      switch (item.typeCode) {
+        case 1:
+          item.key = item.roleId
+          item.reciving = item.roleName
+          return item
+        default:
+          break;
+      }
+    })
+    let _newUserList = nextProps.selectedUser.map(item => {
+      item.key = item.id
+      item.reciving = `${item.name}(${item.dept})`
+      return item
+    })
     this.setState({
-      show: nextProps.show
+      show: nextProps.show,
+      selectedOtherList: _newOtherList,
+      selectedOtherCount: _newOtherList.length,
+      selectedUserData: _newUserList,
+      selectedCount: _newUserList.length
     })
   }
+
   // 进入modal首先加载用户列表
   didFinish = () => {
     const {remoteUserUrl} = this.props
     requestGet(remoteUserUrl).then(response => {
       if(response.status === 1) {
-        let _newList = response.data.map(item => {
+        if(!response.data) {
+          response.data.values = []
+        }
+        const { selectedUser } = this.props
+        let _newList = response.data.values.map(item => {
           item.key = item.userid
           item._checked = false
-          item.dept = '未知部门'
           return item
         })
+        for(let i = 0; i < _newList.length; i ++) {
+          for(let j = 0; j < selectedUser.length; j ++) {
+            if(_newList[i].userid === selectedUser[j].id) {
+              _newList[i]._checked = true
+            }
+          }
+        }
         this.setState({
           multiShowList: _newList
         })
@@ -78,7 +113,7 @@ class Selector extends React.Component {
         isLoading: false
       })
     }).catch(error => {
-      console.error(error)
+      throw new Error(error)
     })
   }
   // 搜索
@@ -214,14 +249,13 @@ class Selector extends React.Component {
       if(item._checked) {
         let _item = {
           key: item.userid,
-          number: item.userid,
           type: defaultLabel,
-          reciving: `${item.username}(未知部门)`,
+          reciving: item.orgName ? `${item.username}(${item.orgName})` : `${item.username}(未知部门)`,
           userid: item.userid,
           username: item.username,
           email: item.email,
-          dept: '未知部门',
-          mobile: item.mobile
+          mobile: item.mobile,
+          orgName: item.orgName ? item.orgName : '未知部门'
         }
         _tempList.push(_item)
       }
@@ -336,7 +370,7 @@ class Selector extends React.Component {
           name: item.username,
           phone: item.mobile,
           email: item.email,
-          dept: item.dept,
+          dept: item.orgName,
           type: item.type,
           typeCode: 0
         }
@@ -377,17 +411,28 @@ class Selector extends React.Component {
       activeKey,
       isLoading: true
     })
-    if(activeKey == 2) {
+    if(activeKey === '2') {
       const { remoteRoleUrl } = this.props
       let { roleShowList } = this.state
       if(!roleShowList.length) {
         requestGet(remoteRoleUrl).then(response => {
           if(response.status === 1) {
-            let _newList = response.data.map(item => {
+            const { selectedOther } = this.props
+            if(!response.data) {
+              response.data.values = []
+            }
+            let _newList = response.data.values.map(item => {
               item.key = item.roleId
               item._checked = false
               return item
             })
+            for(let i = 0; i < _newList.length; i ++ ) {
+              for(let j = 0; j < selectedOther.length; j ++) {
+                if(_newList[i].roleId === selectedOther[j].roleId) {
+                  _newList[i]._checked = true
+                }
+              }
+            }
             this.setState({
               roleShowList: _newList
             })
@@ -405,34 +450,16 @@ class Selector extends React.Component {
           isLoading: false
         })
       }
-    } else if(activeKey == 1) {
-      const { remoteUserUrl } = this.props
-      let { multiShowList } = this.state
-      if(!multiShowList.length) {
-        requestGet(remoteUserUrl).then(response => {
-          if(response.status === 1) {
-            let _newList = response.data.map(item => {
-              item.key = item.userid
-              item._checked = false
-              return item
-            })
-            this.setState({
-              multiShowList: _newList
-            })
-          } 
-          this.setState({
-            isLoading: false
-          })
-        }).catch(error => {
-          console.error(error)
-        })
-      }
+    } else if(activeKey === '1') {
       this.setState({
         defaultLabel: '用户',
         isLoading: false
       })
-    } else if(activeKey == 3) {
+    } else if(activeKey === '3') {
       const { remoteOrgUrl } = this.props
+      if(!remoteOrgUrl) {
+        return 
+      }
       this.setState({
         defaultLabel: '规则'
       })
@@ -445,31 +472,29 @@ class Selector extends React.Component {
         this.setState({
           isLoading: false
         })
-      }).catch(error => {
-        console.error(error)
-      })
+      }).catch(error => { throw new Error(error) })
     }
   }
   // tree select
   treeOnSelect = (info) => {
-    const { remoteOrgUrl } = this.props
-    requestGet(`http://iuap-message-platform-web.test.app.yyuap.com/message-platform-web/user/org/user?pageSize=40&pageNo=1&orgIds=[${info}]`).then(response => {
-      if(response.status === 1) {
-        let _newList = response.data.map(item => {
-          return {
-            key: item.userid,
-            orgName: item.username,
-            orgMail: item.email,
-            orgPhone: item.mobile
-          }
-        })
-        this.setState({
-          orgShowList: _newList
-        })
-      }
-    }).catch(error => {
-      console.error(error)
-    })
+    // const { remoteOrgUrl } = this.props
+    // requestGet(remoteOrgUrl).then(response => {
+    //   if(response.status === 1) {
+    //     let _newList = response.data.map(item => {
+    //       return {
+    //         key: item.userid,
+    //         orgName: item.username,
+    //         orgMail: item.email,
+    //         orgPhone: item.mobile
+    //       }
+    //     })
+    //     this.setState({
+    //       orgShowList: _newList
+    //     })
+    //   }
+    // }).catch(error => {
+    //   console.error(error)
+    // })
   }
   // tree check
   treeOnCheck = (info) => {
@@ -526,9 +551,6 @@ class Selector extends React.Component {
                       <input value={_this.state.staffInputValue} onChange={_this.inputChange.bind(this, 'staffInputValue')} type='text' onKeyUp={_this.search} placeholder={'请输入您要查找的用户'} className={'search'} />
                       <Icon onClick={_this.clickSearch} className={'searchIcon'} type='uf-search' />
                     </div>
-                    {/* <ul className={`filterByCapital clearfix`}>
-                      {filterList}
-                    </ul> */}
                     <MultiSelectTable 
                       scroll={{y: 360}}
                       columns={multiColumns}
@@ -543,40 +565,52 @@ class Selector extends React.Component {
                       <Icon onClick={_this.clickSearch} className={'searchIcon'} type='uf-search' />
                     </div>
                     <MultiSelectTable 
+                      id={'role'}
                       scroll={{y: 360}}
                       columns={roleMultiCol}
                       multiSelect={multiSelect}
                       getSelectedDataFunc={_this.getRoleList}
                       data={_this.state.roleShowList}
                     />
+                    {/* <Pagination 
+                      first
+                      last
+                      prev
+                      next
+                      maxButtons={5}
+                      boundaryLinks
+                      size={'sm'}
+                      total={40}
+                      dataNum={40}
+                    /> */}
                   </TabPane>
                   {
-                    // <TabPane tab={'组织'} key={3}>
-                    //   <div className={'searchWrapper'}>
-                    //     <input type='text' placeholder={'请输入您要查找的组织'} className={'search'} />
-                    //     <Icon onClick={_this.clickSearch} className={'searchIcon'} type='uf-search' />
-                    //   </div>
-                    //   <div className={'clearfix'}>
-                    //     <div className={'myTree'}>
-                    //       <Tree
-                    //         showIcon
-                    //         cancelUnSelect={true}
-                    //         checkable
-                    //         onSelect={_this.treeOnSelect}
-                    //         onCheck={_this.treeOnCheck}
-                    //       >
-                    //         {loopData(_this.state.orgTreeList)}
-                    //       </Tree>
-                    //     </div>
-                    //     <div className={'orgTable'}>
-                    //       <Table 
-                    //         scroll={{y: 440}}
-                    //         columns={orgCol}
-                    //         data={_this.state.orgShowList}
-                    //       />
-                    //     </div>
-                    //   </div>
-                    // </TabPane>
+                    <TabPane tab={'组织'} key={3}>
+                      <div className={'searchWrapper'}>
+                        <input placeholder={'请输入您要查找的组织'} className={'search'} />
+                        <Icon onClick={_this.clickSearch} className={'searchIcon'} type='uf-search' />
+                      </div>
+                      <div className={'clearfix'}>
+                        <div className={'myTree'}>
+                          <Tree
+                            showIcon
+                            cancelUnSelect={true}
+                            checkable
+                            onSelect={_this.treeOnSelect}
+                            onCheck={_this.treeOnCheck}
+                          >
+                            {loopData(_this.state.orgTreeList)}
+                          </Tree>
+                        </div>
+                        <div className={'orgTable'}>
+                          <Table 
+                            scroll={{y: 440}}
+                            columns={orgCol}
+                            data={_this.state.orgShowList}
+                          />
+                        </div>
+                      </div>
+                    </TabPane>
                   }
                 </Tabs>
                 <Loading 
