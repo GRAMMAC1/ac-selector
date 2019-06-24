@@ -83,12 +83,15 @@ var Selector = function (_React$Component) {
 
       (0, _request.requestGet)(remoteUserUrl).then(function (response) {
         if (response.status === 1) {
+          var data = void 0;
           if (!response.data) {
-            response.data.values = [];
+            data = [];
+          } else {
+            data = response.data.values;
           }
           var selectedUser = _this2.props.selectedUser;
 
-          var _newList = response.data.values.map(function (item) {
+          var _newList = data.map(function (item) {
             item.key = item.userid;
             item._checked = false;
             return item;
@@ -440,10 +443,13 @@ var Selector = function (_React$Component) {
             if (response.status === 1) {
               var selectedOther = _this2.props.selectedOther;
 
+              var data = void 0;
               if (!response.data) {
-                response.data.values = [];
+                data = [];
+              } else {
+                data = response.data.values;
               }
-              var _newList = response.data.values.map(function (item) {
+              var _newList = data.map(function (item) {
                 item.key = item.roleId;
                 item._checked = false;
                 return item;

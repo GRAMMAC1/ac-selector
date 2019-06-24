@@ -89,11 +89,14 @@ class Selector extends React.Component {
     const {remoteUserUrl} = this.props
     requestGet(remoteUserUrl).then(response => {
       if(response.status === 1) {
+        let data
         if(!response.data) {
-          response.data.values = []
+          data = []
+        } else {
+          data = response.data.values
         }
         const { selectedUser } = this.props
-        let _newList = response.data.values.map(item => {
+        let _newList = data.map(item => {
           item.key = item.userid
           item._checked = false
           return item
@@ -418,10 +421,13 @@ class Selector extends React.Component {
         requestGet(remoteRoleUrl).then(response => {
           if(response.status === 1) {
             const { selectedOther } = this.props
+            let data
             if(!response.data) {
-              response.data.values = []
+              data = []
+            } else {
+              data = response.data.values
             }
-            let _newList = response.data.values.map(item => {
+            let _newList = data.map(item => {
               item.key = item.roleId
               item._checked = false
               return item

@@ -46,12 +46,12 @@ return (
     show={_this.state.show}
     onConfirm={_this.onConfirm}
     onClose={_this.onCancel}
-    // remoteUserUrl={'http://iuap-message-platform-web.test.app.yyuap.com/message-platform-web/user/staff/search?pageSize=40&pageNo=1&keyword='}
-    // remoteRoleUrl={'http://iuap-message-platform-web.test.app.yyuap.com/message-platform-web/user/role/search?pageSize=40&pageNo=1&keyword='}
-    // remoteOrgUrl={'http://iuap-message-platform-web.test.app.yyuap.com/message-platform-web/user/org/user?pageSize=40&pageNo=1&orgIds='}
-    remoteUserUrl={'https://u8cmsg-daily.yyuap.com/message-platform-web/user/staff/search?pageSize=40&pageNo=1&keyword='}
-    remoteRoleUrl={'https://u8cmsg-daily.yyuap.com/message-platform-web/user/role/search?pageSize=40&pageNo=1&keyword='}
-    remoteOrgUrl={'https://u8cmsg-daily.yyuap.com/message-platform-web/user/org/user?pageSize=40&pageNo=1&orgIds='}
+    remoteUserUrl={'http://iuap-message-platform-web.test.app.yyuap.com/message-platform-web/user/staff/search?pageSize=40&pageNo=1&keyword='}
+    remoteRoleUrl={'http://iuap-message-platform-web.test.app.yyuap.com/message-platform-web/user/role/search?pageSize=40&pageNo=1&keyword='}
+    remoteOrgUrl={'http://iuap-message-platform-web.test.app.yyuap.com/message-platform-web/user/org/user?pageSize=40&pageNo=1&orgIds='}
+    // remoteUserUrl={'https://u8cmsg-daily.yyuap.com/message-platform-web/user/staff/search?pageSize=40&pageNo=1&keyword='}
+    // remoteRoleUrl={'https://u8cmsg-daily.yyuap.com/message-platform-web/user/role/search?pageSize=40&pageNo=1&keyword='}
+    // remoteOrgUrl={'https://u8cmsg-daily.yyuap.com/message-platform-web/user/org/user?pageSize=40&pageNo=1&orgIds='}
     selectedUser={selectedUser}
     selectedOther={selectData}
   />
