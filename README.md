@@ -26,11 +26,14 @@
 
 |参数|说明|类型|是否必填|默认值|返回值|
 |:--|:---:|:--:|:--|:--:|:--:|
-|show|是否显示模态框|`boolean`|是|`false`|无|
-|onConfirm|确认回调函数|`func`|是|`() => {}`|选中的用户|
-|onClose|取消回调函数|`func`|是|`() => {}`|无|
-|remoteUserUrl|获取用户列表`url`|`string`|是|空|无|
-|remoteRoleUrl|获取角色列表`url`|`string`|是|空|无|
+|`show`|是否显示模态框|`boolean`|是|`false`|无|
+|`onConfirm`|确认回调函数|`func`|是|`() => {}`|选中的用户|
+|`onClose`|取消回调函数|`func`|是|`() => {}`|无|
+|`remoteUserUrl`|获取用户列表`url`|`string`|是|空|无|
+|`remoteRoleUrl`|获取角色列表`url`|`string`|是|空|无|
+|`remoteOrgUrl`|获取组织列表`url`|`string`|否|空|无|
+|`selectedUser`|已选的用户列表|`array`|否|`[]`|无|
+|`selectedOther`|`已选的其他列表`|`array`|否|`[]`|无|
 
 ### `onConfirm`回调函数参数说明
 * 参数一(userList)数据结构

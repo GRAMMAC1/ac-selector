@@ -54,7 +54,9 @@ var propTypes = {
   onClose: _propTypes2["default"].func.isRequired,
   remoteUserUrl: _propTypes2["default"].string.isRequired,
   remoteRoleUrl: _propTypes2["default"].string.isRequired,
-  remoteOrgUrl: _propTypes2["default"].string
+  remoteOrgUrl: _propTypes2["default"].string,
+  selectedUser: _propTypes2["default"].array,
+  selectedOther: _propTypes2["default"].array
 };
 
 var defaultProps = {
@@ -63,7 +65,9 @@ var defaultProps = {
   onClose: noop,
   remoteUserUrl: '',
   remoteRoleUrl: '',
-  remoteOrgUrl: ''
+  remoteOrgUrl: '',
+  selectedUser: [],
+  selectedOther: []
 };
 
 var Selector = function (_React$Component) {
@@ -79,12 +83,23 @@ var Selector = function (_React$Component) {
 
       (0, _request.requestGet)(remoteUserUrl).then(function (response) {
         if (response.status === 1) {
-          var _newList = response.data.map(function (item) {
+          if (!response.data) {
+            response.data.values = [];
+          }
+          var selectedUser = _this2.props.selectedUser;
+
+          var _newList = response.data.values.map(function (item) {
             item.key = item.userid;
             item._checked = false;
-            item.dept = '未知部门';
             return item;
           });
+          for (var i = 0; i < _newList.length; i++) {
+            for (var j = 0; j < selectedUser.length; j++) {
+              if (_newList[i].userid === selectedUser[j].id) {
+                _newList[i]._checked = true;
+              }
+            }
+          }
           _this2.setState({
             multiShowList: _newList
           });
@@ -93,7 +108,7 @@ var Selector = function (_React$Component) {
           isLoading: false
         });
       })["catch"](function (error) {
-        console.error(error);
+        throw new Error(error);
       });
     };
 
@@ -246,14 +261,13 @@ var Selector = function (_React$Component) {
         if (item._checked) {
           var _item = {
             key: item.userid,
-            number: item.userid,
             type: defaultLabel,
-            reciving: item.username + '(\u672A\u77E5\u90E8\u95E8)',
+            reciving: item.orgName ? item.username + '(' + item.orgName + ')' : item.username + '(\u672A\u77E5\u90E8\u95E8)',
             userid: item.userid,
             username: item.username,
             email: item.email,
-            dept: '未知部门',
-            mobile: item.mobile
+            mobile: item.mobile,
+            orgName: item.orgName ? item.orgName : '未知部门'
           };
           _tempList.push(_item);
         }
@@ -376,7 +390,7 @@ var Selector = function (_React$Component) {
             name: item.username,
             phone: item.mobile,
             email: item.email,
-            dept: item.dept,
+            dept: item.orgName,
             type: item.type,
             typeCode: 0
           };
@@ -417,18 +431,30 @@ var Selector = function (_React$Component) {
         activeKey: activeKey,
         isLoading: true
       });
-      if (activeKey == 2) {
+      if (activeKey === '2') {
         var remoteRoleUrl = _this2.props.remoteRoleUrl;
         var roleShowList = _this2.state.roleShowList;
 
         if (!roleShowList.length) {
           (0, _request.requestGet)(remoteRoleUrl).then(function (response) {
             if (response.status === 1) {
-              var _newList = response.data.map(function (item) {
+              var selectedOther = _this2.props.selectedOther;
+
+              if (!response.data) {
+                response.data.values = [];
+              }
+              var _newList = response.data.values.map(function (item) {
                 item.key = item.roleId;
                 item._checked = false;
                 return item;
               });
+              for (var i = 0; i < _newList.length; i++) {
+                for (var j = 0; j < selectedOther.length; j++) {
+                  if (_newList[i].roleId === selectedOther[j].roleId) {
+                    _newList[i]._checked = true;
+                  }
+                }
+              }
               _this2.setState({
                 roleShowList: _newList
               });
@@ -446,36 +472,17 @@ var Selector = function (_React$Component) {
             isLoading: false
           });
         }
-      } else if (activeKey == 1) {
-        var remoteUserUrl = _this2.props.remoteUserUrl;
-        var multiShowList = _this2.state.multiShowList;
-
-        if (!multiShowList.length) {
-          (0, _request.requestGet)(remoteUserUrl).then(function (response) {
-            if (response.status === 1) {
-              var _newList = response.data.map(function (item) {
-                item.key = item.userid;
-                item._checked = false;
-                return item;
-              });
-              _this2.setState({
-                multiShowList: _newList
-              });
-            }
-            _this2.setState({
-              isLoading: false
-            });
-          })["catch"](function (error) {
-            console.error(error);
-          });
-        }
+      } else if (activeKey === '1') {
         _this2.setState({
           defaultLabel: '用户',
           isLoading: false
         });
-      } else if (activeKey == 3) {
+      } else if (activeKey === '3') {
         var remoteOrgUrl = _this2.props.remoteOrgUrl;
 
+        if (!remoteOrgUrl) {
+          return;
+        }
         _this2.setState({
           defaultLabel: '规则'
         });
@@ -489,32 +496,33 @@ var Selector = function (_React$Component) {
             isLoading: false
           });
         })["catch"](function (error) {
-          console.error(error);
+          throw new Error(error);
         });
       }
     };
 
-    _this2.treeOnSelect = function (info) {
-      var remoteOrgUrl = _this2.props.remoteOrgUrl;
+    _this2.treeOnSelect = function (info) {}
+    // const { remoteOrgUrl } = this.props
+    // requestGet(remoteOrgUrl).then(response => {
+    //   if(response.status === 1) {
+    //     let _newList = response.data.map(item => {
+    //       return {
+    //         key: item.userid,
+    //         orgName: item.username,
+    //         orgMail: item.email,
+    //         orgPhone: item.mobile
+    //       }
+    //     })
+    //     this.setState({
+    //       orgShowList: _newList
+    //     })
+    //   }
+    // }).catch(error => {
+    //   console.error(error)
+    // })
 
-      (0, _request.requestGet)('http://iuap-message-platform-web.test.app.yyuap.com/message-platform-web/user/org/user?pageSize=40&pageNo=1&orgIds=[' + info + ']').then(function (response) {
-        if (response.status === 1) {
-          var _newList = response.data.map(function (item) {
-            return {
-              key: item.userid,
-              orgName: item.username,
-              orgMail: item.email,
-              orgPhone: item.mobile
-            };
-          });
-          _this2.setState({
-            orgShowList: _newList
-          });
-        }
-      })["catch"](function (error) {
-        console.error(error);
-      });
-    };
+    // tree check
+    ;
 
     _this2.treeOnCheck = function (info) {
       var selectedOtherList = _this2.state.selectedOtherList;
@@ -538,15 +546,36 @@ var Selector = function (_React$Component) {
       activeKey: '1', // 当前激活的tab
       staffInputValue: '',
       roleInputValue: ''
+
     };
     return _this2;
   }
 
   Selector.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
+    var _newOtherList = nextProps.selectedOther.map(function (item) {
+      switch (item.typeCode) {
+        case 1:
+          item.key = item.roleId;
+          item.reciving = item.roleName;
+          return item;
+        default:
+          break;
+      }
+    });
+    var _newUserList = nextProps.selectedUser.map(function (item) {
+      item.key = item.id;
+      item.reciving = item.name + '(' + item.dept + ')';
+      return item;
+    });
     this.setState({
-      show: nextProps.show
+      show: nextProps.show,
+      selectedOtherList: _newOtherList,
+      selectedOtherCount: _newOtherList.length,
+      selectedUserData: _newUserList,
+      selectedCount: _newUserList.length
     });
   };
+
   // 进入modal首先加载用户列表
 
   // 搜索
@@ -574,8 +603,6 @@ var Selector = function (_React$Component) {
   //
 
   // tree select
-
-  // tree check
 
 
   Selector.prototype.render = function render() {
@@ -666,12 +693,51 @@ var Selector = function (_React$Component) {
                   _react2["default"].createElement(_tinperBee.Icon, { onClick: _this.clickSearch, className: 'searchIcon', type: 'uf-search' })
                 ),
                 _react2["default"].createElement(MultiSelectTable, {
+                  id: 'role',
                   scroll: { y: 360 },
                   columns: _colmuns.roleMultiCol,
                   multiSelect: multiSelect,
                   getSelectedDataFunc: _this.getRoleList,
                   data: _this.state.roleShowList
                 })
+              ),
+              _react2["default"].createElement(
+                TabPane,
+                { tab: '组织', key: 3 },
+                _react2["default"].createElement(
+                  'div',
+                  { className: 'searchWrapper' },
+                  _react2["default"].createElement('input', { placeholder: '请输入您要查找的组织', className: 'search' }),
+                  _react2["default"].createElement(_tinperBee.Icon, { onClick: _this.clickSearch, className: 'searchIcon', type: 'uf-search' })
+                ),
+                _react2["default"].createElement(
+                  'div',
+                  { className: 'clearfix' },
+                  _react2["default"].createElement(
+                    'div',
+                    { className: 'myTree' },
+                    _react2["default"].createElement(
+                      _tinperBee.Tree,
+                      {
+                        showIcon: true,
+                        cancelUnSelect: true,
+                        checkable: true,
+                        onSelect: _this.treeOnSelect,
+                        onCheck: _this.treeOnCheck
+                      },
+                      loopData(_this.state.orgTreeList)
+                    )
+                  ),
+                  _react2["default"].createElement(
+                    'div',
+                    { className: 'orgTable' },
+                    _react2["default"].createElement(_beeTable2["default"], {
+                      scroll: { y: 440 },
+                      columns: _colmuns.orgCol,
+                      data: _this.state.orgShowList
+                    })
+                  )
+                )
               )
             ),
             _react2["default"].createElement(_tinperBee.Loading, {

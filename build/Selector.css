@@ -43,7 +43,7 @@
 
 .selectContainer {
   width: 1198px;
-  height: 460px;
+  min-height: 460px;
   border-top: 1px solid #E4E4E4;
   border-bottom: 1px solid #E4E4E4; }
 
@@ -58,7 +58,9 @@
 
 .left {
   width: 740px;
-  float: left; }
+  min-height: 460px;
+  float: left;
+  border-right: 1px solid #C8C8C8; }
 
 .right {
   width: 458px;
@@ -131,4 +133,4 @@
 
 .orgTable {
   float: left;
-  width: 432px; }
+  width: 431px; }
