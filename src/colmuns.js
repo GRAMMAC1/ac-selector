@@ -28,9 +28,9 @@ export const filterCaptial = ['A','B','C','D','E','F','G','H','I','J','K','L','M
 
 
 export const selectData = [
-  {type: "角色", roleName: "服务商", roleId: "c5d88199-b714-4be4-9a41-f66f9001cfb1", roleCode: "AMMAN_SERVER", typeCode: 1},
-  {type: "角色", roleName: "组织管理员", roleId: "f2a439f4-46fb-4fad-84ab-83068adb2b8b", roleCode: "OrgManager", typeCode: 1},
-  {type: "角色", roleName: "门户模板管理员", roleId: "0f9a6f2e-e7d2-42ba-86b1-25e4c9c1d4b7", roleCode: "XTPortalManager", typeCode: 1}
+  {key:'c5d88199-b714-4be4-9a41-f66f9001cfb1', type: "角色", roleName: "服务商", roleId: "c5d88199-b714-4be4-9a41-f66f9001cfb1", roleCode: "AMMAN_SERVER", typeCode: 1},
+  {key:'f2a439f4-46fb-4fad-84ab-83068adb2b8b',type: "角色", roleName: "组织管理员", roleId: "f2a439f4-46fb-4fad-84ab-83068adb2b8b", roleCode: "OrgManager", typeCode: 1},
+  {key:'0f9a6f2e-e7d2-42ba-86b1-25e4c9c1d4b7', type: "角色", roleName: "门户模板管理员", roleId: "0f9a6f2e-e7d2-42ba-86b1-25e4c9c1d4b7", roleCode: "XTPortalManager", typeCode: 1}
 ]
 
 export const selectedUser = [

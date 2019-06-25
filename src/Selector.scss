@@ -144,3 +144,8 @@
   float: left;
   width: 431px;
 }
+.selector_pagination {
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-end
+}

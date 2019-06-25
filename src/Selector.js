@@ -18,9 +18,7 @@ const propTypes = {
   show: PropTypes.bool.isRequired,
   onConfirm: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
-  remoteUserUrl: PropTypes.string.isRequired,
-  remoteRoleUrl: PropTypes.string.isRequired,
-  remoteOrgUrl: PropTypes.string,
+  mode: PropTypes.string,
   selectedUser: PropTypes.array,
   selectedOther: PropTypes.array
 }
@@ -29,11 +27,9 @@ const defaultProps = {
   show: false,
   onConfirm: noop,
   onClose: noop,
-  remoteUserUrl: '',
-  remoteRoleUrl: '',
-  remoteOrgUrl: '',
   selectedUser: [],
-  selectedOther: []
+  selectedOther: [],
+  mode: 'daily'
 }
 
 class Selector extends React.Component {
@@ -53,9 +49,19 @@ class Selector extends React.Component {
       orgShowList: [], // 规则列表
       orgTreeList: [], // 规则🌲
       activeKey: '1', // 当前激活的tab
+      prefixUrl: '',
       staffInputValue: '',
       roleInputValue: '',
-
+      staffPage: {
+        activePage: 1,
+        items: 1,
+        total: 40
+      },
+      rolePage: {
+        activePage: 1, // 当前第几页
+        items: 1, // 总页数
+        total: 40, // 总数
+      }
     }
   }
 
@@ -84,10 +90,30 @@ class Selector extends React.Component {
     })
   }
 
+  componentDidMount() {
+    const { mode } = this.props
+    switch (mode) {
+      case 'dev':
+        this.setState({
+          prefixUrl: 'http://iuap-message-platform-web.test.app.yyuap.com/message-platform-web'
+        })
+        break;
+      case 'daily':
+        this.setState({
+          prefixUrl: 'https://u8cmsg-daily.yyuap.com/message-platform-web'
+        })
+      default:
+        this.setState({
+          prefixUrl: 'https://u8cmsg-daily.yyuap.com/message-platform-web'
+        })
+        break;
+    }
+  }
+
   // 进入modal首先加载用户列表
   didFinish = () => {
-    const {remoteUserUrl} = this.props
-    requestGet(remoteUserUrl).then(response => {
+    const url = `${this.state.prefixUrl}/user/staff/search?pageSize=40&pageNo=1&keyword=`
+    requestGet(url).then(response => {
       if(response.status === 1) {
         let data
         if(!response.data) {
@@ -108,8 +134,14 @@ class Selector extends React.Component {
             }
           }
         }
+        let obj = {
+          activePage: response.data.currentPage,
+          items: response.data.totalPages,
+          total: response.data.pageSize
+        }
         this.setState({
-          multiShowList: _newList
+          multiShowList: _newList,
+          staffPage: obj
         })
       }
       this.setState({
@@ -121,36 +153,48 @@ class Selector extends React.Component {
   }
   // 搜索
   search = (e) => {
-    const { activeKey } = this.state
-    let { remoteUserUrl, remoteRoleUrl } = this.props
+    const { activeKey } = this.state,
+          _this = this
     let url = ''
-    if(activeKey == 1) {
-      url = `${remoteUserUrl}${e.target.value}`
-    } else if(activeKey == 2) {
-      url = `${remoteRoleUrl}${e.target.value}`
+    if(activeKey === '1') {
+      url = `${_this.state.prefixUrl}/user/staff/search?pageSize=40&pageNo=1&keyword=${e.target.value}`
+    } else if(activeKey === '2') {
+      url = `${_this.state.prefixUrl}/user/role/search?pageSize=40&pageNo=1&keyword=${e.target.value}`
     }
     if(e.keyCode === 13 || e.keyCode === 108) {
       requestGet(url).then(response => {
         if(response.status === 1) {
-          if(activeKey == 1) {
-            let _list = []
-            _list = response.data.map(item => {
+          if(activeKey === '1') {
+            let _list = [],
+                obj = {
+                  activePage: response.data.currentPage,
+                  items: response.data.totalPages,
+                  total: response.data.pageSize
+                }
+            _list = response.data.values.map(item => {
               item.key = item.userid
               item._checked =false
               return item
             })
             this.setState({
-              multiShowList: _list
+              multiShowList: _list,
+              staffPage: obj
             })
-          } else if(activeKey == 2) {
-            let _list = []
-            _list = response.data.map(item => {
+          } else if(activeKey === '2') {
+            let _list = [],
+                obj = {
+                  activePage: response.data.currentPage,
+                  items: response.data.totalPages,
+                  total: response.data.pageSize
+                }
+            _list = response.data.values.map(item => {
               item.key = item.roleId
               item._checked = false
               return item
             })
             this.setState({
-              roleShowList: _list
+              roleShowList: _list,
+              rolePage: obj
             })
           }
         }
@@ -158,33 +202,53 @@ class Selector extends React.Component {
         console.error(error)
       })
     }
-    // if(e.target.keyCode)
   } 
   clickSearch = () => {
+    const _this = this
     let searchUrl
-    const { remoteUserUrl, remoteRoleUrl } = this.props
     const { activeKey,staffInputValue,roleInputValue } = this.state
-    if(activeKey == 1) {
-      searchUrl = `${remoteUserUrl}${staffInputValue}`
+    if(activeKey === '1') {
+      searchUrl = `${_this.state.prefixUrl}/user/staff/search?pageSize=40&pageNo=1&keyword=${staffInputValue}`
     } else {
-      searchUrl = `${remoteRoleUrl}${roleInputValue}`
+      searchUrl = `${_this.state.prefixUrl}/user/role/search?pageSize=40&pageNo=1&keyword=${roleInputValue}`
     }
     requestGet(searchUrl).then(response => {
-      let res = response.data
-      res = res.map(item => {
-        item._checked = false
-        return item
-      })
-      if(activeKey == 1) {
-        this.setState({
-          multiShowList: res
-        })
-      } else {
-        this.setState({
-          roleShowList: res
-        })
+      if(response.status === 1) {
+        if(activeKey === '1') {
+          let _list = [],
+              obj = {
+                activePage: response.data.currentPage,
+                items: response.data.totalPages,
+                total: response.data.pageSize
+              }
+          _list = response.data.values.map(item => {
+            item.key = item.userid
+            item._checked =false
+            return item
+          })
+          this.setState({
+            multiShowList: _list,
+            staffPage: obj
+          })
+        } else if(activeKey === '2') {
+          let _list = [],
+              obj = {
+                activePage: response.data.currentPage,
+                items: response.data.totalPages,
+                total: response.data.pageSize
+              }
+          _list = response.data.values.map(item => {
+            item.key = item.roleId
+            item._checked = false
+            return item
+          })
+          this.setState({
+            roleShowList: _list,
+            rolePage: obj
+          })
+        }
       }
-    })
+    }).catch(err => { throw new Error(err) })
   }
   
   inputChange = (type,e) => {
@@ -410,15 +474,16 @@ class Selector extends React.Component {
   }
   //
   onChange = (activeKey) => {
+    const _this = this
     this.setState({
       activeKey,
       isLoading: true
     })
     if(activeKey === '2') {
-      const { remoteRoleUrl } = this.props
+      const url = `${_this.state.prefixUrl}/user/role/search?pageSize=40&pageNo=1&keyword=`
       let { roleShowList } = this.state
       if(!roleShowList.length) {
-        requestGet(remoteRoleUrl).then(response => {
+        requestGet(url).then(response => {
           if(response.status === 1) {
             const { selectedOther } = this.props
             let data
@@ -427,6 +492,14 @@ class Selector extends React.Component {
             } else {
               data = response.data.values
             }
+            let _page = {
+              activePage: response.data.currentPage,
+              items: response.data.totalPages,
+              total: response.data.pageSize
+            }
+            this.setState({
+              rolePage: _page
+            })
             let _newList = data.map(item => {
               item.key = item.roleId
               item._checked = false
@@ -462,14 +535,11 @@ class Selector extends React.Component {
         isLoading: false
       })
     } else if(activeKey === '3') {
-      const { remoteOrgUrl } = this.props
-      if(!remoteOrgUrl) {
-        return 
-      }
+      const url = `${_this.state.prefixUrl}/user/org/user?pageSize=40&pageNo=1&orgIds=`
       this.setState({
         defaultLabel: '规则'
       })
-      requestGet(remoteOrgUrl).then(response => {
+      requestGet(url).then(response => {
         if(response.status === 1) {
           this.setState({
             orgTreeList: response.data
@@ -506,6 +576,54 @@ class Selector extends React.Component {
   treeOnCheck = (info) => {
     let { selectedOtherList } = this.state
     console.log(info)
+  }
+  // 角色分页
+  roleSelect = (e) => {
+    const _this = this
+    let url = `${_this.state.prefixUrl}/user/role/search?pageSize=40&pageNo=${e}&keyword=`
+    requestGet(url).then(response => {
+      if(response.status === 1) {
+        let obj = {
+          activePage: e,
+          items: response.data.totalPages,
+          total: response.data.pageSize
+        }, data
+        if(!response.data) {
+          data = []
+        } else {
+          data = response.data.values
+          data.forEach(item => {item.key = item.roleId})
+        }
+        this.setState({
+          rolePage: obj,
+          roleShowList: data
+        })
+      }
+    }).catch(err => { throw new Error(err) })
+  }
+  // 用户分页
+  staffSelect = (e) => {
+    const _this = this
+    let url = `${_this.state.prefixUrl}/user/staff/search?pageSize=40&pageNo=${e}&keyword=`
+    requestGet(url).then(response => {
+      if(response.status === 1) {
+        let obj = {
+          activePage: e,
+          items: response.data.totalPages,
+          total: response.data.pageSize
+        }, data
+        if(!response.data) {
+          data = []
+        } else {
+          data = response.data.values
+          data.forEach(item => {item.key = item.userid})
+        }
+        this.setState({
+          staffPage: obj,
+          multiShowList: data
+        })
+      }
+    }).catch(err => { throw new Error(err) })
   }
 
   render() {
@@ -564,6 +682,19 @@ class Selector extends React.Component {
                       getSelectedDataFunc={_this.getUserList}
                       data={_this.state.multiShowList}
                     />
+                    <Pagination 
+                      className={'selector_pagination'}
+                      first
+                      last
+                      prev
+                      next
+                      maxButtons={5}
+                      boundaryLinks
+                      total={_this.state.staffPage.total}
+                      activePage={_this.state.staffPage.activePage}
+                      items={_this.state.staffPage.items}
+                      onSelect={_this.staffSelect}
+                    />
                   </TabPane>
                   <TabPane tab={'角色'} key={2} >
                     <div className={'searchWrapper'}>
@@ -578,17 +709,19 @@ class Selector extends React.Component {
                       getSelectedDataFunc={_this.getRoleList}
                       data={_this.state.roleShowList}
                     />
-                    {/* <Pagination 
+                    <Pagination 
+                      className={'selector_pagination'}
                       first
                       last
                       prev
                       next
                       maxButtons={5}
                       boundaryLinks
-                      size={'sm'}
-                      total={40}
-                      dataNum={40}
-                    /> */}
+                      total={_this.state.rolePage.total}
+                      activePage={_this.state.rolePage.activePage}
+                      items={_this.state.rolePage.items}
+                      onSelect={_this.roleSelect}
+                    />
                   </TabPane>
                   {
                     <TabPane tab={'组织'} key={3}>
