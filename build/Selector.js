@@ -77,16 +77,16 @@ var Selector = function (_React$Component) {
     _this2.didFinish = function () {
       var url = _this2.state.prefixUrl + '/user/staff/search?pageSize=40&pageNo=1&keyword=';
       (0, _request.requestGet)(url).then(function (response) {
-        if (response.status === 1) {
-          var data = void 0;
-          if (!response.data) {
-            data = [];
-          } else {
-            data = response.data.values;
-          }
+        if (response.status === 1 && response.data !== null) {
+          // let data
+          // if(!response.data) {
+          //   data = []
+          // } else {
+          //   data = response.data.values
+          // }
           var selectedUser = _this2.props.selectedUser;
 
-          var _newList = data.map(function (item) {
+          var _newList = response.data.values.map(function (item) {
             item.key = item.userid;
             item._checked = false;
             return item;
@@ -128,7 +128,7 @@ var Selector = function (_React$Component) {
       }
       if (e.keyCode === 13 || e.keyCode === 108) {
         (0, _request.requestGet)(url).then(function (response) {
-          if (response.status === 1) {
+          if (response.status === 1 && response.data !== null) {
             if (activeKey === '1') {
               var _list = [],
                   obj = {
@@ -183,7 +183,7 @@ var Selector = function (_React$Component) {
         searchUrl = _this.state.prefixUrl + '/user/role/search?pageSize=40&pageNo=1&keyword=' + roleInputValue;
       }
       (0, _request.requestGet)(searchUrl).then(function (response) {
-        if (response.status === 1) {
+        if (response.status === 1 && response.data !== null) {
           if (activeKey === '1') {
             var _list = [],
                 obj = {
@@ -472,7 +472,7 @@ var Selector = function (_React$Component) {
 
         if (!roleShowList.length) {
           (0, _request.requestGet)(url).then(function (response) {
-            if (response.status === 1) {
+            if (response.status === 1 && response.data !== null) {
               var selectedOther = _this2.props.selectedOther;
 
               var data = void 0;
@@ -576,7 +576,7 @@ var Selector = function (_React$Component) {
       var _this = _this2;
       var url = _this.state.prefixUrl + '/user/role/search?pageSize=40&pageNo=' + e + '&keyword=';
       (0, _request.requestGet)(url).then(function (response) {
-        if (response.status === 1) {
+        if (response.status === 1 && response.data !== null) {
           var obj = {
             activePage: e,
             items: response.data.totalPages,
@@ -605,7 +605,7 @@ var Selector = function (_React$Component) {
       var _this = _this2;
       var url = _this.state.prefixUrl + '/user/staff/search?pageSize=40&pageNo=' + e + '&keyword=';
       (0, _request.requestGet)(url).then(function (response) {
-        if (response.status === 1) {
+        if (response.status === 1 && response.data !== null) {
           var obj = {
             activePage: e,
             items: response.data.totalPages,
