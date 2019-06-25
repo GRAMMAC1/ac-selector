@@ -52,9 +52,7 @@ var propTypes = {
   show: _propTypes2["default"].bool.isRequired,
   onConfirm: _propTypes2["default"].func.isRequired,
   onClose: _propTypes2["default"].func.isRequired,
-  remoteUserUrl: _propTypes2["default"].string.isRequired,
-  remoteRoleUrl: _propTypes2["default"].string.isRequired,
-  remoteOrgUrl: _propTypes2["default"].string,
+  mode: _propTypes2["default"].string,
   selectedUser: _propTypes2["default"].array,
   selectedOther: _propTypes2["default"].array
 };
@@ -63,11 +61,9 @@ var defaultProps = {
   show: false,
   onConfirm: noop,
   onClose: noop,
-  remoteUserUrl: '',
-  remoteRoleUrl: '',
-  remoteOrgUrl: '',
   selectedUser: [],
-  selectedOther: []
+  selectedOther: [],
+  mode: 'daily'
 };
 
 var Selector = function (_React$Component) {
@@ -79,9 +75,8 @@ var Selector = function (_React$Component) {
     var _this2 = _possibleConstructorReturn(this, _React$Component.call(this));
 
     _this2.didFinish = function () {
-      var remoteUserUrl = _this2.props.remoteUserUrl;
-
-      (0, _request.requestGet)(remoteUserUrl).then(function (response) {
+      var url = _this2.state.prefixUrl + '/user/staff/search?pageSize=40&pageNo=1&keyword=';
+      (0, _request.requestGet)(url).then(function (response) {
         if (response.status === 1) {
           var data = void 0;
           if (!response.data) {
@@ -103,8 +98,14 @@ var Selector = function (_React$Component) {
               }
             }
           }
+          var obj = {
+            activePage: response.data.currentPage,
+            items: response.data.totalPages,
+            total: response.data.pageSize
+          };
           _this2.setState({
-            multiShowList: _newList
+            multiShowList: _newList,
+            staffPage: obj
           });
         }
         _this2.setState({
@@ -116,39 +117,49 @@ var Selector = function (_React$Component) {
     };
 
     _this2.search = function (e) {
-      var activeKey = _this2.state.activeKey;
-      var _this2$props = _this2.props,
-          remoteUserUrl = _this2$props.remoteUserUrl,
-          remoteRoleUrl = _this2$props.remoteRoleUrl;
+      var activeKey = _this2.state.activeKey,
+          _this = _this2;
 
       var url = '';
-      if (activeKey == 1) {
-        url = '' + remoteUserUrl + e.target.value;
-      } else if (activeKey == 2) {
-        url = '' + remoteRoleUrl + e.target.value;
+      if (activeKey === '1') {
+        url = _this.state.prefixUrl + '/user/staff/search?pageSize=40&pageNo=1&keyword=' + e.target.value;
+      } else if (activeKey === '2') {
+        url = _this.state.prefixUrl + '/user/role/search?pageSize=40&pageNo=1&keyword=' + e.target.value;
       }
       if (e.keyCode === 13 || e.keyCode === 108) {
         (0, _request.requestGet)(url).then(function (response) {
           if (response.status === 1) {
-            if (activeKey == 1) {
-              var _list = [];
-              _list = response.data.map(function (item) {
+            if (activeKey === '1') {
+              var _list = [],
+                  obj = {
+                activePage: response.data.currentPage,
+                items: response.data.totalPages,
+                total: response.data.pageSize
+              };
+              _list = response.data.values.map(function (item) {
                 item.key = item.userid;
                 item._checked = false;
                 return item;
               });
               _this2.setState({
-                multiShowList: _list
+                multiShowList: _list,
+                staffPage: obj
               });
-            } else if (activeKey == 2) {
-              var _list2 = [];
-              _list2 = response.data.map(function (item) {
+            } else if (activeKey === '2') {
+              var _list2 = [],
+                  _obj = {
+                activePage: response.data.currentPage,
+                items: response.data.totalPages,
+                total: response.data.pageSize
+              };
+              _list2 = response.data.values.map(function (item) {
                 item.key = item.roleId;
                 item._checked = false;
                 return item;
               });
               _this2.setState({
-                roleShowList: _list2
+                roleShowList: _list2,
+                rolePage: _obj
               });
             }
           }
@@ -156,39 +167,59 @@ var Selector = function (_React$Component) {
           console.error(error);
         });
       }
-      // if(e.target.keyCode)
     };
 
     _this2.clickSearch = function () {
+      var _this = _this2;
       var searchUrl = void 0;
-      var _this2$props2 = _this2.props,
-          remoteUserUrl = _this2$props2.remoteUserUrl,
-          remoteRoleUrl = _this2$props2.remoteRoleUrl;
       var _this2$state = _this2.state,
           activeKey = _this2$state.activeKey,
           staffInputValue = _this2$state.staffInputValue,
           roleInputValue = _this2$state.roleInputValue;
 
-      if (activeKey == 1) {
-        searchUrl = '' + remoteUserUrl + staffInputValue;
+      if (activeKey === '1') {
+        searchUrl = _this.state.prefixUrl + '/user/staff/search?pageSize=40&pageNo=1&keyword=' + staffInputValue;
       } else {
-        searchUrl = '' + remoteRoleUrl + roleInputValue;
+        searchUrl = _this.state.prefixUrl + '/user/role/search?pageSize=40&pageNo=1&keyword=' + roleInputValue;
       }
       (0, _request.requestGet)(searchUrl).then(function (response) {
-        var res = response.data;
-        res = res.map(function (item) {
-          item._checked = false;
-          return item;
-        });
-        if (activeKey == 1) {
-          _this2.setState({
-            multiShowList: res
-          });
-        } else {
-          _this2.setState({
-            roleShowList: res
-          });
+        if (response.status === 1) {
+          if (activeKey === '1') {
+            var _list = [],
+                obj = {
+              activePage: response.data.currentPage,
+              items: response.data.totalPages,
+              total: response.data.pageSize
+            };
+            _list = response.data.values.map(function (item) {
+              item.key = item.userid;
+              item._checked = false;
+              return item;
+            });
+            _this2.setState({
+              multiShowList: _list,
+              staffPage: obj
+            });
+          } else if (activeKey === '2') {
+            var _list3 = [],
+                _obj2 = {
+              activePage: response.data.currentPage,
+              items: response.data.totalPages,
+              total: response.data.pageSize
+            };
+            _list3 = response.data.values.map(function (item) {
+              item.key = item.roleId;
+              item._checked = false;
+              return item;
+            });
+            _this2.setState({
+              roleShowList: _list3,
+              rolePage: _obj2
+            });
+          }
         }
+      })["catch"](function (err) {
+        throw new Error(err);
       });
     };
 
@@ -430,16 +461,17 @@ var Selector = function (_React$Component) {
     };
 
     _this2.onChange = function (activeKey) {
+      var _this = _this2;
       _this2.setState({
         activeKey: activeKey,
         isLoading: true
       });
       if (activeKey === '2') {
-        var remoteRoleUrl = _this2.props.remoteRoleUrl;
+        var url = _this.state.prefixUrl + '/user/role/search?pageSize=40&pageNo=1&keyword=';
         var roleShowList = _this2.state.roleShowList;
 
         if (!roleShowList.length) {
-          (0, _request.requestGet)(remoteRoleUrl).then(function (response) {
+          (0, _request.requestGet)(url).then(function (response) {
             if (response.status === 1) {
               var selectedOther = _this2.props.selectedOther;
 
@@ -449,6 +481,14 @@ var Selector = function (_React$Component) {
               } else {
                 data = response.data.values;
               }
+              var _page = {
+                activePage: response.data.currentPage,
+                items: response.data.totalPages,
+                total: response.data.pageSize
+              };
+              _this2.setState({
+                rolePage: _page
+              });
               var _newList = data.map(function (item) {
                 item.key = item.roleId;
                 item._checked = false;
@@ -484,15 +524,11 @@ var Selector = function (_React$Component) {
           isLoading: false
         });
       } else if (activeKey === '3') {
-        var remoteOrgUrl = _this2.props.remoteOrgUrl;
-
-        if (!remoteOrgUrl) {
-          return;
-        }
+        var _url = _this.state.prefixUrl + '/user/org/user?pageSize=40&pageNo=1&orgIds=';
         _this2.setState({
           defaultLabel: '规则'
         });
-        (0, _request.requestGet)(remoteOrgUrl).then(function (response) {
+        (0, _request.requestGet)(_url).then(function (response) {
           if (response.status === 1) {
             _this2.setState({
               orgTreeList: response.data
@@ -536,6 +572,64 @@ var Selector = function (_React$Component) {
       console.log(info);
     };
 
+    _this2.roleSelect = function (e) {
+      var _this = _this2;
+      var url = _this.state.prefixUrl + '/user/role/search?pageSize=40&pageNo=' + e + '&keyword=';
+      (0, _request.requestGet)(url).then(function (response) {
+        if (response.status === 1) {
+          var obj = {
+            activePage: e,
+            items: response.data.totalPages,
+            total: response.data.pageSize
+          },
+              data = void 0;
+          if (!response.data) {
+            data = [];
+          } else {
+            data = response.data.values;
+            data.forEach(function (item) {
+              item.key = item.roleId;
+            });
+          }
+          _this2.setState({
+            rolePage: obj,
+            roleShowList: data
+          });
+        }
+      })["catch"](function (err) {
+        throw new Error(err);
+      });
+    };
+
+    _this2.staffSelect = function (e) {
+      var _this = _this2;
+      var url = _this.state.prefixUrl + '/user/staff/search?pageSize=40&pageNo=' + e + '&keyword=';
+      (0, _request.requestGet)(url).then(function (response) {
+        if (response.status === 1) {
+          var obj = {
+            activePage: e,
+            items: response.data.totalPages,
+            total: response.data.pageSize
+          },
+              data = void 0;
+          if (!response.data) {
+            data = [];
+          } else {
+            data = response.data.values;
+            data.forEach(function (item) {
+              item.key = item.userid;
+            });
+          }
+          _this2.setState({
+            staffPage: obj,
+            multiShowList: data
+          });
+        }
+      })["catch"](function (err) {
+        throw new Error(err);
+      });
+    };
+
     _this2.state = {
       show: false,
       isLoading: true,
@@ -550,9 +644,19 @@ var Selector = function (_React$Component) {
       orgShowList: [], // 规则列表
       orgTreeList: [], // 规则🌲
       activeKey: '1', // 当前激活的tab
+      prefixUrl: '',
       staffInputValue: '',
-      roleInputValue: ''
-
+      roleInputValue: '',
+      staffPage: {
+        activePage: 1,
+        items: 1,
+        total: 40
+      },
+      rolePage: {
+        activePage: 1, // 当前第几页
+        items: 1, // 总页数
+        total: 40 // 总数
+      }
     };
     return _this2;
   }
@@ -582,6 +686,27 @@ var Selector = function (_React$Component) {
     });
   };
 
+  Selector.prototype.componentDidMount = function componentDidMount() {
+    var mode = this.props.mode;
+
+    switch (mode) {
+      case 'dev':
+        this.setState({
+          prefixUrl: 'http://iuap-message-platform-web.test.app.yyuap.com/message-platform-web'
+        });
+        break;
+      case 'daily':
+        this.setState({
+          prefixUrl: 'https://u8cmsg-daily.yyuap.com/message-platform-web'
+        });
+      default:
+        this.setState({
+          prefixUrl: 'https://u8cmsg-daily.yyuap.com/message-platform-web'
+        });
+        break;
+    }
+  };
+
   // 进入modal首先加载用户列表
 
   // 搜索
@@ -609,6 +734,10 @@ var Selector = function (_React$Component) {
   //
 
   // tree select
+
+  // 角色分页
+
+  // 用户分页
 
 
   Selector.prototype.render = function render() {
@@ -687,6 +816,19 @@ var Selector = function (_React$Component) {
                   multiSelect: multiSelect,
                   getSelectedDataFunc: _this.getUserList,
                   data: _this.state.multiShowList
+                }),
+                _react2["default"].createElement(_tinperBee.Pagination, {
+                  className: 'selector_pagination',
+                  first: true,
+                  last: true,
+                  prev: true,
+                  next: true,
+                  maxButtons: 5,
+                  boundaryLinks: true,
+                  total: _this.state.staffPage.total,
+                  activePage: _this.state.staffPage.activePage,
+                  items: _this.state.staffPage.items,
+                  onSelect: _this.staffSelect
                 })
               ),
               _react2["default"].createElement(
@@ -705,6 +847,19 @@ var Selector = function (_React$Component) {
                   multiSelect: multiSelect,
                   getSelectedDataFunc: _this.getRoleList,
                   data: _this.state.roleShowList
+                }),
+                _react2["default"].createElement(_tinperBee.Pagination, {
+                  className: 'selector_pagination',
+                  first: true,
+                  last: true,
+                  prev: true,
+                  next: true,
+                  maxButtons: 5,
+                  boundaryLinks: true,
+                  total: _this.state.rolePage.total,
+                  activePage: _this.state.rolePage.activePage,
+                  items: _this.state.rolePage.items,
+                  onSelect: _this.roleSelect
                 })
               ),
               _react2["default"].createElement(
