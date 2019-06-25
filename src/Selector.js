@@ -114,15 +114,15 @@ class Selector extends React.Component {
   didFinish = () => {
     const url = `${this.state.prefixUrl}/user/staff/search?pageSize=40&pageNo=1&keyword=`
     requestGet(url).then(response => {
-      if(response.status === 1) {
-        let data
-        if(!response.data) {
-          data = []
-        } else {
-          data = response.data.values
-        }
+      if(response.status === 1 && response.data !== null) {
+        // let data
+        // if(!response.data) {
+        //   data = []
+        // } else {
+        //   data = response.data.values
+        // }
         const { selectedUser } = this.props
-        let _newList = data.map(item => {
+        let _newList = response.data.values.map(item => {
           item.key = item.userid
           item._checked = false
           return item
@@ -163,7 +163,7 @@ class Selector extends React.Component {
     }
     if(e.keyCode === 13 || e.keyCode === 108) {
       requestGet(url).then(response => {
-        if(response.status === 1) {
+        if(response.status === 1 && response.data !== null) {
           if(activeKey === '1') {
             let _list = [],
                 obj = {
@@ -213,7 +213,7 @@ class Selector extends React.Component {
       searchUrl = `${_this.state.prefixUrl}/user/role/search?pageSize=40&pageNo=1&keyword=${roleInputValue}`
     }
     requestGet(searchUrl).then(response => {
-      if(response.status === 1) {
+      if(response.status === 1 && response.data !== null) {
         if(activeKey === '1') {
           let _list = [],
               obj = {
@@ -484,7 +484,7 @@ class Selector extends React.Component {
       let { roleShowList } = this.state
       if(!roleShowList.length) {
         requestGet(url).then(response => {
-          if(response.status === 1) {
+          if(response.status === 1 && response.data !== null) {
             const { selectedOther } = this.props
             let data
             if(!response.data) {
@@ -582,7 +582,7 @@ class Selector extends React.Component {
     const _this = this
     let url = `${_this.state.prefixUrl}/user/role/search?pageSize=40&pageNo=${e}&keyword=`
     requestGet(url).then(response => {
-      if(response.status === 1) {
+      if(response.status === 1 && response.data !== null) {
         let obj = {
           activePage: e,
           items: response.data.totalPages,
@@ -606,7 +606,7 @@ class Selector extends React.Component {
     const _this = this
     let url = `${_this.state.prefixUrl}/user/staff/search?pageSize=40&pageNo=${e}&keyword=`
     requestGet(url).then(response => {
-      if(response.status === 1) {
+      if(response.status === 1 && response.data !== null) {
         let obj = {
           activePage: e,
           items: response.data.totalPages,

@@ -46,7 +46,7 @@ return (
     show={_this.state.show}
     onConfirm={_this.onConfirm}
     onClose={_this.onCancel}
-    mode={'daily'}
+    mode={'dev'}
     // selectedUser={selectedUser}
     // selectedOther={selectData}
   />
