@@ -47,8 +47,8 @@ return (
     onConfirm={_this.onConfirm}
     onClose={_this.onCancel}
     mode={'dev'}
-    // selectedUser={selectedUser}
-    // selectedOther={selectData}
+    selectedUser={selectedUser}
+    selectedOther={selectData}
   />
   <Button onClick={_this.show} colors={'primary'}>显示</Button>
   <Button onClick={_this.close}>关闭</Button>

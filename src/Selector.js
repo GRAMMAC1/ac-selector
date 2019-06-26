@@ -6,6 +6,7 @@ import Table from 'bee-table';
 import multiSelect from 'tinper-bee/lib/multiSelect'
 import { selectedUserCol,roleMultiCol,orgCol,multiColumns } from './colmuns'
 import { requestGet } from './request'
+import { resetChecked,setChecked } from './utils'
 
 let MultiSelectTable = multiSelect(Table, Checkbox)
 
@@ -61,7 +62,8 @@ class Selector extends React.Component {
         activePage: 1, // 当前第几页
         items: 1, // 总页数
         total: 40, // 总数
-      }
+      },
+      orgSelectedKeys: []
     }
   }
 
@@ -115,32 +117,16 @@ class Selector extends React.Component {
     const url = `${this.state.prefixUrl}/user/staff/search?pageSize=40&pageNo=1&keyword=`
     requestGet(url).then(response => {
       if(response.status === 1 && response.data !== null) {
-        // let data
-        // if(!response.data) {
-        //   data = []
-        // } else {
-        //   data = response.data.values
-        // }
         const { selectedUser } = this.props
-        let _newList = response.data.values.map(item => {
-          item.key = item.userid
-          item._checked = false
-          return item
-        })
-        for(let i = 0; i < _newList.length; i ++) {
-          for(let j = 0; j < selectedUser.length; j ++) {
-            if(_newList[i].userid === selectedUser[j].id) {
-              _newList[i]._checked = true
-            }
-          }
-        }
+        let _newList = resetChecked(response.data.values, '1')
+        let res = setChecked(_newList, selectedUser, 'userid')
         let obj = {
           activePage: response.data.currentPage,
           items: response.data.totalPages,
           total: response.data.pageSize
         }
         this.setState({
-          multiShowList: _newList,
+          multiShowList: res,
           staffPage: obj
         })
       }
@@ -291,6 +277,13 @@ class Selector extends React.Component {
         selectedOtherList: [...selectedOtherList],
         selectedOtherCount: selectedOtherList.length
       })
+    } else {
+      let { selectedOtherList } = this.state
+      let res = [...selectedOtherList]
+      res.splice(this.delIndex, 1)
+      this.setState({
+        selectedOtherList: [...res]
+      })
     }
   }
   onRowHover = (index) => {
@@ -300,19 +293,9 @@ class Selector extends React.Component {
   getUserList = (data) => {
     let { defaultLabel,multiShowList } = this.state
     let _tempList = []
-    // 清空已选人
-    multiShowList = multiShowList.map(item => {
-      item._checked = false
-      return item
-    })
-    for(let i = 0; i < multiShowList.length; i ++) {
-      for(let j = 0; j < data.length; j ++) {
-        if(multiShowList[i].userid === data[j].userid) {
-          multiShowList[i]._checked = true
-        }
-      }
-    }
-    multiShowList.forEach(item => {
+    let res = resetChecked(multiShowList, 'userid')
+    res = setChecked(multiShowList, data, 'userid')
+    res.forEach(item => {
       if(item._checked) {
         let _item = {
           key: item.userid,
@@ -321,6 +304,7 @@ class Selector extends React.Component {
           userid: item.userid,
           username: item.username,
           email: item.email,
+          typeCode: 0,
           mobile: item.mobile,
           orgName: item.orgName ? item.orgName : '未知部门'
         }
@@ -335,26 +319,16 @@ class Selector extends React.Component {
   }
   // 获取角色列表
   getRoleList = (data) => {
-    let { roleShowList, defaultLabel } = this.state
+    let { roleShowList,defaultLabel,selectedOtherList } = this.state
     let _checkedList = []
-    roleShowList = roleShowList.map(item => {
-      item._checked = false
-      return item
-    })
-    for(let i = 0; i < roleShowList.length; i ++) {
-      for(let j = 0; j < data.length; j ++) {
-        if(roleShowList[i].roleId === data[j].roleId) {
-          roleShowList[i]._checked = true
-        }
-      }
-    }
-    // 将_checked为true的先保存一份
-    roleShowList.forEach(item => {
+    roleShowList = resetChecked(roleShowList, 'roleId')
+    let res = setChecked(roleShowList, data, 'roleId')
+    res.forEach(item => {
       if(item._checked) {
         let _item = {
           key: item.roleId,
-          number: item.roleId,
           type: defaultLabel,
+          typeCode: 1,
           reciving: item.roleName,
           roleName: item.roleName,
           roleCode: item.roleCode,
@@ -362,17 +336,21 @@ class Selector extends React.Component {
         }
         _checkedList.push(_item)
     }})
+    let newOtherList = selectedOtherList.concat(_checkedList)
+    newOtherList = this.uniqueByAttr(newOtherList, 'roleId')
     this.setState({
-      selectedOtherList: [..._checkedList],
+      selectedOtherList: [...newOtherList],
       roleShowList,
       selectedOtherCount: _checkedList.length
     })
   }
-  // 角色->数组根据roleId属性去重
-  uniqueByRoleId = (arr) => {
+  // 数组根据属性去重
+  uniqueByAttr = (arr, type) => {
     const res = new Map()
     return arr.filter(item => {
-      return !res.has(item.roleId) && res.set(item.roleId, 1)
+      if(item[type] !== 'undefined') {
+        return !res.has(item[type]) && res.set(item[type], 1)
+      }
     })
   }
   // 清空选择人
@@ -415,7 +393,8 @@ class Selector extends React.Component {
       selectedOtherCount: 0,
       isLoading: true,
       staffInputValue: '',
-      roleInputValue: ''
+      roleInputValue: '',
+      orgSelectedKeys: []
     })
   }
   // 关闭模态框
@@ -434,6 +413,7 @@ class Selector extends React.Component {
       userList = selectedUserData.map(item => {
         let _data = {
           id: item.userid,
+          userid: item.userid,
           name: item.username,
           phone: item.mobile,
           email: item.email,
@@ -445,27 +425,26 @@ class Selector extends React.Component {
       })
     }
     if(selectedOtherList.length) {
-      otherList = selectedOtherList.map(item => {
-        let typeCode = ''
-        switch (item.type) {
-          case '角色':
-            typeCode = 1
-            break;
-          case '组织':
-            typeCode = 2
-            break
-          case '规则':
-            typeCode = 3
-            break;
+      otherList = selectedOtherList.map(t => {
+        switch (t.typeCode) {
+          case 1:
+            let roleData = {
+              type: t.type,
+              roleName: t.roleName,
+              roleId: t.roleId,
+              roleCode: t.roleCode,
+              typeCode: t.typeCode
+            }
+            return roleData
+          case 2:
+            let orgData = {
+              type: t.type,
+              typeCode: t.typeCode,
+              orgName: t.reciving,
+              orgId: t.checkedKey
+            }
+            return orgData
         }
-        let _data = {
-          type: item.type,
-          roleName: item.roleName,
-          roleId: item.roleId,
-          roleCode: item.roleCode,
-          typeCode
-        }
-        return _data
       })
     }
     this.reset()
@@ -486,12 +465,6 @@ class Selector extends React.Component {
         requestGet(url).then(response => {
           if(response.status === 1 && response.data !== null) {
             const { selectedOther } = this.props
-            let data
-            if(!response.data) {
-              data = []
-            } else {
-              data = response.data.values
-            }
             let _page = {
               activePage: response.data.currentPage,
               items: response.data.totalPages,
@@ -500,20 +473,10 @@ class Selector extends React.Component {
             this.setState({
               rolePage: _page
             })
-            let _newList = data.map(item => {
-              item.key = item.roleId
-              item._checked = false
-              return item
-            })
-            for(let i = 0; i < _newList.length; i ++ ) {
-              for(let j = 0; j < selectedOther.length; j ++) {
-                if(_newList[i].roleId === selectedOther[j].roleId) {
-                  _newList[i]._checked = true
-                }
-              }
-            }
+            let _newList = resetChecked(response.data.values, 'roleId')
+            let res = setChecked(_newList, selectedOther, 'roleId')
             this.setState({
-              roleShowList: _newList
+              roleShowList: res
             })
           }
           this.setState({
@@ -535,15 +498,31 @@ class Selector extends React.Component {
         isLoading: false
       })
     } else if(activeKey === '3') {
-      const url = `${_this.state.prefixUrl}/user/org/user?pageSize=40&pageNo=1&orgIds=`
+      let { selectedOtherList } = this.state
+      const url = `${_this.state.prefixUrl}/user/org/list?pageSize=40&pageNo=1&orgIds=`
       this.setState({
-        defaultLabel: '规则'
+        defaultLabel: '组织'
       })
       requestGet(url).then(response => {
         if(response.status === 1) {
           this.setState({
             orgTreeList: response.data
           })
+          if(selectedOtherList.length) {
+            let checkedKeys = []
+            checkedKeys = selectedOtherList.filter(t => {
+              if(t.typeCode === 2) {
+                return t.checkedKey
+              }
+            })
+            this.setState({
+              orgSelectedKeys: [...checkedKeys]
+            })
+          } else {
+            this.setState({
+              orgSelectedKeys: []
+            })
+          }
         }
         this.setState({
           isLoading: false
@@ -553,50 +532,61 @@ class Selector extends React.Component {
   }
   // tree select
   treeOnSelect = (info) => {
-    // const { remoteOrgUrl } = this.props
-    // requestGet(remoteOrgUrl).then(response => {
-    //   if(response.status === 1) {
-    //     let _newList = response.data.map(item => {
-    //       return {
-    //         key: item.userid,
-    //         orgName: item.username,
-    //         orgMail: item.email,
-    //         orgPhone: item.mobile
-    //       }
-    //     })
-    //     this.setState({
-    //       orgShowList: _newList
-    //     })
-    //   }
-    // }).catch(error => {
-    //   console.error(error)
-    // })
+    let url = `${this.state.prefixUrl}//user/org/user?pageSize=40&pageNo=1&orgIds=['${info}']`
+    requestGet(url).then(response => {
+      if(response.status === 1) {
+        let _newList = resetChecked(response.data, 'userid')
+        this.setState({
+          orgShowList: _newList
+        })
+      }
+    }).catch(error => { throw new Error(error) })
   }
   // tree check
-  treeOnCheck = (info) => {
+  treeOnCheck = (info, e) => {
+    const { defaultLabel } = this.state
     let { selectedOtherList } = this.state
-    console.log(info)
+    let checkedNodes = [...e.checkedNodes]
+    selectedOtherList.forEach((t, i) => {
+      if(t.typeCode === 2) {
+        selectedOtherList.splice(i, 1)
+      }
+    })
+    let tempRes = checkedNodes.map((t, i) => {
+      let item = {
+        key: info[i],
+        type: defaultLabel,
+        typeCode: 2,
+        reciving: t.props.title,
+        checkedKey: info[i]
+      }
+      return item
+    })
+    let res = selectedOtherList.concat(tempRes)
+    // res = this.uniqueByAttr(res, 'checkedKey')
+    this.setState({
+      selectedOtherList: [...res],
+      selectedOtherCount: res.length,
+      orgSelectedKeys: [...info]
+    })
   }
   // 角色分页
   roleSelect = (e) => {
     const _this = this
     let url = `${_this.state.prefixUrl}/user/role/search?pageSize=40&pageNo=${e}&keyword=`
+    let { selectedOtherList } = this.state
     requestGet(url).then(response => {
       if(response.status === 1 && response.data !== null) {
         let obj = {
           activePage: e,
           items: response.data.totalPages,
           total: response.data.pageSize
-        }, data
-        if(!response.data) {
-          data = []
-        } else {
-          data = response.data.values
-          data.forEach(item => {item.key = item.roleId})
         }
+        let res = resetChecked(response.data.values, 'roleId')
+        res = setChecked(response.data.values, selectedOtherList, 'roleId')
         this.setState({
           rolePage: obj,
-          roleShowList: data
+          roleShowList: res
         })
       }
     }).catch(err => { throw new Error(err) })
@@ -611,16 +601,11 @@ class Selector extends React.Component {
           activePage: e,
           items: response.data.totalPages,
           total: response.data.pageSize
-        }, data
-        if(!response.data) {
-          data = []
-        } else {
-          data = response.data.values
-          data.forEach(item => {item.key = item.userid})
         }
+        let res = resetChecked(response.data.values, 'userid')
         this.setState({
           staffPage: obj,
-          multiShowList: data
+          multiShowList: res
         })
       }
     }).catch(err => { throw new Error(err) })
@@ -734,6 +719,7 @@ class Selector extends React.Component {
                           <Tree
                             showIcon
                             cancelUnSelect={true}
+                            checkedKeys={_this.state.orgSelectedKeys}
                             checkable
                             onSelect={_this.treeOnSelect}
                             onCheck={_this.treeOnCheck}
