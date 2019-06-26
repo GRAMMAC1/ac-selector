@@ -26,6 +26,8 @@ var _colmuns = require('./colmuns');
 
 var _request = require('./request');
 
+var _utils = require('./utils');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
@@ -78,33 +80,17 @@ var Selector = function (_React$Component) {
       var url = _this2.state.prefixUrl + '/user/staff/search?pageSize=40&pageNo=1&keyword=';
       (0, _request.requestGet)(url).then(function (response) {
         if (response.status === 1 && response.data !== null) {
-          // let data
-          // if(!response.data) {
-          //   data = []
-          // } else {
-          //   data = response.data.values
-          // }
           var selectedUser = _this2.props.selectedUser;
 
-          var _newList = response.data.values.map(function (item) {
-            item.key = item.userid;
-            item._checked = false;
-            return item;
-          });
-          for (var i = 0; i < _newList.length; i++) {
-            for (var j = 0; j < selectedUser.length; j++) {
-              if (_newList[i].userid === selectedUser[j].id) {
-                _newList[i]._checked = true;
-              }
-            }
-          }
+          var _newList = (0, _utils.resetChecked)(response.data.values, '1');
+          var res = (0, _utils.setChecked)(_newList, selectedUser, 'userid');
           var obj = {
             activePage: response.data.currentPage,
             items: response.data.totalPages,
             total: response.data.pageSize
           };
           _this2.setState({
-            multiShowList: _newList,
+            multiShowList: res,
             staffPage: obj
           });
         }
@@ -266,6 +252,14 @@ var Selector = function (_React$Component) {
           selectedOtherList: [].concat(_toConsumableArray(selectedOtherList)),
           selectedOtherCount: selectedOtherList.length
         });
+      } else {
+        var _selectedOtherList = _this2.state.selectedOtherList;
+
+        var res = [].concat(_toConsumableArray(_selectedOtherList));
+        res.splice(_this2.delIndex, 1);
+        _this2.setState({
+          selectedOtherList: [].concat(_toConsumableArray(res))
+        });
       }
     };
 
@@ -279,19 +273,9 @@ var Selector = function (_React$Component) {
           multiShowList = _this2$state4.multiShowList;
 
       var _tempList = [];
-      // 清空已选人
-      multiShowList = multiShowList.map(function (item) {
-        item._checked = false;
-        return item;
-      });
-      for (var i = 0; i < multiShowList.length; i++) {
-        for (var j = 0; j < data.length; j++) {
-          if (multiShowList[i].userid === data[j].userid) {
-            multiShowList[i]._checked = true;
-          }
-        }
-      }
-      multiShowList.forEach(function (item) {
+      var res = (0, _utils.resetChecked)(multiShowList, 'userid');
+      res = (0, _utils.setChecked)(multiShowList, data, 'userid');
+      res.forEach(function (item) {
         if (item._checked) {
           var _item = {
             key: item.userid,
@@ -300,6 +284,7 @@ var Selector = function (_React$Component) {
             userid: item.userid,
             username: item.username,
             email: item.email,
+            typeCode: 0,
             mobile: item.mobile,
             orgName: item.orgName ? item.orgName : '未知部门'
           };
@@ -316,27 +301,18 @@ var Selector = function (_React$Component) {
     _this2.getRoleList = function (data) {
       var _this2$state5 = _this2.state,
           roleShowList = _this2$state5.roleShowList,
-          defaultLabel = _this2$state5.defaultLabel;
+          defaultLabel = _this2$state5.defaultLabel,
+          selectedOtherList = _this2$state5.selectedOtherList;
 
       var _checkedList = [];
-      roleShowList = roleShowList.map(function (item) {
-        item._checked = false;
-        return item;
-      });
-      for (var i = 0; i < roleShowList.length; i++) {
-        for (var j = 0; j < data.length; j++) {
-          if (roleShowList[i].roleId === data[j].roleId) {
-            roleShowList[i]._checked = true;
-          }
-        }
-      }
-      // 将_checked为true的先保存一份
-      roleShowList.forEach(function (item) {
+      roleShowList = (0, _utils.resetChecked)(roleShowList, 'roleId');
+      var res = (0, _utils.setChecked)(roleShowList, data, 'roleId');
+      res.forEach(function (item) {
         if (item._checked) {
           var _item = {
             key: item.roleId,
-            number: item.roleId,
             type: defaultLabel,
+            typeCode: 1,
             reciving: item.roleName,
             roleName: item.roleName,
             roleCode: item.roleCode,
@@ -345,17 +321,21 @@ var Selector = function (_React$Component) {
           _checkedList.push(_item);
         }
       });
+      var newOtherList = selectedOtherList.concat(_checkedList);
+      newOtherList = _this2.uniqueByAttr(newOtherList, 'roleId');
       _this2.setState({
-        selectedOtherList: [].concat(_checkedList),
+        selectedOtherList: [].concat(_toConsumableArray(newOtherList)),
         roleShowList: roleShowList,
         selectedOtherCount: _checkedList.length
       });
     };
 
-    _this2.uniqueByRoleId = function (arr) {
+    _this2.uniqueByAttr = function (arr, type) {
       var res = new Map();
       return arr.filter(function (item) {
-        return !res.has(item.roleId) && res.set(item.roleId, 1);
+        if (item[type] !== 'undefined') {
+          return !res.has(item[type]) && res.set(item[type], 1);
+        }
       });
     };
 
@@ -400,7 +380,8 @@ var Selector = function (_React$Component) {
         selectedOtherCount: 0,
         isLoading: true,
         staffInputValue: '',
-        roleInputValue: ''
+        roleInputValue: '',
+        orgSelectedKeys: []
       });
     };
 
@@ -421,6 +402,7 @@ var Selector = function (_React$Component) {
         userList = selectedUserData.map(function (item) {
           var _data = {
             id: item.userid,
+            userid: item.userid,
             name: item.username,
             phone: item.mobile,
             email: item.email,
@@ -432,27 +414,26 @@ var Selector = function (_React$Component) {
         });
       }
       if (selectedOtherList.length) {
-        otherList = selectedOtherList.map(function (item) {
-          var typeCode = '';
-          switch (item.type) {
-            case '角色':
-              typeCode = 1;
-              break;
-            case '组织':
-              typeCode = 2;
-              break;
-            case '规则':
-              typeCode = 3;
-              break;
+        otherList = selectedOtherList.map(function (t) {
+          switch (t.typeCode) {
+            case 1:
+              var roleData = {
+                type: t.type,
+                roleName: t.roleName,
+                roleId: t.roleId,
+                roleCode: t.roleCode,
+                typeCode: t.typeCode
+              };
+              return roleData;
+            case 2:
+              var orgData = {
+                type: t.type,
+                typeCode: t.typeCode,
+                orgName: t.reciving,
+                orgId: t.checkedKey
+              };
+              return orgData;
           }
-          var _data = {
-            type: item.type,
-            roleName: item.roleName,
-            roleId: item.roleId,
-            roleCode: item.roleCode,
-            typeCode: typeCode
-          };
-          return _data;
         });
       }
       _this2.reset();
@@ -475,12 +456,6 @@ var Selector = function (_React$Component) {
             if (response.status === 1 && response.data !== null) {
               var selectedOther = _this2.props.selectedOther;
 
-              var data = void 0;
-              if (!response.data) {
-                data = [];
-              } else {
-                data = response.data.values;
-              }
               var _page = {
                 activePage: response.data.currentPage,
                 items: response.data.totalPages,
@@ -489,20 +464,10 @@ var Selector = function (_React$Component) {
               _this2.setState({
                 rolePage: _page
               });
-              var _newList = data.map(function (item) {
-                item.key = item.roleId;
-                item._checked = false;
-                return item;
-              });
-              for (var i = 0; i < _newList.length; i++) {
-                for (var j = 0; j < selectedOther.length; j++) {
-                  if (_newList[i].roleId === selectedOther[j].roleId) {
-                    _newList[i]._checked = true;
-                  }
-                }
-              }
+              var _newList = (0, _utils.resetChecked)(response.data.values, 'roleId');
+              var res = (0, _utils.setChecked)(_newList, selectedOther, 'roleId');
               _this2.setState({
-                roleShowList: _newList
+                roleShowList: res
               });
             }
             _this2.setState({
@@ -524,15 +489,32 @@ var Selector = function (_React$Component) {
           isLoading: false
         });
       } else if (activeKey === '3') {
-        var _url = _this.state.prefixUrl + '/user/org/user?pageSize=40&pageNo=1&orgIds=';
+        var selectedOtherList = _this2.state.selectedOtherList;
+
+        var _url = _this.state.prefixUrl + '/user/org/list?pageSize=40&pageNo=1&orgIds=';
         _this2.setState({
-          defaultLabel: '规则'
+          defaultLabel: '组织'
         });
         (0, _request.requestGet)(_url).then(function (response) {
           if (response.status === 1) {
             _this2.setState({
               orgTreeList: response.data
             });
+            if (selectedOtherList.length) {
+              var checkedKeys = [];
+              checkedKeys = selectedOtherList.filter(function (t) {
+                if (t.typeCode === 2) {
+                  return t.checkedKey;
+                }
+              });
+              _this2.setState({
+                orgSelectedKeys: [].concat(_toConsumableArray(checkedKeys))
+              });
+            } else {
+              _this2.setState({
+                orgSelectedKeys: []
+              });
+            }
           }
           _this2.setState({
             isLoading: false
@@ -543,57 +525,66 @@ var Selector = function (_React$Component) {
       }
     };
 
-    _this2.treeOnSelect = function (info) {}
-    // const { remoteOrgUrl } = this.props
-    // requestGet(remoteOrgUrl).then(response => {
-    //   if(response.status === 1) {
-    //     let _newList = response.data.map(item => {
-    //       return {
-    //         key: item.userid,
-    //         orgName: item.username,
-    //         orgMail: item.email,
-    //         orgPhone: item.mobile
-    //       }
-    //     })
-    //     this.setState({
-    //       orgShowList: _newList
-    //     })
-    //   }
-    // }).catch(error => {
-    //   console.error(error)
-    // })
+    _this2.treeOnSelect = function (info) {
+      var url = _this2.state.prefixUrl + '//user/org/user?pageSize=40&pageNo=1&orgIds=[\'' + info + '\']';
+      (0, _request.requestGet)(url).then(function (response) {
+        if (response.status === 1) {
+          var _newList = (0, _utils.resetChecked)(response.data, 'userid');
+          _this2.setState({
+            orgShowList: _newList
+          });
+        }
+      })["catch"](function (error) {
+        throw new Error(error);
+      });
+    };
 
-    // tree check
-    ;
-
-    _this2.treeOnCheck = function (info) {
+    _this2.treeOnCheck = function (info, e) {
+      var defaultLabel = _this2.state.defaultLabel;
       var selectedOtherList = _this2.state.selectedOtherList;
 
-      console.log(info);
+      var checkedNodes = [].concat(_toConsumableArray(e.checkedNodes));
+      selectedOtherList.forEach(function (t, i) {
+        if (t.typeCode === 2) {
+          selectedOtherList.splice(i, 1);
+        }
+      });
+      var tempRes = checkedNodes.map(function (t, i) {
+        var item = {
+          key: info[i],
+          type: defaultLabel,
+          typeCode: 2,
+          reciving: t.props.title,
+          checkedKey: info[i]
+        };
+        return item;
+      });
+      var res = selectedOtherList.concat(tempRes);
+      // res = this.uniqueByAttr(res, 'checkedKey')
+      _this2.setState({
+        selectedOtherList: [].concat(_toConsumableArray(res)),
+        selectedOtherCount: res.length,
+        orgSelectedKeys: [].concat(_toConsumableArray(info))
+      });
     };
 
     _this2.roleSelect = function (e) {
       var _this = _this2;
       var url = _this.state.prefixUrl + '/user/role/search?pageSize=40&pageNo=' + e + '&keyword=';
+      var selectedOtherList = _this2.state.selectedOtherList;
+
       (0, _request.requestGet)(url).then(function (response) {
         if (response.status === 1 && response.data !== null) {
           var obj = {
             activePage: e,
             items: response.data.totalPages,
             total: response.data.pageSize
-          },
-              data = void 0;
-          if (!response.data) {
-            data = [];
-          } else {
-            data = response.data.values;
-            data.forEach(function (item) {
-              item.key = item.roleId;
-            });
-          }
+          };
+          var res = (0, _utils.resetChecked)(response.data.values, 'roleId');
+          res = (0, _utils.setChecked)(response.data.values, selectedOtherList, 'roleId');
           _this2.setState({
             rolePage: obj,
-            roleShowList: data
+            roleShowList: res
           });
         }
       })["catch"](function (err) {
@@ -610,19 +601,11 @@ var Selector = function (_React$Component) {
             activePage: e,
             items: response.data.totalPages,
             total: response.data.pageSize
-          },
-              data = void 0;
-          if (!response.data) {
-            data = [];
-          } else {
-            data = response.data.values;
-            data.forEach(function (item) {
-              item.key = item.userid;
-            });
-          }
+          };
+          var res = (0, _utils.resetChecked)(response.data.values, 'userid');
           _this2.setState({
             staffPage: obj,
-            multiShowList: data
+            multiShowList: res
           });
         }
       })["catch"](function (err) {
@@ -656,7 +639,8 @@ var Selector = function (_React$Component) {
         activePage: 1, // 当前第几页
         items: 1, // 总页数
         total: 40 // 总数
-      }
+      },
+      orgSelectedKeys: []
     };
     return _this2;
   }
@@ -719,7 +703,7 @@ var Selector = function (_React$Component) {
 
   // 获取角色列表
 
-  // 角色->数组根据roleId属性去重
+  // 数组根据属性去重
 
   // 清空选择人
 
@@ -734,6 +718,8 @@ var Selector = function (_React$Component) {
   //
 
   // tree select
+
+  // tree check
 
   // 角色分页
 
@@ -882,6 +868,7 @@ var Selector = function (_React$Component) {
                       {
                         showIcon: true,
                         cancelUnSelect: true,
+                        checkedKeys: _this.state.orgSelectedKeys,
                         checkable: true,
                         onSelect: _this.treeOnSelect,
                         onCheck: _this.treeOnCheck
