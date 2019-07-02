@@ -77,13 +77,21 @@ var Selector = function (_React$Component) {
     var _this2 = _possibleConstructorReturn(this, _React$Component.call(this));
 
     _this2.didFinish = function () {
+      var _this2$props = _this2.props,
+          selectedUser = _this2$props.selectedUser,
+          selectedOther = _this2$props.selectedOther;
+
+      _this2.setState({
+        selectedUserData: (0, _utils.setUserReciving)(selectedUser),
+        selectedOtherList: (0, _utils.setOtherReciving)(selectedOther)
+      });
       var url = _this2.state.prefixUrl + '/user/staff/search?pageSize=40&pageNo=1&keyword=';
       (0, _request.requestGet)(url).then(function (response) {
         if (response.status === 1 && response.data !== null) {
-          var selectedUser = _this2.props.selectedUser;
+          var _selectedUser = _this2.props.selectedUser;
 
-          var _newList = (0, _utils.resetChecked)(response.data.values, '1');
-          var res = (0, _utils.setChecked)(_newList, selectedUser, 'userid');
+          var _newList = (0, _utils.resetChecked)(response.data.values, 'userid');
+          var res = (0, _utils.setChecked)(_newList, _selectedUser, 'userid');
           var obj = {
             activePage: response.data.currentPage,
             items: response.data.totalPages,
@@ -94,9 +102,6 @@ var Selector = function (_React$Component) {
             staffPage: obj
           });
         }
-        _this2.setState({
-          isLoading: false
-        });
       })["catch"](function (error) {
         throw new Error(error);
       });
@@ -150,7 +155,7 @@ var Selector = function (_React$Component) {
             }
           }
         })["catch"](function (error) {
-          console.error(error);
+          throw new Error(error);
         });
       }
     };
@@ -378,7 +383,6 @@ var Selector = function (_React$Component) {
         selectedOtherList: [],
         selectedCount: 0,
         selectedOtherCount: 0,
-        isLoading: true,
         staffInputValue: '',
         roleInputValue: '',
         orgSelectedKeys: []
@@ -396,46 +400,8 @@ var Selector = function (_React$Component) {
           selectedUserData = _this2$state6.selectedUserData,
           selectedOtherList = _this2$state6.selectedOtherList;
 
-      var userList = [],
-          otherList = [];
-      if (selectedUserData.length) {
-        userList = selectedUserData.map(function (item) {
-          var _data = {
-            id: item.userid,
-            userid: item.userid,
-            name: item.username,
-            phone: item.mobile,
-            email: item.email,
-            dept: item.orgName,
-            type: item.type,
-            typeCode: 0
-          };
-          return _data;
-        });
-      }
-      if (selectedOtherList.length) {
-        otherList = selectedOtherList.map(function (t) {
-          switch (t.typeCode) {
-            case 1:
-              var roleData = {
-                type: t.type,
-                roleName: t.roleName,
-                roleId: t.roleId,
-                roleCode: t.roleCode,
-                typeCode: t.typeCode
-              };
-              return roleData;
-            case 2:
-              var orgData = {
-                type: t.type,
-                typeCode: t.typeCode,
-                orgName: t.reciving,
-                orgId: t.checkedKey
-              };
-              return orgData;
-          }
-        });
-      }
+      var userList = (0, _utils.mapUserList)(selectedUserData);
+      var otherList = (0, _utils.mapOtherList)(selectedOtherList);
       _this2.reset();
       console.log(userList, otherList);
       _this2.props.onConfirm(userList, otherList);
@@ -445,7 +411,7 @@ var Selector = function (_React$Component) {
       var _this = _this2;
       _this2.setState({
         activeKey: activeKey,
-        isLoading: true
+        defaultLabel: (0, _utils.setLabel)(activeKey)
       });
       if (activeKey === '2') {
         var url = _this.state.prefixUrl + '/user/role/search?pageSize=40&pageNo=1&keyword=';
@@ -470,31 +436,14 @@ var Selector = function (_React$Component) {
                 roleShowList: res
               });
             }
-            _this2.setState({
-              defaultLabel: '角色',
-              isLoading: false
-            });
           })["catch"](function (error) {
             throw new Error(error);
           });
-        } else {
-          _this2.setState({
-            defaultLabel: '角色',
-            isLoading: false
-          });
         }
-      } else if (activeKey === '1') {
-        _this2.setState({
-          defaultLabel: '用户',
-          isLoading: false
-        });
       } else if (activeKey === '3') {
         var selectedOtherList = _this2.state.selectedOtherList;
 
         var _url = _this.state.prefixUrl + '/user/org/list?pageSize=40&pageNo=1&orgIds=';
-        _this2.setState({
-          defaultLabel: '组织'
-        });
         (0, _request.requestGet)(_url).then(function (response) {
           if (response.status === 1) {
             _this2.setState({
@@ -516,11 +465,19 @@ var Selector = function (_React$Component) {
               });
             }
           }
-          _this2.setState({
-            isLoading: false
-          });
         })["catch"](function (error) {
           throw new Error(error);
+        });
+      } else if (activeKey === '4') {
+        var _url2 = _this.state.prefixUrl + '/user/rules?documentNo=st_purchaseorder';
+        (0, _request.requestGet)(_url2).then(function (response) {
+          if (response.status === 1) {
+            _this2.setState({
+              ruleMenuList: (0, _utils.transferToMenu)(response.data)
+            });
+          }
+        })["catch"](function (err) {
+          throw new Error(err);
         });
       }
     };
@@ -550,17 +507,16 @@ var Selector = function (_React$Component) {
         }
       });
       var tempRes = checkedNodes.map(function (t, i) {
-        var item = {
+        return {
           key: info[i],
           type: defaultLabel,
           typeCode: 2,
           reciving: t.props.title,
-          checkedKey: info[i]
+          orgName: t.props.title,
+          orgId: info[i]
         };
-        return item;
       });
       var res = selectedOtherList.concat(tempRes);
-      // res = this.uniqueByAttr(res, 'checkedKey')
       _this2.setState({
         selectedOtherList: [].concat(_toConsumableArray(res)),
         selectedOtherCount: res.length,
@@ -613,9 +569,29 @@ var Selector = function (_React$Component) {
       });
     };
 
+    _this2.menuClick = function (_ref) {
+      var key = _ref.key;
+      var selectedOtherList = _this2.state.selectedOtherList;
+
+      var ruleName = key.substring(key.indexOf('&') + 1);
+      var ruleCode = key.substring(1, key.lastIndexOf('-'));
+      var menuItem = {
+        key: key,
+        type: _this2.state.defaultLabel,
+        typeCode: 3,
+        ruleCode: ruleCode,
+        ruleName: ruleName,
+        reciving: ruleName
+      };
+      var res = [].concat(_toConsumableArray(selectedOtherList.concat(menuItem)));
+      _this2.setState({
+        selectedOtherList: res,
+        selectedOtherCount: res.length
+      });
+    };
+
     _this2.state = {
       show: false,
-      isLoading: true,
       filterIndex: '', // 根据首字母筛选用户
       selectedCount: 0, // 当前已选择的总数量
       selectedOtherCount: 0, //当前已选择的非用户数量
@@ -624,8 +600,9 @@ var Selector = function (_React$Component) {
       defaultLabel: '用户', // 默认显示的标签页
       multiShowList: [], // 用户列表
       roleShowList: [], // 角色列表
-      orgShowList: [], // 规则列表
-      orgTreeList: [], // 规则🌲
+      orgShowList: [], // 组织列表
+      orgTreeList: [], // 组织🌲
+      ruleMenuList: [], // 规则
       activeKey: '1', // 当前激活的tab
       prefixUrl: '',
       staffInputValue: '',
@@ -728,9 +705,6 @@ var Selector = function (_React$Component) {
 
   Selector.prototype.render = function render() {
     var _this = this;
-    var multiSelect = {
-      type: 'checkbox'
-    };
     var loopData = function loopData(data) {
       return data.map(function (item) {
         if (item.childs) {
@@ -799,7 +773,7 @@ var Selector = function (_React$Component) {
                 _react2["default"].createElement(MultiSelectTable, {
                   scroll: { y: 360 },
                   columns: _colmuns.multiColumns,
-                  multiSelect: multiSelect,
+                  multiSelect: _utils.multiSelectType,
                   getSelectedDataFunc: _this.getUserList,
                   data: _this.state.multiShowList
                 }),
@@ -830,7 +804,7 @@ var Selector = function (_React$Component) {
                   id: 'role',
                   scroll: { y: 360 },
                   columns: _colmuns.roleMultiCol,
-                  multiSelect: multiSelect,
+                  multiSelect: _utils.multiSelectType,
                   getSelectedDataFunc: _this.getRoleList,
                   data: _this.state.roleShowList
                 }),
@@ -886,15 +860,30 @@ var Selector = function (_React$Component) {
                     })
                   )
                 )
+              ),
+              _react2["default"].createElement(
+                TabPane,
+                { tab: '规则', key: 4 },
+                _react2["default"].createElement(
+                  'div',
+                  { className: 'searchWrapper' },
+                  _react2["default"].createElement('input', { placeholder: '请输入您要查找的规则', className: 'search' }),
+                  _react2["default"].createElement(_tinperBee.Icon, { className: 'searchIcon', type: 'uf-search' })
+                ),
+                _react2["default"].createElement(
+                  'div',
+                  { className: 'menuWrapper' },
+                  _react2["default"].createElement(
+                    _tinperBee.Menu,
+                    {
+                      mode: 'inline',
+                      onClick: _this.menuClick
+                    },
+                    _this.state.ruleMenuList
+                  )
+                )
               )
-            ),
-            _react2["default"].createElement(_tinperBee.Loading, {
-              show: _this.state.isLoading,
-              container: function container() {
-                return document.getElementById('user');
-              },
-              size: 'sm'
-            })
+            )
           ),
           _react2["default"].createElement(
             'div',
