@@ -503,9 +503,9 @@ var Selector = function (_React$Component) {
       var selectedOtherList = _this2.state.selectedOtherList;
 
       var checkedNodes = [].concat(_toConsumableArray(e.checkedNodes));
-      selectedOtherList.forEach(function (t, i) {
-        if (t.typeCode === 2) {
-          selectedOtherList.splice(i, 1);
+      var newList = selectedOtherList.filter(function (t) {
+        if (t.typeCode !== 2) {
+          return t;
         }
       });
       var tempRes = checkedNodes.map(function (t, i) {
@@ -518,7 +518,7 @@ var Selector = function (_React$Component) {
           orgId: info[i]
         };
       });
-      var res = selectedOtherList.concat(tempRes);
+      var res = newList.concat(tempRes);
       _this2.setState({
         selectedOtherList: [].concat(_toConsumableArray(res)),
         selectedOtherCount: res.length,

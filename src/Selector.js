@@ -512,9 +512,9 @@ class Selector extends React.Component {
     const { defaultLabel } = this.state
     let { selectedOtherList } = this.state
     let checkedNodes = [...e.checkedNodes]
-    selectedOtherList.forEach((t, i) => {
-      if(t.typeCode === 2) {
-        selectedOtherList.splice(i, 1)
+    let newList = selectedOtherList.filter(t => {
+      if(t.typeCode !== 2) {
+        return t
       }
     })
     let tempRes = checkedNodes.map((t, i) => ({
@@ -525,7 +525,7 @@ class Selector extends React.Component {
       orgName: t.props.title,
       orgId: info[i]
     }))
-    let res = selectedOtherList.concat(tempRes)
+    let res = newList.concat(tempRes)
     this.setState({
       selectedOtherList: [...res],
       selectedOtherCount: res.length,
