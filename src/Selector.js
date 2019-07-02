@@ -42,7 +42,7 @@ const defaultProps = {
   selectedUser: [],
   selectedOther: [],
   mode: 'daily',
-  documentNo: 'st_purchaseorder'
+  documentNo: ''
 }
 
 class Selector extends React.Component {

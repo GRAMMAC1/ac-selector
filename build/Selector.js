@@ -67,7 +67,7 @@ var defaultProps = {
   selectedUser: [],
   selectedOther: [],
   mode: 'daily',
-  documentNo: 'st_purchaseorder'
+  documentNo: ''
 };
 
 var Selector = function (_React$Component) {

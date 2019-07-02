@@ -1,3 +1,4 @@
+import React from 'react'
 import { Menu } from 'tinper-bee'
 
 const SubMenu = Menu.SubMenu

@@ -11,7 +11,13 @@ exports.resetChecked = resetChecked;
 exports.setChecked = setChecked;
 exports.setLabel = setLabel;
 
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
 var _tinperBee = require('tinper-bee');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -109,9 +115,9 @@ var transferToMenu = exports.transferToMenu = function transferToMenu(treeData) 
     if ('attrs' in value) {
       var k = value.code + '-menu-' + key + '&' + value.name;
       var v = value.displayName || value.name;
-      subMenu.push(React.createElement(
+      subMenu.push(_react2["default"].createElement(
         SubMenu,
-        { key: k, title: React.createElement(
+        { key: k, title: _react2["default"].createElement(
             'span',
             null,
             v
@@ -121,7 +127,7 @@ var transferToMenu = exports.transferToMenu = function transferToMenu(treeData) 
     } else {
       var k = value.code + '-submenu-' + key + '&' + value.name;
       var v = value.displayName || value.name;
-      subMenu.push(React.createElement(
+      subMenu.push(_react2["default"].createElement(
         _tinperBee.Menu.Item,
         { key: k },
         v
