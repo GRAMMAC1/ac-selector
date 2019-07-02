@@ -11,6 +11,7 @@
 - react >= 15.3.0
 - react-dom >= 15.3.0
 - prop-types >= 15.6.0
+- tinper-bee
 
 ## 使用方法
 
@@ -29,36 +30,56 @@
 |`show`|是否显示模态框|`boolean`|是|`false`|无|
 |`onConfirm`|确认回调函数|`func`|是|`() => {}`|选中的用户|
 |`onClose`|取消回调函数|`func`|是|`() => {}`|无|
-|`remoteUserUrl`|获取用户列表`url`|`string`|是|空|无|
-|`remoteRoleUrl`|获取角色列表`url`|`string`|是|空|无|
-|`remoteOrgUrl`|获取组织列表`url`|`string`|否|空|无|
 |`selectedUser`|已选的用户列表|`array`|否|`[]`|无|
 |`selectedOther`|`已选的其他列表`|`array`|否|`[]`|无|
+|`mode`|环境区分|`string`|是|`daily`|
 
 ### `onConfirm`回调函数参数说明
-* 参数一(userList)数据结构
+* 参数一(userList)数据结构 选择的用户
 ```js
   {
-    id:'用户id',
-    name:'用户名',
-    dept:'用户部门',
+    type:'用户',
+    typeCode: 0,
+    userid:'用户id',
+    username:'用户名',
+    mobile:'手机号',
     email:'用户邮箱',
-    phone:'手机号',
-    type:'所属类型(用户、角色、组织或规则)',
-    typeCode: '角色类型编码'
+    orgName:'用户部门',
   }
 ```
 * 参数二(otherList)数据结构
+
+
 ```js
+  角色
   {
+    type: '角色',
+    typeCode: 1,
     roleId: '角色id',
     roleCode: '角色code',
-    roleName: '角色名称',
-    type: '所属类型(用户、角色、组织或规则)',
-    typeCode: '角色类型编码'
+    roleName: '角色名称'
+  }
+```
+
+```js
+  组织
+  {
+    type: '组织',
+    typeCode: 2,
+    orgId: '组织ID',
+    orgName: '组织名称'
+  }
+```
+
+```js
+  规则
+  {
+    type: '规则',
+    typeCode: 3,
+    ruleCode: '规则code',
+    ruleName: '规则名称'
   }
 ```
 
 ## TODO
-* 组织
-* 规则
+* 用户自定义展示标签

@@ -1,12 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Modal,Button,Icon,Checkbox,Loading,Tabs,Tree,Pagination } from 'tinper-bee'
+import { Modal,Button,Icon,Checkbox,Tabs,Tree,Pagination,Menu } from 'tinper-bee'
 import Table from 'bee-table';
 import multiSelect from 'tinper-bee/lib/multiSelect'
 import { selectedUserCol,roleMultiCol,orgCol,multiColumns } from './colmuns'
 import { requestGet } from './request'
-import { resetChecked,setChecked } from './utils'
+import { 
+  resetChecked,
+  setChecked,
+  setLabel,
+  multiSelectType,
+  transferToMenu,
+  mapUserList,
+  mapOtherList,
+  setUserReciving,
+  setOtherReciving 
+} from './utils'
 
 let MultiSelectTable = multiSelect(Table, Checkbox)
 
@@ -38,7 +48,6 @@ class Selector extends React.Component {
     super()
     this.state = {
       show: false,
-      isLoading: true,
       filterIndex: '', // 根据首字母筛选用户
       selectedCount: 0, // 当前已选择的总数量
       selectedOtherCount: 0, //当前已选择的非用户数量
@@ -47,8 +56,9 @@ class Selector extends React.Component {
       defaultLabel: '用户', // 默认显示的标签页
       multiShowList: [], // 用户列表
       roleShowList: [], // 角色列表
-      orgShowList: [], // 规则列表
-      orgTreeList: [], // 规则🌲
+      orgShowList: [], // 组织列表
+      orgTreeList: [], // 组织🌲
+      ruleMenuList: [], // 规则
       activeKey: '1', // 当前激活的tab
       prefixUrl: '',
       staffInputValue: '',
@@ -63,7 +73,7 @@ class Selector extends React.Component {
         items: 1, // 总页数
         total: 40, // 总数
       },
-      orgSelectedKeys: []
+      orgSelectedKeys: [],
     }
   }
 
@@ -114,11 +124,16 @@ class Selector extends React.Component {
 
   // 进入modal首先加载用户列表
   didFinish = () => {
+    let { selectedUser,selectedOther } = this.props
+    this.setState({
+      selectedUserData: setUserReciving(selectedUser),
+      selectedOtherList: setOtherReciving(selectedOther)
+    })
     const url = `${this.state.prefixUrl}/user/staff/search?pageSize=40&pageNo=1&keyword=`
     requestGet(url).then(response => {
       if(response.status === 1 && response.data !== null) {
         const { selectedUser } = this.props
-        let _newList = resetChecked(response.data.values, '1')
+        let _newList = resetChecked(response.data.values, 'userid')
         let res = setChecked(_newList, selectedUser, 'userid')
         let obj = {
           activePage: response.data.currentPage,
@@ -130,9 +145,6 @@ class Selector extends React.Component {
           staffPage: obj
         })
       }
-      this.setState({
-        isLoading: false
-      })
     }).catch(error => {
       throw new Error(error)
     })
@@ -185,7 +197,7 @@ class Selector extends React.Component {
           }
         }
       }).catch(error => {
-        console.error(error)
+        throw new Error(error)
       })
     }
   } 
@@ -275,7 +287,7 @@ class Selector extends React.Component {
       selectedOtherList.splice(this.delIndex, 1)
       this.setState({
         selectedOtherList: [...selectedOtherList],
-        selectedOtherCount: selectedOtherList.length
+        selectedOtherCount: selectedOtherList.length,
       })
     } else {
       let { selectedOtherList } = this.state
@@ -391,7 +403,6 @@ class Selector extends React.Component {
       selectedOtherList: [],
       selectedCount: 0,
       selectedOtherCount: 0,
-      isLoading: true,
       staffInputValue: '',
       roleInputValue: '',
       orgSelectedKeys: []
@@ -408,45 +419,8 @@ class Selector extends React.Component {
    */
   confirm = () => {
     let { selectedUserData,selectedOtherList } = this.state
-    let userList = [], otherList = []
-    if(selectedUserData.length) {
-      userList = selectedUserData.map(item => {
-        let _data = {
-          id: item.userid,
-          userid: item.userid,
-          name: item.username,
-          phone: item.mobile,
-          email: item.email,
-          dept: item.orgName,
-          type: item.type,
-          typeCode: 0
-        }
-        return _data
-      })
-    }
-    if(selectedOtherList.length) {
-      otherList = selectedOtherList.map(t => {
-        switch (t.typeCode) {
-          case 1:
-            let roleData = {
-              type: t.type,
-              roleName: t.roleName,
-              roleId: t.roleId,
-              roleCode: t.roleCode,
-              typeCode: t.typeCode
-            }
-            return roleData
-          case 2:
-            let orgData = {
-              type: t.type,
-              typeCode: t.typeCode,
-              orgName: t.reciving,
-              orgId: t.checkedKey
-            }
-            return orgData
-        }
-      })
-    }
+    let userList = mapUserList(selectedUserData)
+    let otherList = mapOtherList(selectedOtherList)
     this.reset()
     console.log(userList, otherList)
     this.props.onConfirm(userList, otherList)
@@ -456,7 +430,7 @@ class Selector extends React.Component {
     const _this = this
     this.setState({
       activeKey,
-      isLoading: true
+      defaultLabel: setLabel(activeKey),
     })
     if(activeKey === '2') {
       const url = `${_this.state.prefixUrl}/user/role/search?pageSize=40&pageNo=1&keyword=`
@@ -479,30 +453,13 @@ class Selector extends React.Component {
               roleShowList: res
             })
           }
-          this.setState({
-            defaultLabel: '角色',
-            isLoading: false
-          })
         }).catch(error => {
         throw new Error(error)
-      })
-    } else {
-        this.setState({
-          defaultLabel: '角色',
-          isLoading: false
         })
       }
-    } else if(activeKey === '1') {
-      this.setState({
-        defaultLabel: '用户',
-        isLoading: false
-      })
-    } else if(activeKey === '3') {
+    }else if(activeKey === '3') {
       let { selectedOtherList } = this.state
       const url = `${_this.state.prefixUrl}/user/org/list?pageSize=40&pageNo=1&orgIds=`
-      this.setState({
-        defaultLabel: '组织'
-      })
       requestGet(url).then(response => {
         if(response.status === 1) {
           this.setState({
@@ -524,10 +481,16 @@ class Selector extends React.Component {
             })
           }
         }
-        this.setState({
-          isLoading: false
-        })
       }).catch(error => { throw new Error(error) })
+    } else if(activeKey === '4') {
+      const url = `${_this.state.prefixUrl}/user/rules?documentNo=st_purchaseorder`
+      requestGet(url).then(response => {
+        if(response.status === 1) {
+          this.setState({
+            ruleMenuList: transferToMenu(response.data)
+          })
+        }
+      }).catch(err => { throw new Error(err) })
     }
   }
   // tree select
@@ -552,18 +515,15 @@ class Selector extends React.Component {
         selectedOtherList.splice(i, 1)
       }
     })
-    let tempRes = checkedNodes.map((t, i) => {
-      let item = {
-        key: info[i],
-        type: defaultLabel,
-        typeCode: 2,
-        reciving: t.props.title,
-        checkedKey: info[i]
-      }
-      return item
-    })
+    let tempRes = checkedNodes.map((t, i) => ({
+      key: info[i],
+      type: defaultLabel,
+      typeCode: 2,
+      reciving: t.props.title,
+      orgName: t.props.title,
+      orgId: info[i]
+    }))
     let res = selectedOtherList.concat(tempRes)
-    // res = this.uniqueByAttr(res, 'checkedKey')
     this.setState({
       selectedOtherList: [...res],
       selectedOtherCount: res.length,
@@ -610,12 +570,27 @@ class Selector extends React.Component {
       }
     }).catch(err => { throw new Error(err) })
   }
+  menuClick = ({ key }) => {
+    let { selectedOtherList } = this.state
+    const ruleName = key.substring(key.indexOf('&') + 1)
+    const ruleCode = key.substring(1, key.lastIndexOf('-'))
+    const menuItem = {
+      key,
+      type: this.state.defaultLabel,
+      typeCode: 3,
+      ruleCode,
+      ruleName,
+      reciving: ruleName
+    }
+    let res = [...selectedOtherList.concat(menuItem)]
+    this.setState({
+      selectedOtherList: res,
+      selectedOtherCount: res.length
+    })
+  } 
 
   render() {
     const _this = this
-    const multiSelect = {
-      type: 'checkbox'
-    }
     const loopData = data => data.map(item => {
       if(item.childs) {
         return (
@@ -663,7 +638,7 @@ class Selector extends React.Component {
                     <MultiSelectTable 
                       scroll={{y: 360}}
                       columns={multiColumns}
-                      multiSelect={multiSelect}
+                      multiSelect={multiSelectType}
                       getSelectedDataFunc={_this.getUserList}
                       data={_this.state.multiShowList}
                     />
@@ -690,7 +665,7 @@ class Selector extends React.Component {
                       id={'role'}
                       scroll={{y: 360}}
                       columns={roleMultiCol}
-                      multiSelect={multiSelect}
+                      multiSelect={multiSelectType}
                       getSelectedDataFunc={_this.getRoleList}
                       data={_this.state.roleShowList}
                     />
@@ -708,41 +683,48 @@ class Selector extends React.Component {
                       onSelect={_this.roleSelect}
                     />
                   </TabPane>
-                  {
-                    <TabPane tab={'组织'} key={3}>
-                      <div className={'searchWrapper'}>
-                        <input placeholder={'请输入您要查找的组织'} className={'search'} />
-                        <Icon onClick={_this.clickSearch} className={'searchIcon'} type='uf-search' />
+                  <TabPane tab={'组织'} key={3}>
+                    <div className={'searchWrapper'}>
+                      <input placeholder={'请输入您要查找的组织'} className={'search'} />
+                      <Icon onClick={_this.clickSearch} className={'searchIcon'} type='uf-search' />
+                    </div>
+                    <div className={'clearfix'}>
+                      <div className={'myTree'}>
+                        <Tree
+                          showIcon
+                          cancelUnSelect={true}
+                          checkedKeys={_this.state.orgSelectedKeys}
+                          checkable
+                          onSelect={_this.treeOnSelect}
+                          onCheck={_this.treeOnCheck}
+                        >
+                          {loopData(_this.state.orgTreeList)}
+                        </Tree>
                       </div>
-                      <div className={'clearfix'}>
-                        <div className={'myTree'}>
-                          <Tree
-                            showIcon
-                            cancelUnSelect={true}
-                            checkedKeys={_this.state.orgSelectedKeys}
-                            checkable
-                            onSelect={_this.treeOnSelect}
-                            onCheck={_this.treeOnCheck}
-                          >
-                            {loopData(_this.state.orgTreeList)}
-                          </Tree>
-                        </div>
-                        <div className={'orgTable'}>
-                          <Table 
-                            scroll={{y: 440}}
-                            columns={orgCol}
-                            data={_this.state.orgShowList}
-                          />
-                        </div>
+                      <div className={'orgTable'}>
+                        <Table 
+                          scroll={{y: 440}}
+                          columns={orgCol}
+                          data={_this.state.orgShowList}
+                        />
                       </div>
-                    </TabPane>
-                  }
+                    </div>
+                  </TabPane>
+                  <TabPane tab={'规则'} key={4}>
+                    <div className={'searchWrapper'}>
+                      <input placeholder={'请输入您要查找的规则'} className={'search'} />
+                      <Icon className={'searchIcon'} type='uf-search' />
+                    </div>
+                    <div className={'menuWrapper'}>
+                      <Menu
+                        mode={'inline'}
+                        onClick={_this.menuClick}
+                      >
+                        {_this.state.ruleMenuList}
+                      </Menu>
+                    </div>
+                  </TabPane>
                 </Tabs>
-                <Loading 
-                  show={_this.state.isLoading}
-                  container={() => document.getElementById('user')}
-                  size={'sm'}
-                />
               </div>
               <div className={'right'}>
                 <div>
