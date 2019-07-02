@@ -32,7 +32,8 @@
 |`onClose`|取消回调函数|`func`|是|`() => {}`|无|
 |`selectedUser`|已选的用户列表|`array`|否|`[]`|无|
 |`selectedOther`|`已选的其他列表`|`array`|否|`[]`|无|
-|`mode`|环境区分|`string`|是|`daily`|
+|`mode`|环境区分|`string`|否|`daily`|
+|`documentNo`|单据编号|`string`|否|`st_purchaseorder`|规则选人查询数据必传参数|
 
 ### `onConfirm`回调函数参数说明
 * 参数一(userList)数据结构 选择的用户

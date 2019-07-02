@@ -56,7 +56,8 @@ var propTypes = {
   onClose: _propTypes2["default"].func.isRequired,
   mode: _propTypes2["default"].string,
   selectedUser: _propTypes2["default"].array,
-  selectedOther: _propTypes2["default"].array
+  selectedOther: _propTypes2["default"].array,
+  documentNo: _propTypes2["default"].string
 };
 
 var defaultProps = {
@@ -65,7 +66,8 @@ var defaultProps = {
   onClose: noop,
   selectedUser: [],
   selectedOther: [],
-  mode: 'daily'
+  mode: 'daily',
+  documentNo: 'st_purchaseorder'
 };
 
 var Selector = function (_React$Component) {
@@ -469,7 +471,7 @@ var Selector = function (_React$Component) {
           throw new Error(error);
         });
       } else if (activeKey === '4') {
-        var _url2 = _this.state.prefixUrl + '/user/rules?documentNo=st_purchaseorder';
+        var _url2 = _this.state.prefixUrl + '/user/rules?documentNo=' + _this2.props.documentNo;
         (0, _request.requestGet)(_url2).then(function (response) {
           if (response.status === 1) {
             _this2.setState({

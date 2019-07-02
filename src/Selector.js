@@ -31,7 +31,8 @@ const propTypes = {
   onClose: PropTypes.func.isRequired,
   mode: PropTypes.string,
   selectedUser: PropTypes.array,
-  selectedOther: PropTypes.array
+  selectedOther: PropTypes.array,
+  documentNo: PropTypes.string
 }
 
 const defaultProps = {
@@ -40,7 +41,8 @@ const defaultProps = {
   onClose: noop,
   selectedUser: [],
   selectedOther: [],
-  mode: 'daily'
+  mode: 'daily',
+  documentNo: 'st_purchaseorder'
 }
 
 class Selector extends React.Component {
@@ -483,7 +485,7 @@ class Selector extends React.Component {
         }
       }).catch(error => { throw new Error(error) })
     } else if(activeKey === '4') {
-      const url = `${_this.state.prefixUrl}/user/rules?documentNo=st_purchaseorder`
+      const url = `${_this.state.prefixUrl}/user/rules?documentNo=${this.props.documentNo}`
       requestGet(url).then(response => {
         if(response.status === 1) {
           this.setState({
