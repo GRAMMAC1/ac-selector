@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.mapOtherList = exports.mapUserList = exports.transferToMenu = exports.multiSelectType = exports.setOtherReciving = exports.setUserReciving = undefined;
+exports.deSelect = exports.mapOtherList = exports.mapUserList = exports.transferToMenu = exports.multiSelectType = exports.setOtherReciving = exports.setUserReciving = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -185,6 +185,24 @@ var mapOtherList = exports.mapOtherList = function mapOtherList() {
         };
       default:
         return [];
+    }
+  });
+  return res;
+};
+
+/**
+ * @description 选人逻辑统一处理,当前类型的人先清除，统一添加
+ * @param data 数据源
+ * @param typeCode 清除类型
+ */
+var deSelect = exports.deSelect = function deSelect() {
+  var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var typeCode = arguments[1];
+
+  var res = [];
+  res = data.filter(function (t) {
+    if (t.typeCode !== typeCode) {
+      return t;
     }
   });
   return res;

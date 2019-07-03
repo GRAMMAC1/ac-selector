@@ -158,3 +158,18 @@ export const mapOtherList = (otherList = []) => {
   })
   return res
 }
+
+/**
+ * @description 选人逻辑统一处理,当前类型的人先清除，统一添加
+ * @param data 数据源
+ * @param typeCode 清除类型
+ */
+export const deSelect = (data = [], typeCode) => {
+  let res = []
+  res = data.filter(t => {
+    if(t.typeCode !== typeCode) {
+      return t
+    }
+  })
+  return res
+}

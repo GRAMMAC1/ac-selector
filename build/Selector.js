@@ -275,65 +275,66 @@ var Selector = function (_React$Component) {
     };
 
     _this2.getUserList = function (data) {
+      var typeCode = 0;
       var _this2$state4 = _this2.state,
           defaultLabel = _this2$state4.defaultLabel,
-          multiShowList = _this2$state4.multiShowList;
+          multiShowList = _this2$state4.multiShowList,
+          selectedUserData = _this2$state4.selectedUserData;
 
-      var _tempList = [];
+      var _list = [].concat(_toConsumableArray(selectedUserData));
       var res = (0, _utils.resetChecked)(multiShowList, 'userid');
       res = (0, _utils.setChecked)(multiShowList, data, 'userid');
-      res.forEach(function (item) {
-        if (item._checked) {
-          var _item = {
-            key: item.userid,
+      _list = (0, _utils.deSelect)(_list, typeCode);
+      res.forEach(function (t) {
+        if (t._checked) {
+          _list.push({
+            key: t.userid,
             type: defaultLabel,
-            reciving: item.orgName ? item.username + '(' + item.orgName + ')' : item.username + '(\u672A\u77E5\u90E8\u95E8)',
-            userid: item.userid,
-            username: item.username,
-            email: item.email,
-            typeCode: 0,
-            mobile: item.mobile,
-            orgName: item.orgName ? item.orgName : '未知部门'
-          };
-          _tempList.push(_item);
+            typeCode: typeCode,
+            userid: t.userid,
+            username: t.username,
+            email: t.email,
+            mobile: t.mobile,
+            orgName: t.orgName ? t.orgName : '未知部门',
+            reciving: t.orgName ? t.username + '(' + t.orgName + ')' : t.username + '(\u672A\u77E5\u90E8\u95E8)'
+          });
         }
       });
       _this2.setState({
-        multiShowList: [].concat(_toConsumableArray(multiShowList)),
-        selectedUserData: [].concat(_tempList),
-        selectedCount: _tempList.length
+        multiShowList: [].concat(_toConsumableArray(res)),
+        selectedUserData: [].concat(_toConsumableArray(_list)),
+        selectedCount: _list.length
       });
     };
 
     _this2.getRoleList = function (data) {
+      var typeCode = 1;
       var _this2$state5 = _this2.state,
           roleShowList = _this2$state5.roleShowList,
           defaultLabel = _this2$state5.defaultLabel,
           selectedOtherList = _this2$state5.selectedOtherList;
 
-      var _checkedList = [];
+      var _list = [].concat(_toConsumableArray(selectedOtherList));
       roleShowList = (0, _utils.resetChecked)(roleShowList, 'roleId');
       var res = (0, _utils.setChecked)(roleShowList, data, 'roleId');
-      res.forEach(function (item) {
-        if (item._checked) {
-          var _item = {
-            key: item.roleId,
+      _list = (0, _utils.deSelect)(_list, typeCode);
+      res.forEach(function (t) {
+        if (t._checked) {
+          _list.push({
+            key: t.roleId,
             type: defaultLabel,
-            typeCode: 1,
-            reciving: item.roleName,
-            roleName: item.roleName,
-            roleCode: item.roleCode,
-            roleId: item.roleId
-          };
-          _checkedList.push(_item);
+            typeCode: typeCode,
+            roleId: t.roleId,
+            roleName: t.roleName,
+            roleCode: t.roleCode,
+            reciving: t.roleName
+          });
         }
       });
-      var newOtherList = selectedOtherList.concat(_checkedList);
-      newOtherList = _this2.uniqueByAttr(newOtherList, 'roleId');
       _this2.setState({
-        selectedOtherList: [].concat(_toConsumableArray(newOtherList)),
-        roleShowList: roleShowList,
-        selectedOtherCount: _checkedList.length
+        selectedOtherList: [].concat(_toConsumableArray(_list)),
+        roleShowList: [].concat(_toConsumableArray(res)),
+        selectedOtherCount: _list.length
       });
     };
 
@@ -499,20 +500,18 @@ var Selector = function (_React$Component) {
     };
 
     _this2.treeOnCheck = function (info, e) {
+      var typeCode = 2;
       var defaultLabel = _this2.state.defaultLabel;
       var selectedOtherList = _this2.state.selectedOtherList;
 
       var checkedNodes = [].concat(_toConsumableArray(e.checkedNodes));
-      var newList = selectedOtherList.filter(function (t) {
-        if (t.typeCode !== 2) {
-          return t;
-        }
-      });
+      var _list = [].concat(_toConsumableArray(selectedOtherList));
+      var newList = (0, _utils.deSelect)(_list, typeCode);
       var tempRes = checkedNodes.map(function (t, i) {
         return {
           key: info[i],
           type: defaultLabel,
-          typeCode: 2,
+          typeCode: typeCode,
           reciving: t.props.title,
           orgName: t.props.title,
           orgId: info[i]
@@ -575,6 +574,7 @@ var Selector = function (_React$Component) {
       var key = _ref.key;
       var selectedOtherList = _this2.state.selectedOtherList;
 
+      var _list = [].concat(_toConsumableArray(selectedOtherList));
       var ruleName = key.substring(key.indexOf('&') + 1);
       var ruleCode = key.substring(1, key.lastIndexOf('-'));
       var menuItem = {
@@ -585,9 +585,9 @@ var Selector = function (_React$Component) {
         ruleName: ruleName,
         reciving: ruleName
       };
-      var res = [].concat(_toConsumableArray(selectedOtherList.concat(menuItem)));
+      var res = [].concat(_toConsumableArray(_list.push(menuItem)));
       _this2.setState({
-        selectedOtherList: res,
+        selectedOtherList: [].concat(_toConsumableArray(res)),
         selectedOtherCount: res.length
       });
     };

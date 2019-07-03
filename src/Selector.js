@@ -15,7 +15,8 @@ import {
   mapUserList,
   mapOtherList,
   setUserReciving,
-  setOtherReciving 
+  setOtherReciving,
+  deSelect
 } from './utils'
 
 let MultiSelectTable = multiSelect(Table, Checkbox)
@@ -305,57 +306,58 @@ class Selector extends React.Component {
   }
   // 获得选择的用户列表
   getUserList = (data) => {
-    let { defaultLabel,multiShowList } = this.state
-    let _tempList = []
+    const typeCode = 0
+    let { defaultLabel,multiShowList,selectedUserData } = this.state
+    let _list = [...selectedUserData]
     let res = resetChecked(multiShowList, 'userid')
     res = setChecked(multiShowList, data, 'userid')
-    res.forEach(item => {
-      if(item._checked) {
-        let _item = {
-          key: item.userid,
+    _list = deSelect(_list, typeCode)
+    res.forEach(t => {
+      if(t._checked) {
+        _list.push({
+          key: t.userid,
           type: defaultLabel,
-          reciving: item.orgName ? `${item.username}(${item.orgName})` : `${item.username}(未知部门)`,
-          userid: item.userid,
-          username: item.username,
-          email: item.email,
-          typeCode: 0,
-          mobile: item.mobile,
-          orgName: item.orgName ? item.orgName : '未知部门'
-        }
-        _tempList.push(_item)
+          typeCode,
+          userid: t.userid,
+          username: t.username,
+          email: t.email,
+          mobile: t.mobile,
+          orgName: t.orgName ? t.orgName : '未知部门',
+          reciving: t.orgName ? `${t.username}(${t.orgName})` : `${t.username}(未知部门)`
+        })
       }
     })
     this.setState({
-      multiShowList: [...multiShowList],
-      selectedUserData: [..._tempList],
-      selectedCount: _tempList.length
+      multiShowList: [...res],
+      selectedUserData: [..._list],
+      selectedCount: _list.length
     })
   }
   // 获取角色列表
   getRoleList = (data) => {
+    const typeCode = 1
     let { roleShowList,defaultLabel,selectedOtherList } = this.state
-    let _checkedList = []
+    let _list = [...selectedOtherList]
     roleShowList = resetChecked(roleShowList, 'roleId')
     let res = setChecked(roleShowList, data, 'roleId')
-    res.forEach(item => {
-      if(item._checked) {
-        let _item = {
-          key: item.roleId,
+    _list = deSelect(_list, typeCode)
+    res.forEach(t => {
+      if(t._checked) {
+        _list.push({
+          key: t.roleId,
           type: defaultLabel,
-          typeCode: 1,
-          reciving: item.roleName,
-          roleName: item.roleName,
-          roleCode: item.roleCode,
-          roleId: item.roleId,
-        }
-        _checkedList.push(_item)
-    }})
-    let newOtherList = selectedOtherList.concat(_checkedList)
-    newOtherList = this.uniqueByAttr(newOtherList, 'roleId')
+          typeCode,
+          roleId: t.roleId,
+          roleName: t.roleName,
+          roleCode: t.roleCode,
+          reciving: t.roleName
+        })
+      }
+    })
     this.setState({
-      selectedOtherList: [...newOtherList],
-      roleShowList,
-      selectedOtherCount: _checkedList.length
+      selectedOtherList: [..._list],
+      roleShowList: [...res],
+      selectedOtherCount: _list.length
     })
   }
   // 数组根据属性去重
@@ -509,18 +511,16 @@ class Selector extends React.Component {
   }
   // tree check
   treeOnCheck = (info, e) => {
+    const typeCode = 2
     const { defaultLabel } = this.state
     let { selectedOtherList } = this.state
     let checkedNodes = [...e.checkedNodes]
-    let newList = selectedOtherList.filter(t => {
-      if(t.typeCode !== 2) {
-        return t
-      }
-    })
+    let _list = [...selectedOtherList]
+    let newList = deSelect(_list, typeCode)
     let tempRes = checkedNodes.map((t, i) => ({
       key: info[i],
       type: defaultLabel,
-      typeCode: 2,
+      typeCode,
       reciving: t.props.title,
       orgName: t.props.title,
       orgId: info[i]
@@ -574,6 +574,7 @@ class Selector extends React.Component {
   }
   menuClick = ({ key }) => {
     let { selectedOtherList } = this.state
+    let _list = [...selectedOtherList]
     const ruleName = key.substring(key.indexOf('&') + 1)
     const ruleCode = key.substring(1, key.lastIndexOf('-'))
     const menuItem = {
@@ -584,9 +585,9 @@ class Selector extends React.Component {
       ruleName,
       reciving: ruleName
     }
-    let res = [...selectedOtherList.concat(menuItem)]
+    let res = [..._list.push(menuItem)]
     this.setState({
-      selectedOtherList: res,
+      selectedOtherList: [...res],
       selectedOtherCount: res.length
     })
   } 
