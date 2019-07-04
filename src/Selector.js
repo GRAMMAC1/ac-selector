@@ -16,7 +16,9 @@ import {
   mapOtherList,
   setUserReciving,
   setOtherReciving,
-  deSelect
+  deSelect,
+  getUserId,
+  getRoleId
 } from './utils'
 
 let MultiSelectTable = multiSelect(Table, Checkbox)
@@ -69,33 +71,20 @@ class Selector extends React.Component {
       staffPage: {
         activePage: 1,
         items: 1,
-        total: 40
+        total: 0
       },
       rolePage: {
         activePage: 1, // 当前第几页
         items: 1, // 总页数
-        total: 40, // 总数
+        total: 0, // 总数
       },
       orgSelectedKeys: [],
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    let _newOtherList = nextProps.selectedOther.map(item => {
-      switch (item.typeCode) {
-        case 1:
-          item.key = item.roleId
-          item.reciving = item.roleName
-          return item
-        default:
-          break;
-      }
-    })
-    let _newUserList = nextProps.selectedUser.map(item => {
-      item.key = item.id
-      item.reciving = `${item.name}(${item.dept})`
-      return item
-    })
+    let _newUserList = setUserReciving(nextProps.selectedUser)
+    let _newOtherList = setUserReciving(nextProps.selectedOther)
     this.setState({
       show: nextProps.show,
       selectedOtherList: _newOtherList,
@@ -172,11 +161,8 @@ class Selector extends React.Component {
                   items: response.data.totalPages,
                   total: response.data.pageSize
                 }
-            _list = response.data.values.map(item => {
-              item.key = item.userid
-              item._checked =false
-              return item
-            })
+            _list = resetChecked(response.data.values, 'userid')
+            _list = setChecked(response.data.values, this.state.selectedUserData, 'userid')
             this.setState({
               multiShowList: _list,
               staffPage: obj
@@ -188,11 +174,8 @@ class Selector extends React.Component {
                   items: response.data.totalPages,
                   total: response.data.pageSize
                 }
-            _list = response.data.values.map(item => {
-              item.key = item.roleId
-              item._checked = false
-              return item
-            })
+            _list = resetChecked(response.data.values, 'roleId')
+            _list = setChecked(response.data.values, this.state.selectedOtherList, 'roleId')
             this.setState({
               roleShowList: _list,
               rolePage: obj
@@ -222,11 +205,8 @@ class Selector extends React.Component {
                 items: response.data.totalPages,
                 total: response.data.pageSize
               }
-          _list = response.data.values.map(item => {
-            item.key = item.userid
-            item._checked =false
-            return item
-          })
+          _list = resetChecked(response.data.values, 'userid')
+          _list = setChecked(response.data.values, this.state.selectedUserData, 'userid')
           this.setState({
             multiShowList: _list,
             staffPage: obj
@@ -238,11 +218,8 @@ class Selector extends React.Component {
                 items: response.data.totalPages,
                 total: response.data.pageSize
               }
-          _list = response.data.values.map(item => {
-            item.key = item.roleId
-            item._checked = false
-            return item
-          })
+          _list = resetChecked(response.data.values, 'roleId')
+          _list = setChecked(response.data.values, this.state.selectedOtherList, 'roleId')
           this.setState({
             roleShowList: _list,
             rolePage: obj
@@ -305,58 +282,61 @@ class Selector extends React.Component {
     this.delIndex = index
   }
   // 获得选择的用户列表
-  getUserList = (data) => {
+  getUserList = (data, record) => {
     const typeCode = 0
     let { defaultLabel,multiShowList,selectedUserData } = this.state
+    let delList = getUserId(data)
     let _list = [...selectedUserData]
     let res = resetChecked(multiShowList, 'userid')
     res = setChecked(multiShowList, data, 'userid')
-    _list = deSelect(_list, typeCode)
-    res.forEach(t => {
-      if(t._checked) {
-        _list.push({
-          key: t.userid,
-          type: defaultLabel,
-          typeCode,
-          userid: t.userid,
-          username: t.username,
-          email: t.email,
-          mobile: t.mobile,
-          orgName: t.orgName ? t.orgName : '未知部门',
-          reciving: t.orgName ? `${t.username}(${t.orgName})` : `${t.username}(未知部门)`
-        })
-      }
+    let currItem = Object.assign({}, record, {
+      type: defaultLabel,
+      typeCode,
+      key: record.userid,
+      reciving: record.orgName ? `${record.username}(${record.orgName})` : `${record.username}(未知部门)`
     })
+    if(delList.includes(currItem.userid)) {
+      _list.push(currItem)
+    } else {
+      _list = _list.filter(t => {
+        if(t.userid !== currItem.userid) {
+          return t
+        }
+      })
+    }
     this.setState({
       multiShowList: [...res],
       selectedUserData: [..._list],
-      selectedCount: _list.length
+      selectedCount: _list.length,
     })
   }
   // 获取角色列表
-  getRoleList = (data) => {
+  getRoleList = (data, record) => {
     const typeCode = 1
     let { roleShowList,defaultLabel,selectedOtherList } = this.state
     let _list = [...selectedOtherList]
-    roleShowList = resetChecked(roleShowList, 'roleId')
-    let res = setChecked(roleShowList, data, 'roleId')
-    _list = deSelect(_list, typeCode)
-    res.forEach(t => {
-      if(t._checked) {
-        _list.push({
-          key: t.roleId,
-          type: defaultLabel,
-          typeCode,
-          roleId: t.roleId,
-          roleName: t.roleName,
-          roleCode: t.roleCode,
-          reciving: t.roleName
-        })
-      }
+    let tempList = [...roleShowList]
+    let delList = getRoleId(data)
+    let currItem = Object.assign({}, record, {
+      key: record.roleId,
+      type: defaultLabel,
+      typeCode,
+      reciving: record.roleName
     })
+    tempList = resetChecked(tempList, 'roleId')
+    tempList = setChecked(tempList, data, 'roleId')
+    if(delList.includes(record.roleId)) {
+      _list.push(currItem)
+    } else {
+      _list = _list.filter(t => {
+        if(t.roleId !== record.roleId) {
+          return t
+        }
+      })
+    }
     this.setState({
       selectedOtherList: [..._list],
-      roleShowList: [...res],
+      roleShowList: [...tempList],
       selectedOtherCount: _list.length
     })
   }
@@ -565,6 +545,7 @@ class Selector extends React.Component {
           total: response.data.pageSize
         }
         let res = resetChecked(response.data.values, 'userid')
+        res = setChecked(res, this.state.selectedUserData, 'userid')
         this.setState({
           staffPage: obj,
           multiShowList: res

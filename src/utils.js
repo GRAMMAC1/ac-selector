@@ -18,15 +18,15 @@ export function resetChecked (list, type) {
 
 // 设置_checked属性为true
 export function setChecked (source, ref, type) {
-  let res = []
-  for(let i = 0; i < source.length; i ++) {
+  let res = [], tempRes = [...source]
+  for(let i = 0; i < tempRes.length; i ++) {
     for(let j = 0; j < ref.length; j ++) {
-      if(source[i][type] === ref[j][type]) {
-        source[i]._checked = true
+      if(tempRes[i][type] === ref[j][type]) {
+        tempRes[i]._checked = true
       }
     }
   }
-  res = [...source]
+  res = [...tempRes]
   return res
 }
 
@@ -171,5 +171,15 @@ export const deSelect = (data = [], typeCode) => {
       return t
     }
   })
+  return res
+}
+
+export const getUserId = (data = []) => {
+  let res = data.map(t => t.userid)
+  return res
+}
+
+export const getRoleId = (data = []) => {
+  let res = data.map(t => t.roleId)
   return res
 }

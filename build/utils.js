@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.deSelect = exports.mapOtherList = exports.mapUserList = exports.transferToMenu = exports.multiSelectType = exports.setOtherReciving = exports.setUserReciving = undefined;
+exports.getRoleId = exports.getUserId = exports.deSelect = exports.mapOtherList = exports.mapUserList = exports.transferToMenu = exports.multiSelectType = exports.setOtherReciving = exports.setUserReciving = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -38,15 +38,16 @@ function resetChecked(list, type) {
 
 // 设置_checked属性为true
 function setChecked(source, ref, type) {
-  var res = [];
-  for (var i = 0; i < source.length; i++) {
+  var res = [],
+      tempRes = [].concat(_toConsumableArray(source));
+  for (var i = 0; i < tempRes.length; i++) {
     for (var j = 0; j < ref.length; j++) {
-      if (source[i][type] === ref[j][type]) {
-        source[i]._checked = true;
+      if (tempRes[i][type] === ref[j][type]) {
+        tempRes[i]._checked = true;
       }
     }
   }
-  res = [].concat(_toConsumableArray(source));
+  res = [].concat(_toConsumableArray(tempRes));
   return res;
 }
 
@@ -204,6 +205,24 @@ var deSelect = exports.deSelect = function deSelect() {
     if (t.typeCode !== typeCode) {
       return t;
     }
+  });
+  return res;
+};
+
+var getUserId = exports.getUserId = function getUserId() {
+  var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
+  var res = data.map(function (t) {
+    return t.userid;
+  });
+  return res;
+};
+
+var getRoleId = exports.getRoleId = function getRoleId() {
+  var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
+  var res = data.map(function (t) {
+    return t.roleId;
   });
   return res;
 };

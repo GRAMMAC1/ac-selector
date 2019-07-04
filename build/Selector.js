@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -129,11 +131,8 @@ var Selector = function (_React$Component) {
                 items: response.data.totalPages,
                 total: response.data.pageSize
               };
-              _list = response.data.values.map(function (item) {
-                item.key = item.userid;
-                item._checked = false;
-                return item;
-              });
+              _list = (0, _utils.resetChecked)(response.data.values, 'userid');
+              _list = (0, _utils.setChecked)(response.data.values, _this2.state.selectedUserData, 'userid');
               _this2.setState({
                 multiShowList: _list,
                 staffPage: obj
@@ -145,11 +144,8 @@ var Selector = function (_React$Component) {
                 items: response.data.totalPages,
                 total: response.data.pageSize
               };
-              _list2 = response.data.values.map(function (item) {
-                item.key = item.roleId;
-                item._checked = false;
-                return item;
-              });
+              _list2 = (0, _utils.resetChecked)(response.data.values, 'roleId');
+              _list2 = (0, _utils.setChecked)(response.data.values, _this2.state.selectedOtherList, 'roleId');
               _this2.setState({
                 roleShowList: _list2,
                 rolePage: _obj
@@ -184,11 +180,8 @@ var Selector = function (_React$Component) {
               items: response.data.totalPages,
               total: response.data.pageSize
             };
-            _list = response.data.values.map(function (item) {
-              item.key = item.userid;
-              item._checked = false;
-              return item;
-            });
+            _list = (0, _utils.resetChecked)(response.data.values, 'userid');
+            _list = (0, _utils.setChecked)(response.data.values, _this2.state.selectedUserData, 'userid');
             _this2.setState({
               multiShowList: _list,
               staffPage: obj
@@ -200,11 +193,8 @@ var Selector = function (_React$Component) {
               items: response.data.totalPages,
               total: response.data.pageSize
             };
-            _list3 = response.data.values.map(function (item) {
-              item.key = item.roleId;
-              item._checked = false;
-              return item;
-            });
+            _list3 = (0, _utils.resetChecked)(response.data.values, 'roleId');
+            _list3 = (0, _utils.setChecked)(response.data.values, _this2.state.selectedOtherList, 'roleId');
             _this2.setState({
               roleShowList: _list3,
               rolePage: _obj2
@@ -274,32 +264,32 @@ var Selector = function (_React$Component) {
       _this2.delIndex = index;
     };
 
-    _this2.getUserList = function (data) {
+    _this2.getUserList = function (data, record) {
       var typeCode = 0;
       var _this2$state4 = _this2.state,
           defaultLabel = _this2$state4.defaultLabel,
           multiShowList = _this2$state4.multiShowList,
           selectedUserData = _this2$state4.selectedUserData;
 
+      var delList = (0, _utils.getUserId)(data);
       var _list = [].concat(_toConsumableArray(selectedUserData));
       var res = (0, _utils.resetChecked)(multiShowList, 'userid');
       res = (0, _utils.setChecked)(multiShowList, data, 'userid');
-      _list = (0, _utils.deSelect)(_list, typeCode);
-      res.forEach(function (t) {
-        if (t._checked) {
-          _list.push({
-            key: t.userid,
-            type: defaultLabel,
-            typeCode: typeCode,
-            userid: t.userid,
-            username: t.username,
-            email: t.email,
-            mobile: t.mobile,
-            orgName: t.orgName ? t.orgName : '未知部门',
-            reciving: t.orgName ? t.username + '(' + t.orgName + ')' : t.username + '(\u672A\u77E5\u90E8\u95E8)'
-          });
-        }
+      var currItem = _extends({}, record, {
+        type: defaultLabel,
+        typeCode: typeCode,
+        key: record.userid,
+        reciving: record.orgName ? record.username + '(' + record.orgName + ')' : record.username + '(\u672A\u77E5\u90E8\u95E8)'
       });
+      if (delList.includes(currItem.userid)) {
+        _list.push(currItem);
+      } else {
+        _list = _list.filter(function (t) {
+          if (t.userid !== currItem.userid) {
+            return t;
+          }
+        });
+      }
       _this2.setState({
         multiShowList: [].concat(_toConsumableArray(res)),
         selectedUserData: [].concat(_toConsumableArray(_list)),
@@ -307,7 +297,7 @@ var Selector = function (_React$Component) {
       });
     };
 
-    _this2.getRoleList = function (data) {
+    _this2.getRoleList = function (data, record) {
       var typeCode = 1;
       var _this2$state5 = _this2.state,
           roleShowList = _this2$state5.roleShowList,
@@ -315,25 +305,28 @@ var Selector = function (_React$Component) {
           selectedOtherList = _this2$state5.selectedOtherList;
 
       var _list = [].concat(_toConsumableArray(selectedOtherList));
-      roleShowList = (0, _utils.resetChecked)(roleShowList, 'roleId');
-      var res = (0, _utils.setChecked)(roleShowList, data, 'roleId');
-      _list = (0, _utils.deSelect)(_list, typeCode);
-      res.forEach(function (t) {
-        if (t._checked) {
-          _list.push({
-            key: t.roleId,
-            type: defaultLabel,
-            typeCode: typeCode,
-            roleId: t.roleId,
-            roleName: t.roleName,
-            roleCode: t.roleCode,
-            reciving: t.roleName
-          });
-        }
+      var tempList = [].concat(_toConsumableArray(roleShowList));
+      var delList = (0, _utils.getRoleId)(data);
+      var currItem = _extends({}, record, {
+        key: record.roleId,
+        type: defaultLabel,
+        typeCode: typeCode,
+        reciving: record.roleName
       });
+      tempList = (0, _utils.resetChecked)(tempList, 'roleId');
+      tempList = (0, _utils.setChecked)(tempList, data, 'roleId');
+      if (delList.includes(record.roleId)) {
+        _list.push(currItem);
+      } else {
+        _list = _list.filter(function (t) {
+          if (t.roleId !== record.roleId) {
+            return t;
+          }
+        });
+      }
       _this2.setState({
         selectedOtherList: [].concat(_toConsumableArray(_list)),
-        roleShowList: [].concat(_toConsumableArray(res)),
+        roleShowList: [].concat(_toConsumableArray(tempList)),
         selectedOtherCount: _list.length
       });
     };
@@ -560,6 +553,7 @@ var Selector = function (_React$Component) {
             total: response.data.pageSize
           };
           var res = (0, _utils.resetChecked)(response.data.values, 'userid');
+          res = (0, _utils.setChecked)(res, _this2.state.selectedUserData, 'userid');
           _this2.setState({
             staffPage: obj,
             multiShowList: res
@@ -612,12 +606,12 @@ var Selector = function (_React$Component) {
       staffPage: {
         activePage: 1,
         items: 1,
-        total: 40
+        total: 0
       },
       rolePage: {
         activePage: 1, // 当前第几页
         items: 1, // 总页数
-        total: 40 // 总数
+        total: 0 // 总数
       },
       orgSelectedKeys: []
     };
@@ -625,21 +619,8 @@ var Selector = function (_React$Component) {
   }
 
   Selector.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
-    var _newOtherList = nextProps.selectedOther.map(function (item) {
-      switch (item.typeCode) {
-        case 1:
-          item.key = item.roleId;
-          item.reciving = item.roleName;
-          return item;
-        default:
-          break;
-      }
-    });
-    var _newUserList = nextProps.selectedUser.map(function (item) {
-      item.key = item.id;
-      item.reciving = item.name + '(' + item.dept + ')';
-      return item;
-    });
+    var _newUserList = (0, _utils.setUserReciving)(nextProps.selectedUser);
+    var _newOtherList = (0, _utils.setUserReciving)(nextProps.selectedOther);
     this.setState({
       show: nextProps.show,
       selectedOtherList: _newOtherList,
