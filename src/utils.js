@@ -29,6 +29,19 @@ export function setChecked (source, ref, type) {
   res = [...tempRes]
   return res
 }
+// 非正式环境数据不全,补全用户列表为空的问题
+export const addFullAttr = (data = []) => {
+  let res = data.map((t, i) =>  ({
+    key: t.key ? t.key : `userid-${i}`,
+    _checked: t._checked,
+    userid: t.userid ? t.userid : `userid-${i}`,
+    username: t.username ? t.username : '未知姓名',
+    email: t.email ? t.email : '未知邮箱',
+    mobile: t.mobile ? t.mobile : '未知号码',
+    orgName: t.orgName ? t.orgName : '未知部门',
+  }))
+  return res
+}
 
 // 为传进来的数据设置key和reciving,可以在右侧展示
 export const setUserReciving = source => {
@@ -92,7 +105,7 @@ export const transferToMenu = (treeData) => {
   }
   treeData.forEach((value,key) => {
     if('attrs' in value){
-        var k = `${value.code}-menu-${key}&${value.name}`;
+        var k = `${value.code}#menu-${key}&${value.name}^${value.uri}`;
         var v = value.displayName || value.name;
         subMenu.push(
             <SubMenu key={k} title={<span>{v}</span>}>
@@ -102,7 +115,7 @@ export const transferToMenu = (treeData) => {
             </SubMenu>
         )
     }else{
-        var k = `${value.code}-submenu-${key}&${value.name}`;
+        var k = `${value.code}#submenu-${key}&${value.name}^${value.uri}`;
         var v = value.displayName || value.name;
         subMenu.push(
             <Menu.Item key={k}>{v}</Menu.Item>
@@ -150,7 +163,8 @@ export const mapOtherList = (otherList = []) => {
           type: t.type,
           typeCode: t.typeCode,
           ruleCode: t.ruleCode,
-          ruleName: t.ruleName
+          ruleName: t.ruleName,
+          uri: t.uri
         }
       default:
         return []

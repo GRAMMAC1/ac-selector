@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getRoleId = exports.getUserId = exports.deSelect = exports.mapOtherList = exports.mapUserList = exports.transferToMenu = exports.multiSelectType = exports.setOtherReciving = exports.setUserReciving = undefined;
+exports.getRoleId = exports.getUserId = exports.deSelect = exports.mapOtherList = exports.mapUserList = exports.transferToMenu = exports.multiSelectType = exports.setOtherReciving = exports.setUserReciving = exports.addFullAttr = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -50,6 +50,23 @@ function setChecked(source, ref, type) {
   res = [].concat(_toConsumableArray(tempRes));
   return res;
 }
+// 非正式环境数据不全,补全用户列表为空的问题
+var addFullAttr = exports.addFullAttr = function addFullAttr() {
+  var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
+  var res = data.map(function (t, i) {
+    return {
+      key: t.key ? t.key : 'userid-' + i,
+      _checked: t._checked,
+      userid: t.userid ? t.userid : 'userid-' + i,
+      username: t.username ? t.username : '未知姓名',
+      email: t.email ? t.email : '未知邮箱',
+      mobile: t.mobile ? t.mobile : '未知号码',
+      orgName: t.orgName ? t.orgName : '未知部门'
+    };
+  });
+  return res;
+};
 
 // 为传进来的数据设置key和reciving,可以在右侧展示
 var setUserReciving = exports.setUserReciving = function setUserReciving(source) {
@@ -114,7 +131,7 @@ var transferToMenu = exports.transferToMenu = function transferToMenu(treeData) 
   }
   treeData.forEach(function (value, key) {
     if ('attrs' in value) {
-      var k = value.code + '-menu-' + key + '&' + value.name;
+      var k = value.code + '#menu-' + key + '&' + value.name + '^' + value.uri;
       var v = value.displayName || value.name;
       subMenu.push(_react2["default"].createElement(
         SubMenu,
@@ -126,7 +143,7 @@ var transferToMenu = exports.transferToMenu = function transferToMenu(treeData) 
         value.attrs ? transferToMenu(value.attrs) : null
       ));
     } else {
-      var k = value.code + '-submenu-' + key + '&' + value.name;
+      var k = value.code + '#submenu-' + key + '&' + value.name + '^' + value.uri;
       var v = value.displayName || value.name;
       subMenu.push(_react2["default"].createElement(
         _tinperBee.Menu.Item,
@@ -182,7 +199,8 @@ var mapOtherList = exports.mapOtherList = function mapOtherList() {
           type: t.type,
           typeCode: t.typeCode,
           ruleCode: t.ruleCode,
-          ruleName: t.ruleName
+          ruleName: t.ruleName,
+          uri: t.uri
         };
       default:
         return [];

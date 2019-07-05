@@ -47,6 +47,7 @@ return (
     onConfirm={_this.onConfirm}
     onClose={_this.onCancel}
     // mode={'dev'}
+    documentNo={'st_purchaseorder'}
     selectedUser={selectedUser}
     selectedOther={selectData}
   />

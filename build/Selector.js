@@ -96,13 +96,14 @@ var Selector = function (_React$Component) {
 
           var _newList = (0, _utils.resetChecked)(response.data.values, 'userid');
           var res = (0, _utils.setChecked)(_newList, _selectedUser, 'userid');
+          var completeRes = (0, _utils.addFullAttr)(res);
           var obj = {
             activePage: response.data.currentPage,
             items: response.data.totalPages,
             total: response.data.pageSize
           };
           _this2.setState({
-            multiShowList: res,
+            multiShowList: completeRes,
             staffPage: obj
           });
         }
@@ -149,6 +150,26 @@ var Selector = function (_React$Component) {
               _this2.setState({
                 roleShowList: _list2,
                 rolePage: _obj
+              });
+            }
+          } else if (response.data === null) {
+            if (activeKey === '1') {
+              _this2.setState({
+                staffPage: _extends({}, {
+                  activePage: 1,
+                  items: 1,
+                  total: 0
+                }),
+                multiShowList: []
+              });
+            } else if (activeKey === '2') {
+              _this2.setState({
+                rolePage: _extends({}, {
+                  activePage: 1,
+                  items: 1,
+                  total: 0
+                }),
+                roleShowList: []
               });
             }
           }
@@ -554,9 +575,10 @@ var Selector = function (_React$Component) {
           };
           var res = (0, _utils.resetChecked)(response.data.values, 'userid');
           res = (0, _utils.setChecked)(res, _this2.state.selectedUserData, 'userid');
+          var completeRes = (0, _utils.addFullAttr)(res);
           _this2.setState({
             staffPage: obj,
-            multiShowList: res
+            multiShowList: completeRes
           });
         }
       })["catch"](function (err) {
@@ -569,21 +591,33 @@ var Selector = function (_React$Component) {
       var selectedOtherList = _this2.state.selectedOtherList;
 
       var _list = [].concat(_toConsumableArray(selectedOtherList));
-      var ruleName = key.substring(key.indexOf('&') + 1);
-      var ruleCode = key.substring(1, key.lastIndexOf('-'));
-      var menuItem = {
-        key: key,
-        type: _this2.state.defaultLabel,
-        typeCode: 3,
-        ruleCode: ruleCode,
-        ruleName: ruleName,
-        reciving: ruleName
-      };
-      var res = [].concat(_toConsumableArray(_list.push(menuItem)));
-      _this2.setState({
-        selectedOtherList: [].concat(_toConsumableArray(res)),
-        selectedOtherCount: res.length
+      var ruleName = key.substring(key.indexOf('&') + 1, key.indexOf('^'));
+      var ruleCode = key.substring(0, key.indexOf('#'));
+      var uri = key.substring(key.indexOf('^') + 1);
+      var filterList = [];
+      _list.forEach(function (t) {
+        if (t.typeCode === 3) {
+          filterList.push(t.key);
+        }
       });
+      if (filterList.includes(key)) {
+        return;
+      } else {
+        var menuItem = {
+          key: key,
+          type: _this2.state.defaultLabel,
+          typeCode: 3,
+          ruleCode: ruleCode,
+          ruleName: ruleName,
+          reciving: ruleName,
+          uri: uri
+        };
+        _list.push(menuItem);
+        _this2.setState({
+          selectedOtherList: [].concat(_toConsumableArray(_list)),
+          selectedOtherCount: _list.length
+        });
+      }
     };
 
     _this2.state = {

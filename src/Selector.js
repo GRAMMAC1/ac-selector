@@ -18,7 +18,8 @@ import {
   setOtherReciving,
   deSelect,
   getUserId,
-  getRoleId
+  getRoleId,
+  addFullAttr
 } from './utils'
 
 let MultiSelectTable = multiSelect(Table, Checkbox)
@@ -127,13 +128,14 @@ class Selector extends React.Component {
         const { selectedUser } = this.props
         let _newList = resetChecked(response.data.values, 'userid')
         let res = setChecked(_newList, selectedUser, 'userid')
+        let completeRes = addFullAttr(res)
         let obj = {
           activePage: response.data.currentPage,
           items: response.data.totalPages,
           total: response.data.pageSize
         }
         this.setState({
-          multiShowList: res,
+          multiShowList: completeRes,
           staffPage: obj
         })
       }
@@ -181,6 +183,26 @@ class Selector extends React.Component {
               rolePage: obj
             })
           }
+        } else if (response.data === null) {
+            if(activeKey === '1') {
+              this.setState({
+                staffPage: Object.assign({}, {
+                  activePage: 1,
+                  items: 1,
+                  total: 0
+                }),
+                multiShowList: []
+              })
+            } else if(activeKey === '2') {
+              this.setState({
+                rolePage: Object.assign({}, {
+                  activePage: 1,
+                  items: 1,
+                  total: 0
+                }),
+                roleShowList: []
+              })
+            }
         }
       }).catch(error => {
         throw new Error(error)
@@ -546,9 +568,10 @@ class Selector extends React.Component {
         }
         let res = resetChecked(response.data.values, 'userid')
         res = setChecked(res, this.state.selectedUserData, 'userid')
+        let completeRes = addFullAttr(res)
         this.setState({
           staffPage: obj,
-          multiShowList: res
+          multiShowList: completeRes
         })
       }
     }).catch(err => { throw new Error(err) })
@@ -556,21 +579,33 @@ class Selector extends React.Component {
   menuClick = ({ key }) => {
     let { selectedOtherList } = this.state
     let _list = [...selectedOtherList]
-    const ruleName = key.substring(key.indexOf('&') + 1)
-    const ruleCode = key.substring(1, key.lastIndexOf('-'))
-    const menuItem = {
-      key,
-      type: this.state.defaultLabel,
-      typeCode: 3,
-      ruleCode,
-      ruleName,
-      reciving: ruleName
-    }
-    let res = [..._list.push(menuItem)]
-    this.setState({
-      selectedOtherList: [...res],
-      selectedOtherCount: res.length
+    const ruleName = key.substring(key.indexOf('&') + 1, key.indexOf('^'))
+    const ruleCode = key.substring(0, key.indexOf('#'))
+    const uri = key.substring(key.indexOf('^') + 1)
+    let filterList = []
+    _list.forEach(t => {
+      if(t.typeCode === 3) {
+        filterList.push(t.key)
+      }
     })
+    if(filterList.includes(key)) {
+      return
+    } else {
+      const menuItem = {
+        key,
+        type: this.state.defaultLabel,
+        typeCode: 3,
+        ruleCode,
+        ruleName,
+        reciving: ruleName,
+        uri
+      }
+      _list.push(menuItem)
+      this.setState({
+        selectedOtherList: [..._list],
+        selectedOtherCount: _list.length
+      })
+    }
   } 
 
   render() {
