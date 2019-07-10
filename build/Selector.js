@@ -232,57 +232,61 @@ var Selector = function (_React$Component) {
     };
 
     _this2.hoverDelIcon = function () {
-      return _react2["default"].createElement(_tinperBee.Icon, { onClick: _this2.delItem, className: 'deleteIcon', type: 'uf-close' });
+      return _react2["default"].createElement(_tinperBee.Icon, { onClick: _this2.delUser, className: 'deleteIcon', type: 'uf-close' });
     };
 
-    _this2.delItem = function () {
-      var activeKey = _this2.state.activeKey;
+    _this2.hoverDelOtherIcon = function () {
+      return _react2["default"].createElement(_tinperBee.Icon, { onClick: _this2.delOther, className: 'deleteIcon', type: 'uf-close' });
+    };
 
-      if (activeKey === '1') {
-        var _this2$state2 = _this2.state,
-            multiShowList = _this2$state2.multiShowList,
-            selectedUserData = _this2$state2.selectedUserData;
+    _this2.delOther = function () {
+      var _this2$state2 = _this2.state,
+          roleShowList = _this2$state2.roleShowList,
+          selectedOtherList = _this2$state2.selectedOtherList;
 
-        multiShowList = multiShowList.map(function (item) {
-          if (item.userid === selectedUserData[_this2.delIndex].userid) {
-            item._checked = false;
-            return item;
+      var _list = [].concat(_toConsumableArray(roleShowList));
+      if (selectedOtherList[_this2.delOtherIndex].typeCode === 1) {
+        _list = _list.map(function (t) {
+          if (t.roleId === selectedOtherList[_this2.delOtherIndex].roleId) {
+            t._checked = false;
+            return t;
           }
-        });
-        selectedUserData.splice(_this2.delIndex, 1);
-        _this2.setState({
-          selectedUserData: [].concat(_toConsumableArray(selectedUserData)),
-          selectedCount: selectedUserData.length
-        });
-      } else if (activeKey === '2') {
-        var _this2$state3 = _this2.state,
-            roleShowList = _this2$state3.roleShowList,
-            selectedOtherList = _this2$state3.selectedOtherList;
-
-        roleShowList = roleShowList.map(function (item) {
-          if (item.roleId === selectedOtherList[_this2.delIndex].roleId) {
-            item._checked = false;
-            return item;
-          }
-        });
-        selectedOtherList.splice(_this2.delIndex, 1);
-        _this2.setState({
-          selectedOtherList: [].concat(_toConsumableArray(selectedOtherList)),
-          selectedOtherCount: selectedOtherList.length
-        });
-      } else {
-        var _selectedOtherList = _this2.state.selectedOtherList;
-
-        var res = [].concat(_toConsumableArray(_selectedOtherList));
-        res.splice(_this2.delIndex, 1);
-        _this2.setState({
-          selectedOtherList: [].concat(_toConsumableArray(res))
+          return t;
         });
       }
+      var res = [].concat(_toConsumableArray(selectedOtherList));
+      res.splice(_this2.delOtherIndex, 1);
+      _this2.setState({
+        selectedOtherList: [].concat(_toConsumableArray(res)),
+        selectedOtherCount: res.length,
+        roleShowList: [].concat(_toConsumableArray(_list))
+      });
+    };
+
+    _this2.delUser = function () {
+      var _this2$state3 = _this2.state,
+          multiShowList = _this2$state3.multiShowList,
+          selectedUserData = _this2$state3.selectedUserData;
+
+      multiShowList = multiShowList.map(function (item) {
+        if (item.userid === selectedUserData[_this2.delIndex].userid) {
+          item._checked = false;
+          return item;
+        }
+      });
+      selectedUserData.splice(_this2.delIndex, 1);
+      _this2.setState({
+        selectedUserData: [].concat(_toConsumableArray(selectedUserData)),
+        selectedCount: selectedUserData.length
+      });
     };
 
     _this2.onRowHover = function (index) {
       _this2.delIndex = index;
+    };
+
+    _this2.onRowOtherHover = function (index) {
+      _this2.delOtherIndex = index;
     };
 
     _this2.getUserList = function (data, record) {
@@ -402,7 +406,8 @@ var Selector = function (_React$Component) {
         selectedOtherCount: 0,
         staffInputValue: '',
         roleInputValue: '',
-        orgSelectedKeys: []
+        orgSelectedKeys: [],
+        defaultLabel: '用户'
       });
     };
 
@@ -468,13 +473,13 @@ var Selector = function (_React$Component) {
             });
             if (selectedOtherList.length) {
               var checkedKeys = [];
-              checkedKeys = selectedOtherList.filter(function (t) {
+              selectedOtherList.forEach(function (t) {
                 if (t.typeCode === 2) {
-                  return t.checkedKey;
+                  checkedKeys.push(t.orgId);
                 }
               });
               _this2.setState({
-                orgSelectedKeys: [].concat(_toConsumableArray(checkedKeys))
+                orgSelectedKeys: [].concat(checkedKeys)
               });
             } else {
               _this2.setState({
@@ -963,8 +968,8 @@ var Selector = function (_React$Component) {
                 scroll: { y: 200 },
                 columns: _colmuns.selectedUserCol,
                 data: _this.state.selectedOtherList,
-                hoverContent: _this.hoverDelIcon,
-                onRowHover: _this.onRowHover
+                hoverContent: _this.hoverDelOtherIcon,
+                onRowHover: _this.onRowOtherHover
               })
             )
           )

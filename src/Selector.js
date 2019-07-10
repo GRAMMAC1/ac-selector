@@ -259,49 +259,52 @@ class Selector extends React.Component {
   // 动态渲染删除图标
   hoverDelIcon = () => {
     return (
-      <Icon onClick={this.delItem} className={'deleteIcon'} type={'uf-close'} />
+      <Icon onClick={this.delUser} className={'deleteIcon'} type={'uf-close'} />
     )
   }
-  // 删除某一项
-  delItem = () => {
-    let { activeKey } = this.state
-    if(activeKey === '1') {
-      let { multiShowList,selectedUserData } = this.state
-      multiShowList = multiShowList.map(item => {
-        if(item.userid === selectedUserData[this.delIndex].userid) {
-          item._checked = false
-          return item
+  hoverDelOtherIcon = () => (
+    <Icon onClick={this.delOther} className={'deleteIcon'} type={'uf-close'} />
+  )
+  delOther = () => {
+    let { roleShowList,selectedOtherList } = this.state
+    let _list = [...roleShowList]
+    if(selectedOtherList[this.delOtherIndex].typeCode === 1) {
+      _list = _list.map(t => {
+        if(t.roleId === selectedOtherList[this.delOtherIndex].roleId) {
+          t._checked = false
+          return t
         }
-      })
-      selectedUserData.splice(this.delIndex, 1)
-      this.setState({
-        selectedUserData: [...selectedUserData],
-        selectedCount: selectedUserData.length
-      })
-    } else if(activeKey === '2') {
-      let { roleShowList,selectedOtherList } = this.state
-      roleShowList = roleShowList.map(item => {
-        if(item.roleId === selectedOtherList[this.delIndex].roleId) {
-          item._checked = false
-          return item
-        }
-      })
-      selectedOtherList.splice(this.delIndex, 1)
-      this.setState({
-        selectedOtherList: [...selectedOtherList],
-        selectedOtherCount: selectedOtherList.length,
-      })
-    } else {
-      let { selectedOtherList } = this.state
-      let res = [...selectedOtherList]
-      res.splice(this.delIndex, 1)
-      this.setState({
-        selectedOtherList: [...res]
+        return t
       })
     }
+    let res = [...selectedOtherList]
+    res.splice(this.delOtherIndex, 1)
+    this.setState({
+      selectedOtherList: [...res],
+      selectedOtherCount: res.length,
+      roleShowList: [..._list]
+    })
+  }
+  // 删除某一项
+  delUser = () => {
+    let { multiShowList,selectedUserData } = this.state
+    multiShowList = multiShowList.map(item => {
+      if(item.userid === selectedUserData[this.delIndex].userid) {
+        item._checked = false
+        return item
+      }
+    })
+    selectedUserData.splice(this.delIndex, 1)
+    this.setState({
+      selectedUserData: [...selectedUserData],
+      selectedCount: selectedUserData.length
+    }) 
   }
   onRowHover = (index) => {
     this.delIndex = index
+  }
+  onRowOtherHover = index => {
+    this.delOtherIndex = index
   }
   // 获得选择的用户列表
   getUserList = (data, record) => {
@@ -411,7 +414,8 @@ class Selector extends React.Component {
       selectedOtherCount: 0,
       staffInputValue: '',
       roleInputValue: '',
-      orgSelectedKeys: []
+      orgSelectedKeys: [],
+      defaultLabel: '用户'
     })
   }
   // 关闭模态框
@@ -473,9 +477,9 @@ class Selector extends React.Component {
           })
           if(selectedOtherList.length) {
             let checkedKeys = []
-            checkedKeys = selectedOtherList.filter(t => {
+            selectedOtherList.forEach(t => {
               if(t.typeCode === 2) {
-                return t.checkedKey
+                checkedKeys.push(t.orgId)
               }
             })
             this.setState({
@@ -774,8 +778,8 @@ class Selector extends React.Component {
                     scroll={{y: 200}}
                     columns={selectedUserCol}
                     data={_this.state.selectedOtherList}
-                    hoverContent={_this.hoverDelIcon}
-                    onRowHover={_this.onRowHover}
+                    hoverContent={_this.hoverDelOtherIcon}
+                    onRowHover={_this.onRowOtherHover}
                   />
                 </div>
               </div>

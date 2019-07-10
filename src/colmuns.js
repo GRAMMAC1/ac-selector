@@ -28,15 +28,17 @@ export const filterCaptial = ['A','B','C','D','E','F','G','H','I','J','K','L','M
 
 
 export const selectData = [
-  {type: "角色", roleName: "服务商", roleId: "c5d88199-b714-4be4-9a41-f66f9001cfb1", roleCode: "AMMAN_SERVER", typeCode: 1},
-  {type: "角色", roleName: "组织管理员", roleId: "f2a439f4-46fb-4fad-84ab-83068adb2b8b", roleCode: "OrgManager", typeCode: 1},
-  {type: "角色", roleName: "门户模板管理员", roleId: "0f9a6f2e-e7d2-42ba-86b1-25e4c9c1d4b7", roleCode: "XTPortalManager", typeCode: 1},
   {
-    roleCode: "cc9ac0e870784f39ae00d7be77e50b98",
-    roleId: "240b9bb1-d9ad-41b5-bc12-72c2ec80bfa0",
-    type: '角色',
-    roleName: "hur",
-    typeCode: 1
+    orgId: "1249795575075072",
+    orgName: "zbl公司",
+    type: "组织",
+    typeCode: 2
+  },
+  {
+    orgId: "1249799305859328",
+    orgName: "zbl部门",
+    type: "组织",
+    typeCode: 2
   }
 ]
 
