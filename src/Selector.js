@@ -36,7 +36,9 @@ const propTypes = {
   mode: PropTypes.string,
   selectedUser: PropTypes.array,
   selectedOther: PropTypes.array,
-  documentNo: PropTypes.string
+  documentNo: PropTypes.string,
+  documentName: PropTypes.string,
+  ruleList: PropTypes.array
 }
 
 const defaultProps = {
@@ -46,7 +48,8 @@ const defaultProps = {
   selectedUser: [],
   selectedOther: [],
   mode: 'daily',
-  documentNo: ''
+  documentNo: '',
+  documentName: ''
 }
 
 class Selector extends React.Component {
@@ -493,14 +496,25 @@ class Selector extends React.Component {
         }
       }).catch(error => { throw new Error(error) })
     } else if(activeKey === '4') {
-      const url = `${_this.state.prefixUrl}/user/rules?documentNo=${this.props.documentNo}`
-      requestGet(url).then(response => {
-        if(response.status === 1) {
-          this.setState({
-            ruleMenuList: transferToMenu(response.data)
-          })
-        }
-      }).catch(err => { throw new Error(err) })
+      if(this.props.ruleList) {
+        this.setState({
+          ruleMenuList: transferToMenu(this.props.ruleList)
+        })
+      } else {
+        const url = `${_this.state.prefixUrl}/user/rules?documentNo=${this.props.documentNo}&documentName=${this.props.documentName}`
+        requestGet(url).then(response => {
+          if(response.status === 1) {
+            const menuList = [{
+              id: 'root-0',
+              name: this.props.documentName,
+              attrs: [...response.data.data]
+            }]
+            this.setState({
+              ruleMenuList: transferToMenu(menuList)
+            })
+          }
+        }).catch(err => { throw new Error(err) })
+      }
     }
   }
   // tree select
@@ -583,9 +597,9 @@ class Selector extends React.Component {
   menuClick = ({ key }) => {
     let { selectedOtherList } = this.state
     let _list = [...selectedOtherList]
-    const ruleName = key.substring(key.indexOf('&') + 1, key.indexOf('^'))
-    const ruleCode = key.substring(0, key.indexOf('#'))
-    const uri = key.substring(key.indexOf('^') + 1)
+    const ruleName = key.substring(key.indexOf('&') + 1) 
+    const ruleCode = key.substring(0, key.indexOf('&'))
+    // const uri = key.substring(key.indexOf('^') + 1)
     let filterList = []
     _list.forEach(t => {
       if(t.typeCode === 3) {
@@ -601,8 +615,7 @@ class Selector extends React.Component {
         typeCode: 3,
         ruleCode,
         ruleName,
-        reciving: ruleName,
-        uri
+        reciving: ruleName
       }
       _list.push(menuItem)
       this.setState({

@@ -46,10 +46,23 @@ return (
     show={_this.state.show}
     onConfirm={_this.onConfirm}
     onClose={_this.onCancel}
-    // mode={'dev'}
+    mode={'dev'}
     documentNo={'st_purchaseorder'}
+    documentName={'采购订单'}
     selectedUser={selectedUser}
     selectedOther={selectData}
+//     ruleList={[
+//   {
+//      "id": 1,
+//      "name": "采购订单",
+//      "attrs": [
+//         {
+//            "id": 2,
+//            "name": "修改人"
+//         }
+//      ]
+//   }
+// ]}
   />
   <Button onClick={_this.show} colors={'primary'}>显示</Button>
   <Button onClick={_this.close}>关闭</Button>

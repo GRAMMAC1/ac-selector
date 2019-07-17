@@ -59,7 +59,9 @@ var propTypes = {
   mode: _propTypes2["default"].string,
   selectedUser: _propTypes2["default"].array,
   selectedOther: _propTypes2["default"].array,
-  documentNo: _propTypes2["default"].string
+  documentNo: _propTypes2["default"].string,
+  documentName: _propTypes2["default"].string,
+  ruleList: _propTypes2["default"].array
 };
 
 var defaultProps = {
@@ -69,7 +71,8 @@ var defaultProps = {
   selectedUser: [],
   selectedOther: [],
   mode: 'daily',
-  documentNo: ''
+  documentNo: '',
+  documentName: ''
 };
 
 var Selector = function (_React$Component) {
@@ -491,16 +494,27 @@ var Selector = function (_React$Component) {
           throw new Error(error);
         });
       } else if (activeKey === '4') {
-        var _url2 = _this.state.prefixUrl + '/user/rules?documentNo=' + _this2.props.documentNo;
-        (0, _request.requestGet)(_url2).then(function (response) {
-          if (response.status === 1) {
-            _this2.setState({
-              ruleMenuList: (0, _utils.transferToMenu)(response.data)
-            });
-          }
-        })["catch"](function (err) {
-          throw new Error(err);
-        });
+        if (_this2.props.ruleList) {
+          _this2.setState({
+            ruleMenuList: (0, _utils.transferToMenu)(_this2.props.ruleList)
+          });
+        } else {
+          var _url2 = _this.state.prefixUrl + '/user/rules?documentNo=' + _this2.props.documentNo + '&documentName=' + _this2.props.documentName;
+          (0, _request.requestGet)(_url2).then(function (response) {
+            if (response.status === 1) {
+              var menuList = [{
+                id: 'root-0',
+                name: _this2.props.documentName,
+                attrs: [].concat(_toConsumableArray(response.data.data))
+              }];
+              _this2.setState({
+                ruleMenuList: (0, _utils.transferToMenu)(menuList)
+              });
+            }
+          })["catch"](function (err) {
+            throw new Error(err);
+          });
+        }
       }
     };
 
@@ -596,9 +610,9 @@ var Selector = function (_React$Component) {
       var selectedOtherList = _this2.state.selectedOtherList;
 
       var _list = [].concat(_toConsumableArray(selectedOtherList));
-      var ruleName = key.substring(key.indexOf('&') + 1, key.indexOf('^'));
-      var ruleCode = key.substring(0, key.indexOf('#'));
-      var uri = key.substring(key.indexOf('^') + 1);
+      var ruleName = key.substring(key.indexOf('&') + 1);
+      var ruleCode = key.substring(0, key.indexOf('&'));
+      // const uri = key.substring(key.indexOf('^') + 1)
       var filterList = [];
       _list.forEach(function (t) {
         if (t.typeCode === 3) {
@@ -614,8 +628,7 @@ var Selector = function (_React$Component) {
           typeCode: 3,
           ruleCode: ruleCode,
           ruleName: ruleName,
-          reciving: ruleName,
-          uri: uri
+          reciving: ruleName
         };
         _list.push(menuItem);
         _this2.setState({

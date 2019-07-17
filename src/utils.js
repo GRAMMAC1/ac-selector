@@ -105,8 +105,8 @@ export const transferToMenu = (treeData) => {
   }
   treeData.forEach((value,key) => {
     if('attrs' in value){
-        var k = `${value.code}#menu-${key}&${value.name}^${value.uri}`;
-        var v = value.displayName || value.name;
+        var k = `${value.id}&${value.name}`;
+        var v = value.name;
         subMenu.push(
             <SubMenu key={k} title={<span>{v}</span>}>
             {
@@ -115,8 +115,8 @@ export const transferToMenu = (treeData) => {
             </SubMenu>
         )
     }else{
-        var k = `${value.code}#submenu-${key}&${value.name}^${value.uri}`;
-        var v = value.displayName || value.name;
+        var k = `${value.id}&${value.name}`;
+        var v = value.name;
         subMenu.push(
             <Menu.Item key={k}>{v}</Menu.Item>
         )

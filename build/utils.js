@@ -131,8 +131,8 @@ var transferToMenu = exports.transferToMenu = function transferToMenu(treeData) 
   }
   treeData.forEach(function (value, key) {
     if ('attrs' in value) {
-      var k = value.code + '#menu-' + key + '&' + value.name + '^' + value.uri;
-      var v = value.displayName || value.name;
+      var k = value.id + '&' + value.name;
+      var v = value.name;
       subMenu.push(_react2["default"].createElement(
         SubMenu,
         { key: k, title: _react2["default"].createElement(
@@ -143,8 +143,8 @@ var transferToMenu = exports.transferToMenu = function transferToMenu(treeData) 
         value.attrs ? transferToMenu(value.attrs) : null
       ));
     } else {
-      var k = value.code + '#submenu-' + key + '&' + value.name + '^' + value.uri;
-      var v = value.displayName || value.name;
+      var k = value.id + '&' + value.name;
+      var v = value.name;
       subMenu.push(_react2["default"].createElement(
         _tinperBee.Menu.Item,
         { key: k },
