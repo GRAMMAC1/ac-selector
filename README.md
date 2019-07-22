@@ -34,6 +34,8 @@
 |`selectedOther`|`已选的其他列表`|`array`|否|`[]`|无|
 |`mode`|环境区分|`string`|否|`daily`|
 |`documentNo`|单据编号|`string`|否|`st_purchaseorder`|规则选人查询数据必传参数|
+|`documentName`|单据名称|`string`|否|无|规则选人根节点展示的名称|
+|`ruleList`|规则列表|`array`|否|无|自定义展示规则列表，不传的话需要传`documentNo`和`documentName`，否则规则没有数据
 
 ### `onConfirm`回调函数参数说明
 * 参数一(userList)数据结构 选择的用户
