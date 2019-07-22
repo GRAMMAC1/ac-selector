@@ -39,6 +39,12 @@ export const selectData = [
     orgName: "zbl部门",
     type: "组织",
     typeCode: 2
+  },
+  {
+    ruleCode: "12",
+    ruleName: "修改人",
+    type: "规则",
+    typeCode: 3
   }
 ]
 

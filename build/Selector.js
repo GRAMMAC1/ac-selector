@@ -303,20 +303,46 @@ var Selector = function (_React$Component) {
       var _list = [].concat(_toConsumableArray(selectedUserData));
       var res = (0, _utils.resetChecked)(multiShowList, 'userid');
       res = (0, _utils.setChecked)(multiShowList, data, 'userid');
-      var currItem = _extends({}, record, {
-        type: defaultLabel,
-        typeCode: typeCode,
-        key: record.userid,
-        reciving: record.orgName ? record.username + '(' + record.orgName + ')' : record.username + '(\u672A\u77E5\u90E8\u95E8)'
-      });
-      if (delList.includes(currItem.userid)) {
-        _list.push(currItem);
+      if (record === undefined) {
+        if (data.length) {
+          var useridList = (0, _utils.getUserId)(_list);
+          data.forEach(function (t) {
+            if (!useridList.includes(t.userid)) {
+              _list.push(_extends({}, t, {
+                type: defaultLabel,
+                typeCode: typeCode,
+                key: t.userid,
+                reciving: t.username + '(' + t.orgName + ')'
+              }));
+            }
+          });
+        } else {
+          // 得到当前页数据的userid，遍历当前已选的用户列表，如果有当前页的userid就删除当前项
+          var deleteUserList = (0, _utils.getUserId)(multiShowList),
+              result = [];
+          _list.forEach(function (t) {
+            if (!deleteUserList.includes(t.userid)) {
+              result.push(t);
+            }
+          });
+          _list = [].concat(result);
+        }
       } else {
-        _list = _list.filter(function (t) {
-          if (t.userid !== currItem.userid) {
-            return t;
-          }
+        var currItem = _extends({}, record, {
+          type: defaultLabel,
+          typeCode: typeCode,
+          key: record.userid,
+          reciving: record.orgName ? record.username + '(' + record.orgName + ')' : record.username + '(\u672A\u77E5\u90E8\u95E8)'
         });
+        if (delList.includes(currItem.userid)) {
+          _list.push(currItem);
+        } else {
+          _list = _list.filter(function (t) {
+            if (t.userid !== currItem.userid) {
+              return t;
+            }
+          });
+        }
       }
       _this2.setState({
         multiShowList: [].concat(_toConsumableArray(res)),
@@ -335,22 +361,48 @@ var Selector = function (_React$Component) {
       var _list = [].concat(_toConsumableArray(selectedOtherList));
       var tempList = [].concat(_toConsumableArray(roleShowList));
       var delList = (0, _utils.getRoleId)(data);
-      var currItem = _extends({}, record, {
-        key: record.roleId,
-        type: defaultLabel,
-        typeCode: typeCode,
-        reciving: record.roleName
-      });
       tempList = (0, _utils.resetChecked)(tempList, 'roleId');
       tempList = (0, _utils.setChecked)(tempList, data, 'roleId');
-      if (delList.includes(record.roleId)) {
-        _list.push(currItem);
+      if (record === undefined) {
+        if (data.length) {
+          var roleIdList = (0, _utils.getRoleId)(_list);
+          data.forEach(function (t) {
+            if (!roleIdList.includes(t.roleId)) {
+              _list.push(_extends({}, t, {
+                key: t.roleId,
+                type: defaultLabel,
+                typeCode: typeCode,
+                reciving: t.roleName
+              }));
+            }
+          });
+        } else {
+          // 和用户页签取消全部选中逻辑相同
+          var deleteRoleList = (0, _utils.getRoleId)(roleShowList),
+              result = [];
+          _list.forEach(function (t) {
+            if (!deleteRoleList.includes(t.roleId)) {
+              result.push(t);
+            }
+          });
+          _list = [].concat(result);
+        }
       } else {
-        _list = _list.filter(function (t) {
-          if (t.roleId !== record.roleId) {
-            return t;
-          }
+        var currItem = _extends({}, record, {
+          key: record.roleId,
+          type: defaultLabel,
+          typeCode: typeCode,
+          reciving: record.roleName
         });
+        if (delList.includes(record.roleId)) {
+          _list.push(currItem);
+        } else {
+          _list = _list.filter(function (t) {
+            if (t.roleId !== record.roleId) {
+              return t;
+            }
+          });
+        }
       }
       _this2.setState({
         selectedOtherList: [].concat(_toConsumableArray(_list)),

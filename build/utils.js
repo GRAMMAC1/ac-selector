@@ -95,7 +95,7 @@ var setOtherReciving = exports.setOtherReciving = function setOtherReciving(sour
       case 3:
         return _extends({}, t, {
           reciving: t.ruleName,
-          key: t.ruleCode
+          key: t.ruleCode + '&' + t.ruleName
         });
       default:
         return {};

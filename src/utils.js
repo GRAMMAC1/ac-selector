@@ -70,7 +70,7 @@ export const setOtherReciving = source => {
       case 3:
         return Object.assign({}, t, {
           reciving: t.ruleName,
-          key: t.ruleCode
+          key: `${t.ruleCode}&${t.ruleName}`
         })
       default:
         return {}

@@ -317,20 +317,46 @@ class Selector extends React.Component {
     let _list = [...selectedUserData]
     let res = resetChecked(multiShowList, 'userid')
     res = setChecked(multiShowList, data, 'userid')
-    let currItem = Object.assign({}, record, {
-      type: defaultLabel,
-      typeCode,
-      key: record.userid,
-      reciving: record.orgName ? `${record.username}(${record.orgName})` : `${record.username}(未知部门)`
-    })
-    if(delList.includes(currItem.userid)) {
-      _list.push(currItem)
+    if(record === undefined) {
+      if(data.length) {
+        let useridList = getUserId(_list)
+        data.forEach(t => {
+          if(!useridList.includes(t.userid)) {
+            _list.push(Object.assign({}, t, {
+              type: defaultLabel,
+              typeCode,
+              key: t.userid,
+              reciving: `${t.username}(${t.orgName})`
+            }))
+          }
+        })
+      } else {
+        // 得到当前页数据的userid，遍历当前已选的用户列表，如果有当前页的userid就删除当前项
+        let deleteUserList = getUserId(multiShowList),
+            result = []
+        _list.forEach(t => {
+          if(!deleteUserList.includes(t.userid)) {
+            result.push(t)
+          }
+        })
+        _list = [...result]
+      }
     } else {
-      _list = _list.filter(t => {
-        if(t.userid !== currItem.userid) {
-          return t
-        }
+      let currItem = Object.assign({}, record, {
+        type: defaultLabel,
+        typeCode,
+        key: record.userid,
+        reciving: record.orgName ? `${record.username}(${record.orgName})` : `${record.username}(未知部门)`
       })
+      if(delList.includes(currItem.userid)) {
+        _list.push(currItem)
+      } else {
+        _list = _list.filter(t => {
+          if(t.userid !== currItem.userid) {
+            return t
+          }
+        })
+      }
     }
     this.setState({
       multiShowList: [...res],
@@ -345,22 +371,48 @@ class Selector extends React.Component {
     let _list = [...selectedOtherList]
     let tempList = [...roleShowList]
     let delList = getRoleId(data)
-    let currItem = Object.assign({}, record, {
-      key: record.roleId,
-      type: defaultLabel,
-      typeCode,
-      reciving: record.roleName
-    })
     tempList = resetChecked(tempList, 'roleId')
     tempList = setChecked(tempList, data, 'roleId')
-    if(delList.includes(record.roleId)) {
-      _list.push(currItem)
+    if(record === undefined) {
+      if(data.length) {
+        let roleIdList = getRoleId(_list)
+        data.forEach(t => {
+          if(!roleIdList.includes(t.roleId)) {
+            _list.push(Object.assign({}, t, {
+              key: t.roleId,
+              type: defaultLabel,
+              typeCode,
+              reciving: t.roleName
+            }))
+          }
+        })
+      } else {
+        // 和用户页签取消全部选中逻辑相同
+        let deleteRoleList = getRoleId(roleShowList),
+            result = []
+        _list.forEach(t => {
+          if(!deleteRoleList.includes(t.roleId)) {
+            result.push(t)
+          }
+        })
+        _list = [...result]
+      }
     } else {
-      _list = _list.filter(t => {
-        if(t.roleId !== record.roleId) {
-          return t
-        }
+      let currItem = Object.assign({}, record, {
+        key: record.roleId,
+        type: defaultLabel,
+        typeCode,
+        reciving: record.roleName
       })
+      if(delList.includes(record.roleId)) {
+        _list.push(currItem)
+      } else {
+        _list = _list.filter(t => {
+          if(t.roleId !== record.roleId) {
+            return t
+          }
+        })
+      }
     }
     this.setState({
       selectedOtherList: [..._list],
