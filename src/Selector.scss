@@ -122,11 +122,14 @@
   padding: 0 16px;
   border-bottom: 1px solid #8993A4;
   box-sizing: border-box;
-}
-.selectedUser>p:nth-child(2)>span {
-  color: #F53C32;
-  margin-left: 16px;
-  cursor: pointer;
+  .color-selected {
+    color: #F53C32;
+  }
+  .clear {
+    color: #F53C32;
+    margin-left: 16px;
+    cursor: pointer;
+  }
 }
 .u-row-hover {
   .deleteIcon {

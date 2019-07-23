@@ -61,7 +61,8 @@ var propTypes = {
   selectedOther: _propTypes2["default"].array,
   documentNo: _propTypes2["default"].string,
   documentName: _propTypes2["default"].string,
-  ruleList: _propTypes2["default"].array
+  ruleList: _propTypes2["default"].array,
+  emptyText: _propTypes2["default"].node
 };
 
 var defaultProps = {
@@ -72,7 +73,14 @@ var defaultProps = {
   selectedOther: [],
   mode: 'daily',
   documentNo: '',
-  documentName: ''
+  documentName: '',
+  emptyText: function emptyText() {
+    return _react2["default"].createElement(
+      'div',
+      null,
+      '\u6682\u65E0\u6570\u636E'
+    );
+  }
 };
 
 var Selector = function (_React$Component) {
@@ -862,7 +870,8 @@ var Selector = function (_React$Component) {
                   columns: _colmuns.multiColumns,
                   multiSelect: _utils.multiSelectType,
                   getSelectedDataFunc: _this.getUserList,
-                  data: _this.state.multiShowList
+                  data: _this.state.multiShowList,
+                  emptyText: _this.props.emptyText
                 }),
                 _react2["default"].createElement(_tinperBee.Pagination, {
                   className: 'selector_pagination',
@@ -893,7 +902,8 @@ var Selector = function (_React$Component) {
                   columns: _colmuns.roleMultiCol,
                   multiSelect: _utils.multiSelectType,
                   getSelectedDataFunc: _this.getRoleList,
-                  data: _this.state.roleShowList
+                  data: _this.state.roleShowList,
+                  emptyText: _this.props.emptyText
                 }),
                 _react2["default"].createElement(_tinperBee.Pagination, {
                   className: 'selector_pagination',
@@ -943,7 +953,8 @@ var Selector = function (_React$Component) {
                     _react2["default"].createElement(_beeTable2["default"], {
                       scroll: { y: 440 },
                       columns: _colmuns.orgCol,
-                      data: _this.state.orgShowList
+                      data: _this.state.orgShowList,
+                      emptyText: _this.props.emptyText
                     })
                   )
                 )
@@ -989,11 +1000,15 @@ var Selector = function (_React$Component) {
                 _react2["default"].createElement(
                   'p',
                   { className: 'flr mt12' },
-                  '\u5DF2\u9009\uFF1A',
-                  _this.state.selectedCount,
                   _react2["default"].createElement(
                     'span',
-                    { onClick: _this.deSelectAll.bind(this, 1) },
+                    { className: 'color-selected' },
+                    '\u5DF2\u9009\uFF1A',
+                    _this.state.selectedCount
+                  ),
+                  _react2["default"].createElement(
+                    'span',
+                    { className: 'clear', onClick: _this.deSelectAll.bind(this, 1) },
                     '\u6E05\u7A7A'
                   )
                 )
@@ -1003,7 +1018,8 @@ var Selector = function (_React$Component) {
                 columns: _colmuns.selectedUserCol,
                 data: _this.state.selectedUserData,
                 hoverContent: _this.hoverDelIcon,
-                onRowHover: _this.onRowHover
+                onRowHover: _this.onRowHover,
+                emptyText: _this.props.emptyText
               })
             ),
             _react2["default"].createElement(
@@ -1020,11 +1036,15 @@ var Selector = function (_React$Component) {
                 _react2["default"].createElement(
                   'p',
                   { className: 'flr mt12' },
-                  '\u5DF2\u9009\uFF1A',
-                  _this.state.selectedOtherCount,
                   _react2["default"].createElement(
                     'span',
-                    { onClick: _this.deSelectAll.bind(this, 0) },
+                    { className: 'color-selected' },
+                    '\u5DF2\u9009\uFF1A',
+                    _this.state.selectedOtherCount
+                  ),
+                  _react2["default"].createElement(
+                    'span',
+                    { className: 'clear', onClick: _this.deSelectAll.bind(this, 0) },
                     '\u6E05\u7A7A'
                   )
                 )
@@ -1034,7 +1054,8 @@ var Selector = function (_React$Component) {
                 columns: _colmuns.selectedUserCol,
                 data: _this.state.selectedOtherList,
                 hoverContent: _this.hoverDelOtherIcon,
-                onRowHover: _this.onRowOtherHover
+                onRowHover: _this.onRowOtherHover,
+                emptyText: _this.props.emptyText
               })
             )
           )

@@ -38,7 +38,8 @@ const propTypes = {
   selectedOther: PropTypes.array,
   documentNo: PropTypes.string,
   documentName: PropTypes.string,
-  ruleList: PropTypes.array
+  ruleList: PropTypes.array,
+  emptyText: PropTypes.node
 }
 
 const defaultProps = {
@@ -49,7 +50,8 @@ const defaultProps = {
   selectedOther: [],
   mode: 'daily',
   documentNo: '',
-  documentName: ''
+  documentName: '',
+  emptyText: () => <div>暂无数据</div>
 }
 
 class Selector extends React.Component {
@@ -729,6 +731,7 @@ class Selector extends React.Component {
                       multiSelect={multiSelectType}
                       getSelectedDataFunc={_this.getUserList}
                       data={_this.state.multiShowList}
+                      emptyText={_this.props.emptyText}
                     />
                     <Pagination 
                       className={'selector_pagination'}
@@ -756,6 +759,7 @@ class Selector extends React.Component {
                       multiSelect={multiSelectType}
                       getSelectedDataFunc={_this.getRoleList}
                       data={_this.state.roleShowList}
+                      emptyText={_this.props.emptyText}
                     />
                     <Pagination 
                       className={'selector_pagination'}
@@ -794,6 +798,7 @@ class Selector extends React.Component {
                           scroll={{y: 440}}
                           columns={orgCol}
                           data={_this.state.orgShowList}
+                          emptyText={_this.props.emptyText}
                         />
                       </div>
                     </div>
@@ -819,8 +824,8 @@ class Selector extends React.Component {
                   <div className={`selectedUser clearfix`}>
                     <p className={'fll mt12'}>用户</p>
                     <p className={'flr mt12'}>
-                      已选：{_this.state.selectedCount}
-                      <span onClick={_this.deSelectAll.bind(this, 1)}>清空</span>
+                      <span className={'color-selected'}>已选：{_this.state.selectedCount}</span>
+                      <span className={'clear'} onClick={_this.deSelectAll.bind(this, 1)}>清空</span>
                     </p>
                   </div>
                   <Table 
@@ -829,14 +834,15 @@ class Selector extends React.Component {
                     data={_this.state.selectedUserData}
                     hoverContent={_this.hoverDelIcon}
                     onRowHover={_this.onRowHover}
+                    emptyText={_this.props.emptyText}
                   />
                 </div>
                 <div>
                   <div className={`selectedUser clearfix`}>
                     <p className={'fll mt12'}>其他</p>
                     <p className={'flr mt12'}>
-                      已选：{_this.state.selectedOtherCount}
-                      <span onClick={_this.deSelectAll.bind(this, 0)}>清空</span>
+                      <span className={'color-selected'}>已选：{_this.state.selectedOtherCount}</span>
+                      <span className={'clear'} onClick={_this.deSelectAll.bind(this, 0)}>清空</span>
                     </p>
                   </div>
                   <Table 
@@ -845,6 +851,7 @@ class Selector extends React.Component {
                     data={_this.state.selectedOtherList}
                     hoverContent={_this.hoverDelOtherIcon}
                     onRowHover={_this.onRowOtherHover}
+                    emptyText={_this.props.emptyText}
                   />
                 </div>
               </div>
