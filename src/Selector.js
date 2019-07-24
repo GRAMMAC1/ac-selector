@@ -57,6 +57,7 @@ const defaultProps = {
 class Selector extends React.Component {
   constructor() {
     super()
+    this.orgTreeList = []; // 备份完整的组织树
     this.state = {
       show: false,
       filterIndex: '', // 根据首字母筛选用户
@@ -74,6 +75,7 @@ class Selector extends React.Component {
       prefixUrl: '',
       staffInputValue: '',
       roleInputValue: '',
+      orgInputValue: '',
       staffPage: {
         activePage: 1,
         items: 1,
@@ -85,6 +87,8 @@ class Selector extends React.Component {
         total: 0, // 总数
       },
       orgSelectedKeys: [],
+      orgExpandedKeys: [],
+      autoExpandParent: true
     }
   }
 
@@ -532,6 +536,7 @@ class Selector extends React.Component {
           this.setState({
             orgTreeList: response.data
           })
+          this.orgTreeList = [...response.data]
           if(selectedOtherList.length) {
             let checkedKeys = []
             selectedOtherList.forEach(t => {
@@ -678,18 +683,67 @@ class Selector extends React.Component {
       })
     }
   } 
+  searchOrg = e => {
+    const value = e.target.value
+    this.setState({
+      orgInputValue: value
+    })
+    if(!value.trim()) {
+      return 
+    }
+    let res = []
+    function deepTraversal(list, callback) {
+      let stack = []
+      while(list) {
+        callback(list)
+        if(list.childs) {
+          for(let i = list.childs.length - 1; i >= 0; i --) {
+            stack.push(list.childs[i])
+          }
+        }
+        list = stack.pop()
+      }
+    }
+    this.orgTreeList.forEach(t => {
+      deepTraversal(t, node => {
+        if(node.orgName.indexOf(value) > -1) {
+          res.push(node.orgId)
+        }
+      })
+    })
+    this.setState({
+      orgExpandedKeys: [...res],
+      autoExpandParent: true
+    })
+  }
+  onExpand = (keys) => {
+    // console.log(a,b,c)
+    this.setState({
+      orgExpandedKeys: [...keys],
+      autoExpandParent: false
+    })
+  }
 
   render() {
     const _this = this
     const loopData = data => data.map(item => {
+      const index = item.orgName.indexOf(_this.state.orgInputValue)
+      const beforeName = item.orgName.substring(0, index)
+      const afterName = item.orgName.substring(index + _this.state.orgInputValue.length, item.orgName.length)
+      const title = index > -1 ? 
+        <span>
+          {beforeName}
+          <span className="u-tree-searchable-filter">{_this.state.orgInputValue}</span>
+          {afterName}
+        </span> : <span>{item.orgName}</span>
       if(item.childs) {
         return (
-          <TreeNode title={item.orgName} key={item.orgId} icon={ item.parentId ? <Icon type={'uf-users'} /> : <Icon type={'uf-group-2'} />}>
+          <TreeNode title={title} key={item.orgId} icon={ item.parentId ? <Icon type={'uf-users'} /> : <Icon type={'uf-group-2'} />}>
             {loopData(item.childs)}
           </TreeNode>
         )
       }
-      return <TreeNode title={item.orgName} key={item.orgId} icon={<Icon type={'uf-users'} />} isLeaf={true}></TreeNode>
+      return <TreeNode title={title} key={item.orgId} icon={<Icon type={'uf-users'} />} isLeaf={true}></TreeNode>
     })
     return (
         <Modal
@@ -777,7 +831,7 @@ class Selector extends React.Component {
                   </TabPane>
                   <TabPane tab={'组织'} key={3}>
                     <div className={'searchWrapper'}>
-                      <input placeholder={'请输入您要查找的组织'} className={'search'} />
+                      <input onChange={_this.searchOrg} placeholder={'请输入您要查找的组织'} className={'search'} />
                       <Icon onClick={_this.clickSearch} className={'searchIcon'} type='uf-search' />
                     </div>
                     <div className={'clearfix'}>
@@ -787,6 +841,9 @@ class Selector extends React.Component {
                           cancelUnSelect={true}
                           checkedKeys={_this.state.orgSelectedKeys}
                           checkable
+                          onExpand={_this.onExpand}
+                          autoExpandParent={_this.state.autoExpandParent}
+                          expandedKeys={_this.state.orgExpandedKeys}
                           onSelect={_this.treeOnSelect}
                           onCheck={_this.treeOnCheck}
                         >

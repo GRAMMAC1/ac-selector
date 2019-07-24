@@ -534,6 +534,7 @@ var Selector = function (_React$Component) {
             _this2.setState({
               orgTreeList: response.data
             });
+            _this2.orgTreeList = [].concat(_toConsumableArray(response.data));
             if (selectedOtherList.length) {
               var checkedKeys = [];
               selectedOtherList.forEach(function (t) {
@@ -698,6 +699,49 @@ var Selector = function (_React$Component) {
       }
     };
 
+    _this2.searchOrg = function (e) {
+      var value = e.target.value;
+      _this2.setState({
+        orgInputValue: value
+      });
+      if (!value.trim()) {
+        return;
+      }
+      var res = [];
+      function deepTraversal(list, callback) {
+        var stack = [];
+        while (list) {
+          callback(list);
+          if (list.childs) {
+            for (var i = list.childs.length - 1; i >= 0; i--) {
+              stack.push(list.childs[i]);
+            }
+          }
+          list = stack.pop();
+        }
+      }
+      _this2.orgTreeList.forEach(function (t) {
+        deepTraversal(t, function (node) {
+          if (node.orgName.indexOf(value) > -1) {
+            res.push(node.orgId);
+          }
+        });
+      });
+      _this2.setState({
+        orgExpandedKeys: [].concat(res),
+        autoExpandParent: true
+      });
+    };
+
+    _this2.onExpand = function (keys) {
+      // console.log(a,b,c)
+      _this2.setState({
+        orgExpandedKeys: [].concat(_toConsumableArray(keys)),
+        autoExpandParent: false
+      });
+    };
+
+    _this2.orgTreeList = []; // 备份完整的组织树
     _this2.state = {
       show: false,
       filterIndex: '', // 根据首字母筛选用户
@@ -715,6 +759,7 @@ var Selector = function (_React$Component) {
       prefixUrl: '',
       staffInputValue: '',
       roleInputValue: '',
+      orgInputValue: '',
       staffPage: {
         activePage: 1,
         items: 1,
@@ -725,7 +770,9 @@ var Selector = function (_React$Component) {
         items: 1, // 总页数
         total: 0 // 总数
       },
-      orgSelectedKeys: []
+      orgSelectedKeys: [],
+      orgExpandedKeys: [],
+      autoExpandParent: true
     };
     return _this2;
   }
@@ -802,14 +849,32 @@ var Selector = function (_React$Component) {
     var _this = this;
     var loopData = function loopData(data) {
       return data.map(function (item) {
+        var index = item.orgName.indexOf(_this.state.orgInputValue);
+        var beforeName = item.orgName.substring(0, index);
+        var afterName = item.orgName.substring(index + _this.state.orgInputValue.length, item.orgName.length);
+        var title = index > -1 ? _react2["default"].createElement(
+          'span',
+          null,
+          beforeName,
+          _react2["default"].createElement(
+            'span',
+            { className: 'u-tree-searchable-filter' },
+            _this.state.orgInputValue
+          ),
+          afterName
+        ) : _react2["default"].createElement(
+          'span',
+          null,
+          item.orgName
+        );
         if (item.childs) {
           return _react2["default"].createElement(
             TreeNode,
-            { title: item.orgName, key: item.orgId, icon: item.parentId ? _react2["default"].createElement(_tinperBee.Icon, { type: 'uf-users' }) : _react2["default"].createElement(_tinperBee.Icon, { type: 'uf-group-2' }) },
+            { title: title, key: item.orgId, icon: item.parentId ? _react2["default"].createElement(_tinperBee.Icon, { type: 'uf-users' }) : _react2["default"].createElement(_tinperBee.Icon, { type: 'uf-group-2' }) },
             loopData(item.childs)
           );
         }
-        return _react2["default"].createElement(TreeNode, { title: item.orgName, key: item.orgId, icon: _react2["default"].createElement(_tinperBee.Icon, { type: 'uf-users' }), isLeaf: true });
+        return _react2["default"].createElement(TreeNode, { title: title, key: item.orgId, icon: _react2["default"].createElement(_tinperBee.Icon, { type: 'uf-users' }), isLeaf: true });
       });
     };
     return _react2["default"].createElement(
@@ -925,7 +990,7 @@ var Selector = function (_React$Component) {
                 _react2["default"].createElement(
                   'div',
                   { className: 'searchWrapper' },
-                  _react2["default"].createElement('input', { placeholder: '请输入您要查找的组织', className: 'search' }),
+                  _react2["default"].createElement('input', { onChange: _this.searchOrg, placeholder: '请输入您要查找的组织', className: 'search' }),
                   _react2["default"].createElement(_tinperBee.Icon, { onClick: _this.clickSearch, className: 'searchIcon', type: 'uf-search' })
                 ),
                 _react2["default"].createElement(
@@ -941,6 +1006,9 @@ var Selector = function (_React$Component) {
                         cancelUnSelect: true,
                         checkedKeys: _this.state.orgSelectedKeys,
                         checkable: true,
+                        onExpand: _this.onExpand,
+                        autoExpandParent: _this.state.autoExpandParent,
+                        expandedKeys: _this.state.orgExpandedKeys,
                         onSelect: _this.treeOnSelect,
                         onCheck: _this.treeOnCheck
                       },
