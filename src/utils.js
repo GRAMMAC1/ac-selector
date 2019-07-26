@@ -48,7 +48,7 @@ export const setUserReciving = source => {
   let res = source.map(t => (
     Object.assign({}, t, {
       key: t.userid,
-      reciving: `${t.username}(${t.orgName})`
+      reciving:  t.orgName ? `${t.username}(${t.orgName})` : t.username
     })
   ))
   return res

@@ -275,7 +275,7 @@ class Selector extends React.Component {
     <Icon onClick={this.delOther} className={'deleteIcon'} type={'uf-close'} />
   )
   delOther = () => {
-    let { roleShowList,selectedOtherList } = this.state
+    let { roleShowList,selectedOtherList,orgSelectedKeys } = this.state
     let _list = [...roleShowList]
     if(selectedOtherList[this.delOtherIndex].typeCode === 1) {
       _list = _list.map(t => {
@@ -285,6 +285,20 @@ class Selector extends React.Component {
         }
         return t
       })
+    } else if (selectedOtherList[this.delOtherIndex].typeCode === 2) {
+      let index = -1
+      orgSelectedKeys.forEach((t, i) => {
+        if(t == selectedOtherList[this.delOtherIndex].orgId) {
+          index = i
+        }
+      })
+      if(index !== -1) {
+        let tempList = [...orgSelectedKeys]
+        tempList.splice(index, 1)
+        this.setState({
+          orgSelectedKeys: [...tempList]
+        })
+      }
     }
     let res = [...selectedOtherList]
     res.splice(this.delOtherIndex, 1)
@@ -600,8 +614,8 @@ class Selector extends React.Component {
       key: info[i],
       type: defaultLabel,
       typeCode,
-      reciving: t.props.title,
-      orgName: t.props.title,
+      reciving: t.props.title.props.children[2].props.children,
+      orgName: t.props.title.props.children[2].props.children,
       orgId: info[i]
     }))
     let res = newList.concat(tempRes)
@@ -734,8 +748,14 @@ class Selector extends React.Component {
         <span>
           {beforeName}
           <span className="u-tree-searchable-filter">{_this.state.orgInputValue}</span>
+          <span style={{display: 'none'}}>{item.orgName}</span>
           {afterName}
-        </span> : <span>{item.orgName}</span>
+        </span> : 
+        <span>
+          <span></span>
+          <span>{item.orgName}</span>
+          <span style={{display: 'none'}}>{item.orgName}</span>
+        </span>
       if(item.childs) {
         return (
           <TreeNode title={title} key={item.orgId} icon={ item.parentId ? <Icon type={'uf-users'} /> : <Icon type={'uf-group-2'} />}>

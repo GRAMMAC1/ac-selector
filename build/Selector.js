@@ -253,7 +253,8 @@ var Selector = function (_React$Component) {
     _this2.delOther = function () {
       var _this2$state2 = _this2.state,
           roleShowList = _this2$state2.roleShowList,
-          selectedOtherList = _this2$state2.selectedOtherList;
+          selectedOtherList = _this2$state2.selectedOtherList,
+          orgSelectedKeys = _this2$state2.orgSelectedKeys;
 
       var _list = [].concat(_toConsumableArray(roleShowList));
       if (selectedOtherList[_this2.delOtherIndex].typeCode === 1) {
@@ -264,6 +265,20 @@ var Selector = function (_React$Component) {
           }
           return t;
         });
+      } else if (selectedOtherList[_this2.delOtherIndex].typeCode === 2) {
+        var index = -1;
+        orgSelectedKeys.forEach(function (t, i) {
+          if (t == selectedOtherList[_this2.delOtherIndex].orgId) {
+            index = i;
+          }
+        });
+        if (index !== -1) {
+          var tempList = [].concat(_toConsumableArray(orgSelectedKeys));
+          tempList.splice(index, 1);
+          _this2.setState({
+            orgSelectedKeys: [].concat(_toConsumableArray(tempList))
+          });
+        }
       }
       var res = [].concat(_toConsumableArray(selectedOtherList));
       res.splice(_this2.delOtherIndex, 1);
@@ -606,8 +621,8 @@ var Selector = function (_React$Component) {
           key: info[i],
           type: defaultLabel,
           typeCode: typeCode,
-          reciving: t.props.title,
-          orgName: t.props.title,
+          reciving: t.props.title.props.children[2].props.children,
+          orgName: t.props.title.props.children[2].props.children,
           orgId: info[i]
         };
       });
@@ -861,11 +876,26 @@ var Selector = function (_React$Component) {
             { className: 'u-tree-searchable-filter' },
             _this.state.orgInputValue
           ),
+          _react2["default"].createElement(
+            'span',
+            { style: { display: 'none' } },
+            item.orgName
+          ),
           afterName
         ) : _react2["default"].createElement(
           'span',
           null,
-          item.orgName
+          _react2["default"].createElement('span', null),
+          _react2["default"].createElement(
+            'span',
+            null,
+            item.orgName
+          ),
+          _react2["default"].createElement(
+            'span',
+            { style: { display: 'none' } },
+            item.orgName
+          )
         );
         if (item.childs) {
           return _react2["default"].createElement(

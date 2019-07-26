@@ -73,7 +73,7 @@ var setUserReciving = exports.setUserReciving = function setUserReciving(source)
   var res = source.map(function (t) {
     return _extends({}, t, {
       key: t.userid,
-      reciving: t.username + '(' + t.orgName + ')'
+      reciving: t.orgName ? t.username + '(' + t.orgName + ')' : t.username
     });
   });
   return res;
