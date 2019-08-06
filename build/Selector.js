@@ -145,6 +145,7 @@ var Selector = function (_React$Component) {
               };
               _list = (0, _utils.resetChecked)(response.data.values, 'userid');
               _list = (0, _utils.setChecked)(response.data.values, _this2.state.selectedUserData, 'userid');
+              _list = (0, _utils.addFullAttr)(_list);
               _this2.setState({
                 multiShowList: _list,
                 staffPage: obj
@@ -817,6 +818,17 @@ var Selector = function (_React$Component) {
         this.setState({
           prefixUrl: 'https://u8cmsg-daily.yyuap.com/message-platform-web'
         });
+        break;
+      case 'pre':
+        this.setState({
+          prefixUrl: 'https://msg-y3me-pre.diwork.com/message-platform-web'
+        });
+        break;
+      case 'diwork':
+        this.setState({
+          prefixUrl: 'http://msg-y3me-daily.yyuap.com/message-platform-web'
+        });
+        break;
       default:
         this.setState({
           prefixUrl: 'https://u8cmsg-daily.yyuap.com/message-platform-web'
@@ -1036,6 +1048,7 @@ var Selector = function (_React$Component) {
                         cancelUnSelect: true,
                         checkedKeys: _this.state.orgSelectedKeys,
                         checkable: true,
+                        checkStrictly: true,
                         onExpand: _this.onExpand,
                         autoExpandParent: _this.state.autoExpandParent,
                         expandedKeys: _this.state.orgExpandedKeys,

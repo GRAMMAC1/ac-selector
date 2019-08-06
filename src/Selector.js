@@ -116,6 +116,17 @@ class Selector extends React.Component {
         this.setState({
           prefixUrl: 'https://u8cmsg-daily.yyuap.com/message-platform-web'
         })
+        break;
+      case 'pre': 
+        this.setState({
+          prefixUrl: 'https://msg-y3me-pre.diwork.com/message-platform-web'
+        })
+        break;
+      case 'diwork':
+        this.setState({
+          prefixUrl: 'http://msg-y3me-daily.yyuap.com/message-platform-web'
+        })
+        break;
       default:
         this.setState({
           prefixUrl: 'https://u8cmsg-daily.yyuap.com/message-platform-web'
@@ -174,6 +185,7 @@ class Selector extends React.Component {
                 }
             _list = resetChecked(response.data.values, 'userid')
             _list = setChecked(response.data.values, this.state.selectedUserData, 'userid')
+            _list = addFullAttr(_list)
             this.setState({
               multiShowList: _list,
               staffPage: obj
@@ -861,6 +873,7 @@ class Selector extends React.Component {
                           cancelUnSelect={true}
                           checkedKeys={_this.state.orgSelectedKeys}
                           checkable
+                          checkStrictly
                           onExpand={_this.onExpand}
                           autoExpandParent={_this.state.autoExpandParent}
                           expandedKeys={_this.state.orgExpandedKeys}
