@@ -124,7 +124,7 @@ class Selector extends React.Component {
         break;
       case 'diwork':
         this.setState({
-          prefixUrl: 'http://msg-y3me-daily.yyuap.com/message-platform-web'
+          prefixUrl: 'https://msg-y3me-daily.yyuap.com/message-platform-web'
         })
         break;
       default:
