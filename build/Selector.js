@@ -829,6 +829,11 @@ var Selector = function (_React$Component) {
           prefixUrl: 'https://msg-y3me-daily.yyuap.com/message-platform-web'
         });
         break;
+      case 'diwork-prod':
+        this.setState({
+          prefixUrl: 'https://message-yonsuite.diwork.com/message-platform-web'
+        });
+        break;
       default:
         this.setState({
           prefixUrl: 'https://u8cmsg-daily.yyuap.com/message-platform-web'
