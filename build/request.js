@@ -24,10 +24,10 @@ function requestGet(url) {
         method: 'GET', // *GET, POST, PUT, DELETE, etc.
         cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
         credentials: 'include', // include, same-origin, *omit
-        headers: {
-            'content-type': 'application/json',
-            'withCredentials': true
-        },
+        // headers: {
+        //   'content-type': 'application/json',
+        //   'withCredentials': true
+        // },
         mode: 'cors' // no-cors, cors, *same-origin
     };
     return fetch(url, option).then(function (response) {
