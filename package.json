@@ -38,10 +38,11 @@
  },
  "dependencies": {
   "babel-runtime": "^6.23.0",
+  "bee-tools": "^1.0.5",
   "classnames": "^2.2.5",
   "install": "^0.12.2",
-  "tinper-bee-core": "^2.0.32",
-  "tinper-bee": "2.1.0"
+  "tinper-bee": "2.1.0",
+  "tinper-bee-core": "^2.0.32"
  },
  "devDependencies": {
   "bee-button": "^2.0.11",
