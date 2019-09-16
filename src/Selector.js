@@ -40,7 +40,7 @@ const i18n = { ...langs }
 const noop = function() {}
 
 const propTypes = {
-  local:PropTypes.string.isRequired,
+  locale:PropTypes.oneOf(['zh_CN', 'zh_TW', 'en_US']),
   show: PropTypes.bool.isRequired,
   onConfirm: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
@@ -54,7 +54,7 @@ const propTypes = {
 }
 
 const defaultProps = {
-  local: 'en_US',
+  locale: 'zh_CN',
   show: false,
   onConfirm: noop,
   onClose: noop,
@@ -63,7 +63,7 @@ const defaultProps = {
   mode: 'daily',
   documentNo: '',
   documentName: '',
-  emptyText: local => <div>{local}</div>
+  emptyText: locale => <div>{locale}</div>
 }
 
 class Selector extends React.Component {
@@ -71,7 +71,7 @@ class Selector extends React.Component {
     super(props)
     this.orgTreeList = [] // 备份完整的组织树
     this.state = {
-      local: props.local,
+      locale: props.locale,
       show: false,
       filterIndex: '', // 根据首字母筛选用户
       selectedCount: 0, // 当前已选择的总数量
@@ -109,7 +109,7 @@ class Selector extends React.Component {
     let _newUserList = setUserReciving(nextProps.selectedUser)
     let _newOtherList = setUserReciving(nextProps.selectedOther)
     this.setState({
-      local: nextProps.local,
+      locale: nextProps.locale,
       show: nextProps.show,
       selectedOtherList: _newOtherList,
       selectedOtherCount: _newOtherList.length,
@@ -433,7 +433,7 @@ class Selector extends React.Component {
         reciving: record.orgName
           ? `${record.username}(${record.orgName})`
           : // : `${record.username}(未知部门)`
-            `${record.username}(${langs[this.state.local]})`
+            `${record.username}(${langs[this.state.locale]})`
       })
       if (delList.includes(currItem.userid)) {
         _list.push(currItem)
@@ -833,7 +833,7 @@ class Selector extends React.Component {
 
   render() {
     const _this = this
-    const { local } = this.state
+    const { locale } = this.state
     const loopData = data =>
       data.map(item => {
         const index = item.orgName.indexOf(_this.state.orgInputValue)
@@ -894,7 +894,7 @@ class Selector extends React.Component {
         backdrop={true}>
         <Modal.Header closeButton>
           {/* <span className={'headerTitle'}>添加消息接收人</span> */}
-          <span className={'headerTitle'}>{i18n[local].addMsgAcpt}</span>
+          <span className={'headerTitle'}>{i18n[locale].addMsgAcpt}</span>
         </Modal.Header>
         <Modal.Body className={'selectModalBody'}>
           <div className={'selectContainer clearfix'}>
@@ -905,7 +905,7 @@ class Selector extends React.Component {
                 onChange={this.onChange}
                 className={'deptTitle'}>
                 {/* <TabPane tab={'用户'} key={1}> */}
-                <TabPane tab={i18n[local].user} key={1}>
+                <TabPane tab={i18n[locale].user} key={1}>
                   <div className={'searchWrapper'}>
                     <input
                       value={_this.state.staffInputValue}
@@ -913,7 +913,7 @@ class Selector extends React.Component {
                       type="text"
                       onKeyUp={_this.search}
                       // placeholder={'请输入您要查找的用户'}
-                      placeholder={i18n[local].pleaseUser}
+                      placeholder={i18n[locale].pleaseUser}
                       className={'search'}
                     />
                     <Icon
@@ -925,11 +925,11 @@ class Selector extends React.Component {
                   <MultiSelectTable
                     scroll={{ y: 360 }}
                     // columns={multiColumns}
-                    columns={multiColumns[local]}
+                    columns={multiColumns[locale]}
                     multiSelect={multiSelectType}
                     getSelectedDataFunc={_this.getUserList}
                     data={_this.state.multiShowList}
-                    emptyText={() => _this.props.emptyText(i18n[local].noData)}
+                    emptyText={() => _this.props.emptyText(i18n[locale].noData)}
                   />
                   <Pagination
                     className={'selector_pagination'}
@@ -946,13 +946,13 @@ class Selector extends React.Component {
                   />
                 </TabPane>
                 {/* <TabPane tab={'角色'} key={2}> */}
-                <TabPane tab={i18n[local].role} key={2}>
+                <TabPane tab={i18n[locale].role} key={2}>
                   <div className={'searchWrapper'}>
                     <input
                       value={_this.state.roleInputValue}
                       onChange={_this.inputChange.bind(this, 'roleInputValue')}
                       type="text"
-                      placeholder={i18n[local].pleaseRole}
+                      placeholder={i18n[locale].pleaseRole}
                       onKeyUp={_this.search}
                       className={'search'}
                     />
@@ -969,7 +969,7 @@ class Selector extends React.Component {
                     multiSelect={multiSelectType}
                     getSelectedDataFunc={_this.getRoleList}
                     data={_this.state.roleShowList}
-                    emptyText={()=>_this.props.emptyText(i18n[local].noData)}
+                    emptyText={()=>_this.props.emptyText(i18n[locale].noData)}
                   />
                   <Pagination
                     className={'selector_pagination'}
@@ -986,12 +986,12 @@ class Selector extends React.Component {
                   />
                 </TabPane>
                 {/* <TabPane tab={'组织'} key={3}> */}
-                <TabPane tab={i18n[local].org} key={3}>
+                <TabPane tab={i18n[locale].org} key={3}>
                   <div className={'searchWrapper'}>
                     <input
                       onChange={_this.searchOrg}
                       // placeholder={'请输入您要查找的组织'}
-                      placeholder={i18n[local].pleaseOrg}
+                      placeholder={i18n[locale].pleaseOrg}
                       className={'search'}
                     />
                     <Icon
@@ -1019,19 +1019,19 @@ class Selector extends React.Component {
                     <div className={'orgTable'}>
                       <Table
                         scroll={{ y: 440 }}
-                        columns={orgCol[local]}
+                        columns={orgCol[locale]}
                         data={_this.state.orgShowList}
-                        emptyText={()=>_this.props.emptyText(i18n[local].noData)}
+                        emptyText={()=>_this.props.emptyText(i18n[locale].noData)}
                       />
                     </div>
                   </div>
                 </TabPane>
                 {/* <TabPane tab={'规则'} key={4}> */}
-                <TabPane tab={i18n[local].modify} key={4}>
+                <TabPane tab={i18n[locale].modify} key={4}>
                   <div className={'searchWrapper'}>
                     <input
                       // placeholder={'请输入您要查找的规则'}
-                      placeholder={i18n[local].pleaseRule}
+                      placeholder={i18n[locale].pleaseRule}
                       className={'search'}
                     />
                     <Icon className={'searchIcon'} type="uf-search" />
@@ -1048,53 +1048,53 @@ class Selector extends React.Component {
               <div>
                 <div className={`selectedUser clearfix`}>
                   {/* <p className={'fll mt12'}>用户</p> */}
-                  <p className={'fll mt12'}>{i18n[local].user}</p>
+                  <p className={'fll mt12'}>{i18n[locale].user}</p>
                   <p className={'flr mt12'}>
                     <span className={'color-selected'}>
                       {/* 已选：{_this.state.selectedCount} */}
-                      {i18n[local].choose}：{_this.state.selectedCount}
+                      {i18n[locale].choose}：{_this.state.selectedCount}
                     </span>
                     <span
                       className={'clear'}
                       onClick={_this.deSelectAll.bind(this, 1)}>
                       {/* 清空 */}
-                      {i18n[local].clean}
+                      {i18n[locale].clean}
                     </span>
                   </p>
                 </div>
                 <Table
                   scroll={{ y: 200 }}
-                  columns={selectedUserCol[local]}
+                  columns={selectedUserCol[locale]}
                   data={_this.state.selectedUserData}
                   hoverContent={_this.hoverDelIcon}
                   onRowHover={_this.onRowHover}
-                  emptyText={()=>_this.props.emptyText(i18n[local].noData)}
+                  emptyText={()=>_this.props.emptyText(i18n[locale].noData)}
                 />
               </div>
               <div>
                 <div className={`selectedUser clearfix`}>
                   {/* <p className={'fll mt12'}>其他</p> */}
-                  <p className={'fll mt12'}>{i18n[local].other}</p>
+                  <p className={'fll mt12'}>{i18n[locale].other}</p>
                   <p className={'flr mt12'}>
                     <span className={'color-selected'}>
                       {/* 已选：{_this.state.selectedOtherCount} */}
-                      {i18n[local].choose}：{_this.state.selectedOtherCount}
+                      {i18n[locale].choose}：{_this.state.selectedOtherCount}
                     </span>
                     <span
                       className={'clear'}
                       onClick={_this.deSelectAll.bind(this, 0)}>
                       {/* 清空 */}
-                      {i18n[local].clean}
+                      {i18n[locale].clean}
                     </span>
                   </p>
                 </div>
                 <Table
                   scroll={{ y: 200 }}
-                  columns={selectedUserCol[local]}
+                  columns={selectedUserCol[locale]}
                   data={_this.state.selectedOtherList}
                   hoverContent={_this.hoverDelOtherIcon}
                   onRowHover={_this.onRowOtherHover}
-                  emptyText={()=>_this.props.emptyText(i18n[local].noData)}
+                  emptyText={()=>_this.props.emptyText(i18n[locale].noData)}
                 />
               </div>
             </div>
@@ -1103,11 +1103,11 @@ class Selector extends React.Component {
         <Modal.Footer>
           <Button onClick={_this.close} className={'cancelBtn'}>
             {/* 取消 */}
-            {i18n[local].cacel}
+            {i18n[locale].cacel}
           </Button>
           <Button onClick={_this.confirm} colors={'primary'}>
             {/* 确定 */}
-            {i18n[local].accept}
+            {i18n[locale].accept}
           </Button>
         </Modal.Footer>
       </Modal>
