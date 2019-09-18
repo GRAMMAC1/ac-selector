@@ -56,7 +56,7 @@ const zh_CN = {
   //  请输入您要查找的用户
   pleaseUser:'请输入您要查找的用户',
   // 请输入您要查找的角色
-  pleaseRole:'Please enter the role',
+  pleaseRole:'请输入您要查找的角色',
   //  添加消息接收人
   addMsgAcpt:'添加消息接收人'
 }
