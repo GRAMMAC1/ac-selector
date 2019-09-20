@@ -923,7 +923,7 @@ class Selector extends React.Component {
                     />
                   </div>
                   <MultiSelectTable
-                    scroll={{ y: 360 }}
+                    scroll={{ y: 210 }}
                     // columns={multiColumns}
                     columns={multiColumns[locale]}
                     multiSelect={multiSelectType}
@@ -964,7 +964,7 @@ class Selector extends React.Component {
                   </div>
                   <MultiSelectTable
                     id={'role'}
-                    scroll={{ y: 360 }}
+                    scroll={{ y: 210 }}
                     columns={roleMultiCol}
                     multiSelect={multiSelectType}
                     getSelectedDataFunc={_this.getRoleList}
@@ -1063,7 +1063,7 @@ class Selector extends React.Component {
                   </p>
                 </div>
                 <Table
-                  scroll={{ y: 200 }}
+                  scroll={{ y: 130 }}
                   columns={selectedUserCol[locale]}
                   data={_this.state.selectedUserData}
                   hoverContent={_this.hoverDelIcon}
@@ -1089,7 +1089,7 @@ class Selector extends React.Component {
                   </p>
                 </div>
                 <Table
-                  scroll={{ y: 200 }}
+                  scroll={{ y: 130 }}
                   columns={selectedUserCol[locale]}
                   data={_this.state.selectedOtherList}
                   hoverContent={_this.hoverDelOtherIcon}
