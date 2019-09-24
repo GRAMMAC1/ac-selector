@@ -63,7 +63,12 @@ var roleMultiCol = exports.roleMultiCol = [{ key: 'rolename', title: '角色名'
 var orgCol = exports.orgCol = {
   zh_CN: [{ key: 'orgName', title: '姓名', dataIndex: 'username', width: 150 }, { key: 'orgMail', title: '账号(邮箱)', dataIndex: 'email', width: 150 }, { key: 'orgPhone', title: '手机', dataIndex: 'mobile', width: 131 }],
   zh_TW: [{ key: 'orgName', title: '姓名', dataIndex: 'username', width: 150 }, { key: 'orgMail', title: '賬號(郵箱)', dataIndex: 'email', width: 150 }, { key: 'orgPhone', title: '手機', dataIndex: 'mobile', width: 131 }],
-  en_US: [{ key: 'orgName', title: 'Name', dataIndex: 'username', width: 150 }, { key: 'orgMail', title: 'Account(Email)', dataIndex: 'email', width: 150 }, { key: 'orgPhone', title: 'Cellphone Number', dataIndex: 'mobile', width: 131 }]
+  en_US: [{ key: 'orgName', title: 'Name', dataIndex: 'username', width: 150 }, { key: 'orgMail', title: 'Account(Email)', dataIndex: 'email', width: 150 }, {
+    key: 'orgPhone',
+    title: 'Cellphone Number',
+    dataIndex: 'mobile',
+    width: 131
+  }]
 
   // export const multiColumns = [
   //   { key: 'name', title: '姓名', dataIndex: 'username', width: 100 },
@@ -88,12 +93,27 @@ var selectData = exports.selectData = [{
   orgId: '1249799305859328',
   orgName: 'zbl部门',
   type: '组织',
-  typeCode: 2
+  typeCode: 23
+}, {
+  orgId: '12497993059328',
+  orgName: 'zbl部门',
+  type: '组织',
+  typeCode: 22
+}, {
+  orgId: '12497993058598',
+  orgName: 'zbl部门',
+  type: '组织',
+  typeCode: 21
 }, {
   ruleCode: '12',
   ruleName: '修改人',
   type: '规则',
   typeCode: 3
+}, {
+  ruleCode: '123',
+  ruleName: '修改人',
+  type: '规则',
+  typeCode: 32
 }];
 
 var selectedUser = exports.selectedUser = [{
@@ -121,10 +141,26 @@ var selectedUser = exports.selectedUser = [{
   userid: 'd1ba5a77-def1-4e65-9457-7bae09ebb67f',
   typeCode: 0
 }, {
-  orgName: 'FHR-02',
+  orgName: 'FHR-022',
   email: 'YHT-693-2561560322273290@yht.com',
   username: 'zjc612',
-  mobile: '13811111223',
+  mobile: '138113111223',
+  type: '用户',
+  userid: '58cd6055-f8c0-4d51-a9d9-a733e4ef1872',
+  typeCode: 0
+}, {
+  orgName: 'FHR-024',
+  email: 'YHT-693-2561560322273290@yht.com',
+  username: 'zjc612',
+  mobile: '138111131223',
+  type: '用户',
+  userid: '58cd6055-f8c0-4d51-a9d9-a733e4ef1872',
+  typeCode: 0
+}, {
+  orgName: 'FHR-025',
+  email: 'YHT-693-2561560322273290@yht.com',
+  username: 'zjc612',
+  mobile: '138111311223',
   type: '用户',
   userid: '58cd6055-f8c0-4d51-a9d9-a733e4ef1872',
   typeCode: 0

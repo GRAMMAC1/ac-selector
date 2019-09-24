@@ -1027,7 +1027,7 @@ class Selector extends React.Component {
                   </div>
                 </TabPane>
                 {/* <TabPane tab={'规则'} key={4}> */}
-                <TabPane tab={i18n[locale].modify} key={4}>
+                <TabPane tab={i18n[locale].rule} key={4}>
                   <div className={'searchWrapper'}>
                     <input
                       // placeholder={'请输入您要查找的规则'}

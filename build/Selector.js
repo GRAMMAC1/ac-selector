@@ -1002,7 +1002,7 @@ var Selector = function (_React$Component) {
                   })
                 ),
                 _react2["default"].createElement(MultiSelectTable, {
-                  scroll: { y: 360 }
+                  scroll: { y: 210 }
                   // columns={multiColumns}
                   , columns: _colmuns.multiColumns[locale],
                   multiSelect: _utils.multiSelectType,
@@ -1048,7 +1048,7 @@ var Selector = function (_React$Component) {
                 ),
                 _react2["default"].createElement(MultiSelectTable, {
                   id: 'role',
-                  scroll: { y: 360 },
+                  scroll: { y: 210 },
                   columns: _colmuns.roleMultiCol,
                   multiSelect: _utils.multiSelectType,
                   getSelectedDataFunc: _this.getRoleList,
@@ -1127,7 +1127,7 @@ var Selector = function (_React$Component) {
               ),
               _react2["default"].createElement(
                 TabPane,
-                { tab: i18n[locale].modify, key: 4 },
+                { tab: i18n[locale].rule, key: 4 },
                 _react2["default"].createElement(
                   'div',
                   { className: 'searchWrapper' },
@@ -1184,7 +1184,7 @@ var Selector = function (_React$Component) {
                 )
               ),
               _react2["default"].createElement(_beeTable2["default"], {
-                scroll: { y: 200 },
+                scroll: { y: 130 },
                 columns: _colmuns.selectedUserCol[locale],
                 data: _this.state.selectedUserData,
                 hoverContent: _this.hoverDelIcon,
@@ -1225,7 +1225,7 @@ var Selector = function (_React$Component) {
                 )
               ),
               _react2["default"].createElement(_beeTable2["default"], {
-                scroll: { y: 200 },
+                scroll: { y: 130 },
                 columns: _colmuns.selectedUserCol[locale],
                 data: _this.state.selectedOtherList,
                 hoverContent: _this.hoverDelOtherIcon,
