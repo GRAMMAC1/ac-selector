@@ -514,7 +514,7 @@ var Selector = function (_React$Component) {
       var userList = (0, _utils.mapUserList)(selectedUserData);
       var otherList = (0, _utils.mapOtherList)(selectedOtherList);
       _this2.reset();
-      console.log(userList, otherList);
+      // console.log(userList, otherList);
       _this2.props.onConfirm(userList, otherList);
     };
 
