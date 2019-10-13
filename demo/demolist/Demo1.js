@@ -46,7 +46,7 @@ return (
     show={_this.state.show}
     onConfirm={_this.onConfirm}
     onClose={_this.onCancel}
-    mode={'diwork-prod'}
+    // mode={'diwork-prod'}
     documentNo={'st_purchaseorder'}
     documentName={'采购订单'}
     selectedUser={selectedUser}

@@ -554,6 +554,7 @@ class Selector extends React.Component {
       roleShowList: [],
       selectedUserData: [],
       selectedOtherList: [],
+      ruleMenuList: [], // 规则
       selectedCount: 0,
       selectedOtherCount: 0,
       staffInputValue: '',
@@ -576,7 +577,7 @@ class Selector extends React.Component {
     let userList = mapUserList(selectedUserData)
     let otherList = mapOtherList(selectedOtherList)
     this.reset()
-    console.log(userList, otherList)
+    // console.log(userList, otherList)
     this.props.onConfirm(userList, otherList)
   }
   //
