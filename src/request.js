@@ -31,7 +31,7 @@ export function requestGet(url,option={}){
               }
           })   
           .then(data => {
-          // console.log(data);
+        // console.log(data);
               return data
           })
           .catch(error => {
