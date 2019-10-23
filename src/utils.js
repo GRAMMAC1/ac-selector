@@ -1,5 +1,5 @@
 import React from 'react'
-import { Menu } from 'tinper-bee'
+import { Menu } from './components/tinper'
 
 const SubMenu = Menu.SubMenu
 

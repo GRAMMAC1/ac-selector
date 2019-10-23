@@ -15,13 +15,13 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _tinperBee = require('tinper-bee');
+var _tinper = require('./components/tinper');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-var SubMenu = _tinperBee.Menu.SubMenu;
+var SubMenu = _tinper.Menu.SubMenu;
 
 // 重置_checked属性为false && 为表格添加key
 function resetChecked(list, type) {
@@ -146,7 +146,7 @@ var transferToMenu = exports.transferToMenu = function transferToMenu(treeData) 
       var k = value.id + '&' + value.name;
       var v = value.name;
       subMenu.push(_react2["default"].createElement(
-        _tinperBee.Menu.Item,
+        _tinper.Menu.Item,
         { key: k },
         v
       ));
