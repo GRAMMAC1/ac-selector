@@ -8,11 +8,12 @@ import {
   Checkbox,
   Tabs,
   Tree,
+  Table,
   Pagination,
   Menu
-} from 'tinper-bee'
-import Table from 'bee-table'
-import multiSelect from 'tinper-bee/lib/multiSelect'
+} from './components/tinper'
+// import Table from 'bee-table'
+import multiSelect from 'bee-table/build/lib/multiSelect'
 import { selectedUserCol, roleMultiCol, orgCol, multiColumns } from './colmuns'
 import { requestGet } from './request'
 import {
@@ -38,6 +39,11 @@ const TreeNode = Tree.TreeNode
 const i18n = { ...langs }
 
 const noop = function() {}
+
+/**
+ * @dependencies 依赖的组件版本写死，升级可能会出现bug
+ * @refact 类型声明 测试用例 webpack升级
+ */
 
 const propTypes = {
   locale:PropTypes.oneOf(['zh_CN', 'zh_TW', 'en_US']),
