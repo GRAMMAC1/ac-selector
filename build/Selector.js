@@ -1356,7 +1356,7 @@ var Selector = function (_React$Component) {
                         placeholder: item.tableConfig.searchPlaceholder,
                         className: 'search'
                       }),
-                      _react2["default"].createElement(_tinperBee.Icon, {
+                      _react2["default"].createElement(_tinper.Icon, {
                         onClick: function onClick(e) {
                           return item.tableConfig.clickSearchFunc(item.tabMark, e);
                         },
@@ -1375,7 +1375,7 @@ var Selector = function (_React$Component) {
                         return _this.props.emptyText(i18n[locale].noData);
                       }
                     }),
-                    _react2["default"].createElement(_tinperBee.Pagination, {
+                    _react2["default"].createElement(_tinper.Pagination, {
                       className: 'selector_pagination',
                       first: true,
                       last: true,
@@ -1417,7 +1417,7 @@ var Selector = function (_React$Component) {
                         , placeholder: i18n[locale].pleaseOrg,
                         className: 'search'
                       }),
-                      _react2["default"].createElement(_tinperBee.Icon, {
+                      _react2["default"].createElement(_tinper.Icon, {
                         onClick: _this.clickSearch,
                         className: 'searchIcon',
                         type: 'uf-search'
@@ -1430,7 +1430,7 @@ var Selector = function (_React$Component) {
                         'div',
                         { className: 'myTree' },
                         _react2["default"].createElement(
-                          _tinperBee.Tree,
+                          _tinper.Tree,
                           {
                             showIcon: true,
                             cancelUnSelect: true,
