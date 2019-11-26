@@ -128,39 +128,39 @@ export const filterCaptial = [
 export const selectData = [
   {
     orgId: '1249795575075072',
-    orgName: 'zbl公司',
+    orgName: 'zbl公司222',
     type: '组织',
     typeCode: 2
   },
   {
     orgId: '1249799305859328',
-    orgName: 'zbl部门',
+    orgName: 'zbl部门1',
     type: '组织',
-    typeCode: 23
+    typeCode: 2
   },
   {
     orgId: '12497993059328',
-    orgName: 'zbl部门',
+    orgName: 'zbl部门3',
     type: '组织',
-    typeCode: 22
+    typeCode: 2
   },
   {
     orgId: '12497993058598',
-    orgName: 'zbl部门',
+    orgName: 'zbl部门4',
     type: '组织',
-    typeCode: 21
+    typeCode: 2
   },
   {
     ruleCode: '12',
-    ruleName: '修改人',
+    ruleName: '修改人5',
     type: '规则',
     typeCode: 3
   },
   {
     ruleCode: '123',
-    ruleName: '修改人',
+    ruleName: '修改人6',
     type: '规则',
-    typeCode: 32
+    typeCode: 3
   }
 ]
 

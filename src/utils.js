@@ -187,6 +187,15 @@ export const deSelect = (data = [], typeCode) => {
   })
   return res
 }
+export const deSelectType = (data = [], type) => {
+  let res = []
+  res = data.filter(t => {
+    if(t.type !== type) {
+      return t
+    }
+  })
+  return res
+}
 
 export const getUserId = (data = []) => {
   let res = data.map(t => t.userid)
@@ -196,4 +205,16 @@ export const getUserId = (data = []) => {
 export const getRoleId = (data = []) => {
   let res = data.map(t => t.roleId)
   return res
+}
+export const getKeyId = (data = []) => {
+  let res = data.map(t => t.key)
+  return res
+}
+
+export const getTreeItem = (data) =>{
+  const arr = [];
+  data.forEach(item=>{
+
+  })
+  return 
 }

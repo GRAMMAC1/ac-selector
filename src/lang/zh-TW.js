@@ -19,7 +19,7 @@ const zh_CN = {
   unknEmail: '未知郵箱',
   unknNo: '未知號碼',
   role: '角色',
-  clearn: '清空',
+  clean: '清空',
   other: '其他',
   choose: '已選',
   cacel: '取消',

@@ -28,7 +28,10 @@ import {
   deSelect,
   getUserId,
   getRoleId,
-  addFullAttr
+  getKeyId,
+  addFullAttr,
+  deSelectType,
+
 } from './utils'
 
 let MultiSelectTable = multiSelect(Table, Checkbox)
@@ -50,7 +53,8 @@ const propTypes = {
   documentNo: PropTypes.string,
   documentName: PropTypes.string,
   ruleList: PropTypes.array,
-  emptyText: PropTypes.node
+  emptyText: PropTypes.node,
+  tabConfig:PropTypes.array
 }
 
 const defaultProps = {
@@ -63,7 +67,10 @@ const defaultProps = {
   mode: 'daily',
   documentNo: '',
   documentName: '',
-  emptyText: locale => <div>{locale}</div>
+  emptyText: locale => <div>{locale}</div>,
+  tabConfig:[],
+  tableData:[],
+  treeConfig:[],
 }
 
 class Selector extends React.Component {
@@ -101,20 +108,34 @@ class Selector extends React.Component {
       },
       orgSelectedKeys: [],
       orgExpandedKeys: [],
-      autoExpandParent: true
+      autoExpandParent: true,
+      exendTreeList:[],
+      orgTreeExpandedKeys: [],
+      autoTreeExpandParent: true
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    let _newUserList = setUserReciving(nextProps.selectedUser)
-    let _newOtherList = setUserReciving(nextProps.selectedOther)
+    // let _newUserList = setUserReciving(nextProps.selectedUser)
+    // let _newOtherList = setUserReciving(nextProps.selectedOther)
+    // console.log('ssss',nextProps.tableData)
+    // console.log('2222',_newUserList)
+    let _newList = resetChecked(nextProps.tableData, 'roleId')
+    let res = setChecked(_newList, this.state.selectedOtherList, 'roleId')
+    // console.log('vvvvv',res)
+    // if(_newOtherList[0]. === ){
+
+    // }
+    
     this.setState({
-      locale: nextProps.locale,
+      roleShowList: res,
+      // locale: nextProps.locale,
       show: nextProps.show,
-      selectedOtherList: _newOtherList,
-      selectedOtherCount: _newOtherList.length,
-      selectedUserData: _newUserList,
-      selectedCount: _newUserList.length
+      exendTreeList:nextProps.treeConfig
+      // selectedOtherList: _newOtherList,
+      // selectedOtherCount: _newOtherList.length,
+      // selectedUserData: _newUserList,
+      // selectedCount: _newUserList.length
     })
   }
 
@@ -157,19 +178,20 @@ class Selector extends React.Component {
 
   // 进入modal首先加载用户列表
   didFinish = () => {
-    let { selectedUser, selectedOther } = this.props
-    this.setState({
-      selectedUserData: setUserReciving(selectedUser),
-      selectedOtherList: setOtherReciving(selectedOther)
-    })
+    // let { selectedUser, selectedOther } = this.props
+    // this.setState({
+    //   selectedUserData: setUserReciving(selectedUser),
+    //   selectedOtherList: setOtherReciving(selectedOther)
+    // })
     const url = `${this.state.prefixUrl}/user/staff/search?pageSize=40&pageNo=1&keyword=`
     requestGet(url)
       .then(response => {
         if (response.status === 1 && response.data !== null) {
-          const { selectedUser } = this.props
+          const { selectedUserData } = this.state
           let _newList = resetChecked(response.data.values, 'userid')
-          let res = setChecked(_newList, selectedUser, 'userid')
+          let res = setChecked(_newList, selectedUserData, 'userid')
           let completeRes = addFullAttr(res)
+          // console.log(completeRes)
           let obj = {
             activePage: response.data.currentPage,
             items: response.data.totalPages,
@@ -321,10 +343,10 @@ class Selector extends React.Component {
         throw new Error(err)
       })
   }
-
-  inputChange = (type, e) => {
+  // 扩展的输入框
+  inputChange = ( e) => {
     this.setState({
-      [type]: e.target.value
+      extends: e.target.value
     })
   }
   // 动态渲染删除图标
@@ -454,7 +476,7 @@ class Selector extends React.Component {
   // 获取角色列表
   getRoleList = (data, record) => {
     const typeCode = 1
-    let { roleShowList, defaultLabel, selectedOtherList } = this.state
+    let { roleShowList, defaultLabel, selectedOtherList, } = this.state
     let _list = [...selectedOtherList]
     let tempList = [...roleShowList]
     let delList = getRoleId(data)
@@ -509,6 +531,59 @@ class Selector extends React.Component {
       selectedOtherCount: _list.length
     })
   }
+
+  getExtend = (data,record)=>{
+    let { roleShowList, defaultLabel, selectedOtherList, } = this.state
+    let _list = [...selectedOtherList]
+    let tempList = [...roleShowList]
+    let delList = getRoleId(data)
+    tempList = resetChecked(tempList, 'roleId')
+    tempList = setChecked(tempList, data, 'roleId')
+    if (record === undefined) {
+      if (data.length) {
+        let roleIdList = getRoleId(_list)
+        data.forEach(t => {
+          if (!roleIdList.includes(t.type)) {
+            _list.push(t)
+          }
+        })
+      } else {
+        // 和用户页签取消全部选中逻辑相同
+        let deleteRoleList = getRoleId(roleShowList),
+          result = []
+        _list.forEach(t => {
+          if (!deleteRoleList.includes(t.roleId)) {
+            result.push(t)
+          }
+        })
+        _list = [...result]
+      }
+    } else {
+      let currItem = record
+      if (delList.includes(record.roleId)) {
+        _list.push(currItem)
+      } else {
+        _list = _list.filter(t => {
+          if (t.roleId !== record.roleId) {
+            return t
+          }
+        })
+      }
+    }
+    this.setState({
+      selectedOtherList: [..._list],
+      roleShowList: [...tempList],
+      selectedOtherCount: _list.length
+    })
+  }
+
+  extendPageSelect=(tabMark,index)=>{
+    this.props.extendPage(tabMark,index)
+    this.setState({
+      extendPageIndex:index
+    })
+  }
+
   // 数组根据属性去重
   uniqueByAttr = (arr, type) => {
     const res = new Map()
@@ -549,6 +624,7 @@ class Selector extends React.Component {
   // 重置state
   reset = () => {
     this.setState({
+      extends:'',
       activeKey: '1',
       multiShowList: [],
       roleShowList: [],
@@ -581,20 +657,39 @@ class Selector extends React.Component {
     this.props.onConfirm(userList, otherList)
   }
   //
-  onChange = activeKey => {
-    const _this = this
+  tabHandleChange=(lab)=>{
+    // console.log(lab)
     this.setState({
-      activeKey,
-      defaultLabel: setLabel(activeKey)
+      defaultLabel:lab
     })
+  }
+  onChange = (activeKey,node) => {
+    // console.log(activeKey,node)
+    const _this = this
+    if(activeKey<4) {
+      this.setState({
+        extends:'',
+        activeKey,
+        defaultLabel: setLabel(activeKey)
+      })
+    }
+    this.setState({
+      extends:'',
+      activeKey,
+      orgInputValue:""
+      // defaultLabel: setLabel(activeKey)
+    })
+    if(activeKey === '1'){
+      this.didFinish()
+    }
     if (activeKey === '2') {
       const url = `${_this.state.prefixUrl}/user/role/search?pageSize=40&pageNo=1&keyword=`
-      let { roleShowList } = this.state
-      if (!roleShowList.length) {
+      // let { roleShowList } = this.state
+      // if (!roleShowList.length) {
         requestGet(url)
           .then(response => {
-            if (response.status === 1 && response.data !== null) {
-              const { selectedOther } = this.props
+            if (response.status === 1 ) {
+              const { selectedOtherList } = this.state
               let _page = {
                 activePage: response.data.currentPage,
                 items: response.data.totalPages,
@@ -604,7 +699,7 @@ class Selector extends React.Component {
                 rolePage: _page
               })
               let _newList = resetChecked(response.data.values, 'roleId')
-              let res = setChecked(_newList, selectedOther, 'roleId')
+              let res = setChecked(_newList, selectedOtherList, 'roleId')
               this.setState({
                 roleShowList: res
               })
@@ -613,7 +708,7 @@ class Selector extends React.Component {
           .catch(error => {
             throw new Error(error)
           })
-      }
+      // }
     } else if (activeKey === '3') {
       let { selectedOtherList } = this.state
       const url = `${_this.state.prefixUrl}/user/org/list?pageSize=40&pageNo=1&orgIds=`
@@ -690,6 +785,7 @@ class Selector extends React.Component {
   }
   // tree check
   treeOnCheck = (info, e) => {
+    // console.log(info,e)
     const typeCode = 2
     const { defaultLabel } = this.state
     let { selectedOtherList } = this.state
@@ -705,11 +801,38 @@ class Selector extends React.Component {
       orgId: info[i]
     }))
     let res = newList.concat(tempRes)
+    // console.log(res)
     this.setState({
       selectedOtherList: [...res],
       selectedOtherCount: res.length,
       orgSelectedKeys: [...info]
     })
+  }
+  // tree check
+  ExpandedTreeOnCheck = (info, e) => {
+    // console.log(info,e)
+    const { defaultLabel } = this.state
+    // console.log(this.state.defaultLabel)
+    let { selectedOtherList } = this.state
+    let checkedNodes = [...e.checkedNodes]
+    let _list = [...selectedOtherList]
+    let newList = deSelectType(_list, defaultLabel)
+    let tempRes = checkedNodes.map((t, i) => {
+      // console.log(info[i])
+      return {
+      key: info[i],
+      type: defaultLabel,
+      reciving: t.props.title.props.children[2].props.children,
+      orgName: t.props.title.props.children[2].props.children,
+      orgId: info[i],
+    }})
+    let res = newList.concat(tempRes)
+    // console.log(tempRes)
+    this.setState({
+      selectedOtherList: [...res],
+      selectedOtherCount: res.length,
+    })
+    return
   }
   // 角色分页
   roleSelect = e => {
@@ -796,9 +919,9 @@ class Selector extends React.Component {
     this.setState({
       orgInputValue: value
     })
-    if (!value.trim()) {
-      return
-    }
+    // if (!value.trim()) {
+    //   return
+    // }
     let res = []
     function deepTraversal(list, callback) {
       let stack = []
@@ -824,6 +947,40 @@ class Selector extends React.Component {
       autoExpandParent: true
     })
   }
+  searchOrgTree = e => {
+    const value = e.target.value
+    this.setState({
+      orgInputValue: value
+    })
+    if (!value.trim()) {
+      return
+    }
+    let res = []
+    function deepTraversal(list, callback) {
+      let stack = []
+      while (list) {
+        callback(list)
+        if (list.childs) {
+          for (let i = list.childs.length - 1; i >= 0; i--) {
+            stack.push(list.childs[i])
+          }
+        }
+        list = stack.pop()
+      }
+    }
+    this.state.exendTreeList.forEach(t => {
+      deepTraversal(t, node => {
+        if (node.orgName.indexOf(value) > -1) {
+          res.push(node.orgId)
+        }
+      })
+    })
+    // console.log(res)
+    this.setState({
+      orgTreeExpandedKeys: [...res],
+      autoTreeExpandParent: true
+    })
+  }
   onExpand = keys => {
     // console.log(a,b,c)
     this.setState({
@@ -831,10 +988,18 @@ class Selector extends React.Component {
       autoExpandParent: false
     })
   }
+  onTreeExpand = keys => {
+    // console.log(keys)
+    this.setState({
+      orgTreeExpandedKeys: [...keys],
+      autoTreeExpandParent: false
+    })
+  }
 
   render() {
     const _this = this
     const { locale } = this.state
+    const { tabConfig } = this.props
     const loopData = data =>
       data.map(item => {
         const index = item.orgName.indexOf(_this.state.orgInputValue)
@@ -1043,6 +1208,107 @@ class Selector extends React.Component {
                     </Menu>
                   </div>
                 </TabPane>
+                {/* 新增 */}
+                {
+                  tabConfig.map((item,index)=>{
+                    if(item.tabType ==='table'){
+                      return (
+                      <TabPane id={item.tabMark} 
+                        tab={<div style={{height:'100%'}}
+                        onClick={(e)=>{
+                          this.props.tabHandleFunc(item.tabMark,index,e)
+                          this.tabHandleChange(item.tabName)
+                        }}
+                        >{item.tabName}</div>} key={index+5}>
+                          <div className={'searchWrapper'}>
+                            <input
+                              value={_this.state.extends}
+                              onChange={_this.inputChange}
+                              type="text"
+                              onKeyUp={(e)=>item.tableConfig.enterSearchFunc(item.tabMark,e)}
+                              placeholder={item.tableConfig.searchPlaceholder}
+                              className={'search'}
+                            />
+                            <Icon
+                              onClick={(e)=>item.tableConfig.clickSearchFunc(item.tabMark,e)}
+                              className={'searchIcon'}
+                              type="uf-search"
+                            />
+                          </div>
+                          <MultiSelectTable
+                            scroll={{ y: 210 }}
+                            // columns={multiColumns}
+                            columns={item.tableConfig.tableColumns}
+                            multiSelect={multiSelectType}
+                            getSelectedDataFunc={_this.getExtend}
+                            data={_this.state.roleShowList}
+                            emptyText={() => _this.props.emptyText(i18n[locale].noData)}
+                          />
+                          <Pagination
+                            className={'selector_pagination'}
+                            first
+                            last
+                            prev
+                            next
+                            maxButtons={5}
+                            boundaryLinks
+                            total={_this.props.pageTotal}
+                            activePage={_this.state.extendPageIndex}
+                            items={_this.props.pageItems}
+                            onSelect={(index)=>this.extendPageSelect(item.tabMark,index)}
+                          />
+                      </TabPane>
+                    )
+                    }
+                    if(item.tabType === 'tree'){
+                      return (
+                        <TabPane tab={item.tabName}
+                          tab={<div style={{height:'100%'}} 
+                          onClick={(e)=>{
+                            this.props.tabHandleFunc(item.tabMark,index,e)
+                            this.tabHandleChange(item.tabName)
+                          }}
+                          >{item.tabName}</div>} key={index+5}
+                        >
+                        <div className={'searchWrapper'}>
+                          <input
+                            onChange={_this.searchOrgTree}
+                            // placeholder={'请输入您要查找的组织'}
+                            placeholder={i18n[locale].pleaseOrg}
+                            className={'search'}
+                          />
+                          <Icon
+                            onClick={_this.clickSearch}
+                            className={'searchIcon'}
+                            type="uf-search"
+                          />
+                        </div>
+                        <div className={'clearfix'}>
+                          <div className={'myTree'}>
+                            <Tree
+                              showIcon
+                              cancelUnSelect={true}
+                              checkedKeys={_this.state.selectedOtherList.map(val=>{
+                                if(val.type === item.tabName){
+                                  return val.orgId
+                                }
+                              })}
+                              checkable
+                              checkStrictly
+                              onExpand={_this.onTreeExpand}
+                              autoExpandParent={_this.state.autoTreeExpandParent}
+                              expandedKeys={_this.state.orgTreeExpandedKeys}
+                              // onSelect={_this.treeOnSelect}
+                              onCheck={_this.ExpandedTreeOnCheck}>
+                              {loopData(_this.state.exendTreeList)}
+                            </Tree>
+                          </div>
+                        </div>
+                      </TabPane>
+                      )
+                    }
+                  })
+                }
               </Tabs>
             </div>
             <div className={'right'}>
