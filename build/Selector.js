@@ -40,9 +40,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -70,7 +70,8 @@ var propTypes = {
   documentNo: _propTypes2["default"].string,
   documentName: _propTypes2["default"].string,
   ruleList: _propTypes2["default"].array,
-  emptyText: _propTypes2["default"].node
+  emptyText: _propTypes2["default"].node,
+  tabConfig: _propTypes2["default"].array
 };
 
 var defaultProps = {
@@ -89,7 +90,10 @@ var defaultProps = {
       null,
       locale
     );
-  }
+  },
+  tabConfig: [],
+  tableData: [],
+  treeConfig: []
 };
 
 var Selector = function (_React$Component) {
@@ -101,22 +105,20 @@ var Selector = function (_React$Component) {
     var _this2 = _possibleConstructorReturn(this, _React$Component.call(this, props));
 
     _this2.didFinish = function () {
-      var _this2$props = _this2.props,
-          selectedUser = _this2$props.selectedUser,
-          selectedOther = _this2$props.selectedOther;
-
-      _this2.setState({
-        selectedUserData: (0, _utils.setUserReciving)(selectedUser),
-        selectedOtherList: (0, _utils.setOtherReciving)(selectedOther)
-      });
+      // let { selectedUser, selectedOther } = this.props
+      // this.setState({
+      //   selectedUserData: setUserReciving(selectedUser),
+      //   selectedOtherList: setOtherReciving(selectedOther)
+      // })
       var url = _this2.state.prefixUrl + '/user/staff/search?pageSize=40&pageNo=1&keyword=';
       (0, _request.requestGet)(url).then(function (response) {
         if (response.status === 1 && response.data !== null) {
-          var _selectedUser = _this2.props.selectedUser;
+          var selectedUserData = _this2.state.selectedUserData;
 
           var _newList = (0, _utils.resetChecked)(response.data.values, 'userid');
-          var res = (0, _utils.setChecked)(_newList, _selectedUser, 'userid');
+          var res = (0, _utils.setChecked)(_newList, selectedUserData, 'userid');
           var completeRes = (0, _utils.addFullAttr)(res);
+          // console.log(completeRes)
           var obj = {
             activePage: response.data.currentPage,
             items: response.data.totalPages,
@@ -248,8 +250,10 @@ var Selector = function (_React$Component) {
       });
     };
 
-    _this2.inputChange = function (type, e) {
-      _this2.setState(_defineProperty({}, type, e.target.value));
+    _this2.inputChange = function (e) {
+      _this2.setState({
+        "extends": e.target.value
+      });
     };
 
     _this2.hoverDelIcon = function () {
@@ -445,6 +449,62 @@ var Selector = function (_React$Component) {
       });
     };
 
+    _this2.getExtend = function (data, record) {
+      var _this2$state6 = _this2.state,
+          roleShowList = _this2$state6.roleShowList,
+          defaultLabel = _this2$state6.defaultLabel,
+          selectedOtherList = _this2$state6.selectedOtherList;
+
+      var _list = [].concat(_toConsumableArray(selectedOtherList));
+      var tempList = [].concat(_toConsumableArray(roleShowList));
+      var delList = (0, _utils.getRoleId)(data);
+      tempList = (0, _utils.resetChecked)(tempList, 'roleId');
+      tempList = (0, _utils.setChecked)(tempList, data, 'roleId');
+      if (record === undefined) {
+        if (data.length) {
+          var roleIdList = (0, _utils.getRoleId)(_list);
+          data.forEach(function (t) {
+            if (!roleIdList.includes(t.type)) {
+              _list.push(t);
+            }
+          });
+        } else {
+          // 和用户页签取消全部选中逻辑相同
+          var deleteRoleList = (0, _utils.getRoleId)(roleShowList),
+              result = [];
+          _list.forEach(function (t) {
+            if (!deleteRoleList.includes(t.roleId)) {
+              result.push(t);
+            }
+          });
+          _list = [].concat(result);
+        }
+      } else {
+        var currItem = record;
+        if (delList.includes(record.roleId)) {
+          _list.push(currItem);
+        } else {
+          _list = _list.filter(function (t) {
+            if (t.roleId !== record.roleId) {
+              return t;
+            }
+          });
+        }
+      }
+      _this2.setState({
+        selectedOtherList: [].concat(_toConsumableArray(_list)),
+        roleShowList: [].concat(_toConsumableArray(tempList)),
+        selectedOtherCount: _list.length
+      });
+    };
+
+    _this2.extendPageSelect = function (tabMark, index) {
+      _this2.props.extendPage(tabMark, index);
+      _this2.setState({
+        extendPageIndex: index
+      });
+    };
+
     _this2.uniqueByAttr = function (arr, type) {
       var res = new Map();
       return arr.filter(function (item) {
@@ -486,6 +546,7 @@ var Selector = function (_React$Component) {
 
     _this2.reset = function () {
       _this2.setState({
+        "extends": '',
         activeKey: '1',
         multiShowList: [],
         roleShowList: [],
@@ -508,9 +569,9 @@ var Selector = function (_React$Component) {
     };
 
     _this2.confirm = function () {
-      var _this2$state6 = _this2.state,
-          selectedUserData = _this2$state6.selectedUserData,
-          selectedOtherList = _this2$state6.selectedOtherList;
+      var _this2$state7 = _this2.state,
+          selectedUserData = _this2$state7.selectedUserData,
+          selectedOtherList = _this2$state7.selectedOtherList;
 
       var userList = (0, _utils.mapUserList)(selectedUserData);
       var otherList = (0, _utils.mapOtherList)(selectedOtherList);
@@ -519,39 +580,58 @@ var Selector = function (_React$Component) {
       _this2.props.onConfirm(userList, otherList);
     };
 
-    _this2.onChange = function (activeKey) {
-      var _this = _this2;
+    _this2.tabHandleChange = function (lab) {
+      // console.log(lab)
       _this2.setState({
-        activeKey: activeKey,
-        defaultLabel: (0, _utils.setLabel)(activeKey)
+        defaultLabel: lab
       });
+    };
+
+    _this2.onChange = function (activeKey, node) {
+      // console.log(activeKey,node)
+      var _this = _this2;
+      if (activeKey < 4) {
+        _this2.setState({
+          "extends": '',
+          activeKey: activeKey,
+          defaultLabel: (0, _utils.setLabel)(activeKey)
+        });
+      }
+      _this2.setState({
+        "extends": '',
+        activeKey: activeKey,
+        orgInputValue: ""
+        // defaultLabel: setLabel(activeKey)
+      });
+      if (activeKey === '1') {
+        _this2.didFinish();
+      }
       if (activeKey === '2') {
         var url = _this.state.prefixUrl + '/user/role/search?pageSize=40&pageNo=1&keyword=';
-        var roleShowList = _this2.state.roleShowList;
+        // let { roleShowList } = this.state
+        // if (!roleShowList.length) {
+        (0, _request.requestGet)(url).then(function (response) {
+          if (response.status === 1) {
+            var selectedOtherList = _this2.state.selectedOtherList;
 
-        if (!roleShowList.length) {
-          (0, _request.requestGet)(url).then(function (response) {
-            if (response.status === 1 && response.data !== null) {
-              var selectedOther = _this2.props.selectedOther;
-
-              var _page = {
-                activePage: response.data.currentPage,
-                items: response.data.totalPages,
-                total: response.data.pageSize
-              };
-              _this2.setState({
-                rolePage: _page
-              });
-              var _newList = (0, _utils.resetChecked)(response.data.values, 'roleId');
-              var res = (0, _utils.setChecked)(_newList, selectedOther, 'roleId');
-              _this2.setState({
-                roleShowList: res
-              });
-            }
-          })["catch"](function (error) {
-            throw new Error(error);
-          });
-        }
+            var _page = {
+              activePage: response.data.currentPage,
+              items: response.data.totalPages,
+              total: response.data.pageSize
+            };
+            _this2.setState({
+              rolePage: _page
+            });
+            var _newList = (0, _utils.resetChecked)(response.data.values, 'roleId');
+            var res = (0, _utils.setChecked)(_newList, selectedOtherList, 'roleId');
+            _this2.setState({
+              roleShowList: res
+            });
+          }
+        })["catch"](function (error) {
+          throw new Error(error);
+        });
+        // }
       } else if (activeKey === '3') {
         var selectedOtherList = _this2.state.selectedOtherList;
 
@@ -621,6 +701,7 @@ var Selector = function (_React$Component) {
     };
 
     _this2.treeOnCheck = function (info, e) {
+      // console.log(info,e)
       var typeCode = 2;
       var defaultLabel = _this2.state.defaultLabel;
       var selectedOtherList = _this2.state.selectedOtherList;
@@ -639,11 +720,41 @@ var Selector = function (_React$Component) {
         };
       });
       var res = newList.concat(tempRes);
+      // console.log(res)
       _this2.setState({
         selectedOtherList: [].concat(_toConsumableArray(res)),
         selectedOtherCount: res.length,
         orgSelectedKeys: [].concat(_toConsumableArray(info))
       });
+    };
+
+    _this2.ExpandedTreeOnCheck = function (info, e) {
+      // console.log(info,e)
+      var defaultLabel = _this2.state.defaultLabel;
+      // console.log(this.state.defaultLabel)
+
+      var selectedOtherList = _this2.state.selectedOtherList;
+
+      var checkedNodes = [].concat(_toConsumableArray(e.checkedNodes));
+      var _list = [].concat(_toConsumableArray(selectedOtherList));
+      var newList = (0, _utils.deSelectType)(_list, defaultLabel);
+      var tempRes = checkedNodes.map(function (t, i) {
+        // console.log(info[i])
+        return {
+          key: info[i],
+          type: defaultLabel,
+          reciving: t.props.title.props.children[2].props.children,
+          orgName: t.props.title.props.children[2].props.children,
+          orgId: info[i]
+        };
+      });
+      var res = newList.concat(tempRes);
+      // console.log(tempRes)
+      _this2.setState({
+        selectedOtherList: [].concat(_toConsumableArray(res)),
+        selectedOtherCount: res.length
+      });
+      return;
     };
 
     _this2.roleSelect = function (e) {
@@ -731,9 +842,9 @@ var Selector = function (_React$Component) {
       _this2.setState({
         orgInputValue: value
       });
-      if (!value.trim()) {
-        return;
-      }
+      // if (!value.trim()) {
+      //   return
+      // }
       var res = [];
       function deepTraversal(list, callback) {
         var stack = [];
@@ -760,11 +871,54 @@ var Selector = function (_React$Component) {
       });
     };
 
+    _this2.searchOrgTree = function (e) {
+      var value = e.target.value;
+      _this2.setState({
+        orgInputValue: value
+      });
+      if (!value.trim()) {
+        return;
+      }
+      var res = [];
+      function deepTraversal(list, callback) {
+        var stack = [];
+        while (list) {
+          callback(list);
+          if (list.childs) {
+            for (var i = list.childs.length - 1; i >= 0; i--) {
+              stack.push(list.childs[i]);
+            }
+          }
+          list = stack.pop();
+        }
+      }
+      _this2.state.exendTreeList.forEach(function (t) {
+        deepTraversal(t, function (node) {
+          if (node.orgName.indexOf(value) > -1) {
+            res.push(node.orgId);
+          }
+        });
+      });
+      // console.log(res)
+      _this2.setState({
+        orgTreeExpandedKeys: [].concat(res),
+        autoTreeExpandParent: true
+      });
+    };
+
     _this2.onExpand = function (keys) {
       // console.log(a,b,c)
       _this2.setState({
         orgExpandedKeys: [].concat(_toConsumableArray(keys)),
         autoExpandParent: false
+      });
+    };
+
+    _this2.onTreeExpand = function (keys) {
+      // console.log(keys)
+      _this2.setState({
+        orgTreeExpandedKeys: [].concat(_toConsumableArray(keys)),
+        autoTreeExpandParent: false
       });
     };
 
@@ -800,21 +954,35 @@ var Selector = function (_React$Component) {
       },
       orgSelectedKeys: [],
       orgExpandedKeys: [],
-      autoExpandParent: true
+      autoExpandParent: true,
+      exendTreeList: [],
+      orgTreeExpandedKeys: [],
+      autoTreeExpandParent: true
     };
     return _this2;
   }
 
   Selector.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
-    var _newUserList = (0, _utils.setUserReciving)(nextProps.selectedUser);
-    var _newOtherList = (0, _utils.setUserReciving)(nextProps.selectedOther);
+    // let _newUserList = setUserReciving(nextProps.selectedUser)
+    // let _newOtherList = setUserReciving(nextProps.selectedOther)
+    // console.log('ssss',nextProps.tableData)
+    // console.log('2222',_newUserList)
+    var _newList = (0, _utils.resetChecked)(nextProps.tableData, 'roleId');
+    var res = (0, _utils.setChecked)(_newList, this.state.selectedOtherList, 'roleId');
+    // console.log('vvvvv',res)
+    // if(_newOtherList[0]. === ){
+
+    // }
+
     this.setState({
-      locale: nextProps.locale,
+      roleShowList: res,
+      // locale: nextProps.locale,
       show: nextProps.show,
-      selectedOtherList: _newOtherList,
-      selectedOtherCount: _newOtherList.length,
-      selectedUserData: _newUserList,
-      selectedCount: _newUserList.length
+      exendTreeList: nextProps.treeConfig
+      // selectedOtherList: _newOtherList,
+      // selectedOtherCount: _newOtherList.length,
+      // selectedUserData: _newUserList,
+      // selectedCount: _newUserList.length
     });
   };
 
@@ -859,6 +1027,8 @@ var Selector = function (_React$Component) {
 
   // 搜索
 
+  // 扩展的输入框
+
   // 动态渲染删除图标
 
   // 删除某一项
@@ -866,6 +1036,7 @@ var Selector = function (_React$Component) {
   // 获得选择的用户列表
 
   // 获取角色列表
+
 
   // 数组根据属性去重
 
@@ -885,14 +1056,19 @@ var Selector = function (_React$Component) {
 
   // tree check
 
+  // tree check
+
   // 角色分页
 
   // 用户分页
 
 
   Selector.prototype.render = function render() {
+    var _this3 = this;
+
     var _this = this;
     var locale = this.state.locale;
+    var tabConfig = this.props.tabConfig;
 
     var loopData = function loopData(data) {
       return data.map(function (item) {
@@ -1148,7 +1324,132 @@ var Selector = function (_React$Component) {
                     _this.state.ruleMenuList
                   )
                 )
-              )
+              ),
+              tabConfig.map(function (item, index) {
+                if (item.tabType === 'table') {
+                  return _react2["default"].createElement(
+                    TabPane,
+                    { id: item.tabMark,
+                      tab: _react2["default"].createElement(
+                        'div',
+                        { style: { height: '100%' },
+                          onClick: function onClick(e) {
+                            _this3.props.tabHandleFunc(item.tabMark, index, e);
+                            _this3.tabHandleChange(item.tabName);
+                          }
+                        },
+                        item.tabName
+                      ), key: index + 5 },
+                    _react2["default"].createElement(
+                      'div',
+                      { className: 'searchWrapper' },
+                      _react2["default"].createElement('input', {
+                        value: _this.state["extends"],
+                        onChange: _this.inputChange,
+                        type: 'text',
+                        onKeyUp: function onKeyUp(e) {
+                          return item.tableConfig.enterSearchFunc(item.tabMark, e);
+                        },
+                        placeholder: item.tableConfig.searchPlaceholder,
+                        className: 'search'
+                      }),
+                      _react2["default"].createElement(_tinperBee.Icon, {
+                        onClick: function onClick(e) {
+                          return item.tableConfig.clickSearchFunc(item.tabMark, e);
+                        },
+                        className: 'searchIcon',
+                        type: 'uf-search'
+                      })
+                    ),
+                    _react2["default"].createElement(MultiSelectTable, {
+                      scroll: { y: 210 }
+                      // columns={multiColumns}
+                      , columns: item.tableConfig.tableColumns,
+                      multiSelect: _utils.multiSelectType,
+                      getSelectedDataFunc: _this.getExtend,
+                      data: _this.state.roleShowList,
+                      emptyText: function emptyText() {
+                        return _this.props.emptyText(i18n[locale].noData);
+                      }
+                    }),
+                    _react2["default"].createElement(_tinperBee.Pagination, {
+                      className: 'selector_pagination',
+                      first: true,
+                      last: true,
+                      prev: true,
+                      next: true,
+                      maxButtons: 5,
+                      boundaryLinks: true,
+                      total: _this.props.pageTotal,
+                      activePage: _this.state.extendPageIndex,
+                      items: _this.props.pageItems,
+                      onSelect: function onSelect(index) {
+                        return _this3.extendPageSelect(item.tabMark, index);
+                      }
+                    })
+                  );
+                }
+                if (item.tabType === 'tree') {
+                  var _React$createElement;
+
+                  return _react2["default"].createElement(
+                    TabPane,
+                    (_React$createElement = { tab: item.tabName
+                    }, _defineProperty(_React$createElement, 'tab', _react2["default"].createElement(
+                      'div',
+                      { style: { height: '100%' },
+                        onClick: function onClick(e) {
+                          _this3.props.tabHandleFunc(item.tabMark, index, e);
+                          _this3.tabHandleChange(item.tabName);
+                        }
+                      },
+                      item.tabName
+                    )), _defineProperty(_React$createElement, 'key', index + 5), _React$createElement),
+                    _react2["default"].createElement(
+                      'div',
+                      { className: 'searchWrapper' },
+                      _react2["default"].createElement('input', {
+                        onChange: _this.searchOrgTree
+                        // placeholder={'请输入您要查找的组织'}
+                        , placeholder: i18n[locale].pleaseOrg,
+                        className: 'search'
+                      }),
+                      _react2["default"].createElement(_tinperBee.Icon, {
+                        onClick: _this.clickSearch,
+                        className: 'searchIcon',
+                        type: 'uf-search'
+                      })
+                    ),
+                    _react2["default"].createElement(
+                      'div',
+                      { className: 'clearfix' },
+                      _react2["default"].createElement(
+                        'div',
+                        { className: 'myTree' },
+                        _react2["default"].createElement(
+                          _tinperBee.Tree,
+                          {
+                            showIcon: true,
+                            cancelUnSelect: true,
+                            checkedKeys: _this.state.selectedOtherList.map(function (val) {
+                              if (val.type === item.tabName) {
+                                return val.orgId;
+                              }
+                            }),
+                            checkable: true,
+                            checkStrictly: true,
+                            onExpand: _this.onTreeExpand,
+                            autoExpandParent: _this.state.autoTreeExpandParent,
+                            expandedKeys: _this.state.orgTreeExpandedKeys
+                            // onSelect={_this.treeOnSelect}
+                            , onCheck: _this.ExpandedTreeOnCheck },
+                          loopData(_this.state.exendTreeList)
+                        )
+                      )
+                    )
+                  );
+                }
+              })
             )
           ),
           _react2["default"].createElement(

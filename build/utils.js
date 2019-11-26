@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getRoleId = exports.getUserId = exports.deSelect = exports.mapOtherList = exports.mapUserList = exports.transferToMenu = exports.multiSelectType = exports.setOtherReciving = exports.setUserReciving = exports.addFullAttr = undefined;
+exports.getTreeItem = exports.getKeyId = exports.getRoleId = exports.getUserId = exports.deSelectType = exports.deSelect = exports.mapOtherList = exports.mapUserList = exports.transferToMenu = exports.multiSelectType = exports.setOtherReciving = exports.setUserReciving = exports.addFullAttr = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -226,6 +226,18 @@ var deSelect = exports.deSelect = function deSelect() {
   });
   return res;
 };
+var deSelectType = exports.deSelectType = function deSelectType() {
+  var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var type = arguments[1];
+
+  var res = [];
+  res = data.filter(function (t) {
+    if (t.type !== type) {
+      return t;
+    }
+  });
+  return res;
+};
 
 var getUserId = exports.getUserId = function getUserId() {
   var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
@@ -243,4 +255,18 @@ var getRoleId = exports.getRoleId = function getRoleId() {
     return t.roleId;
   });
   return res;
+};
+var getKeyId = exports.getKeyId = function getKeyId() {
+  var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
+  var res = data.map(function (t) {
+    return t.key;
+  });
+  return res;
+};
+
+var getTreeItem = exports.getTreeItem = function getTreeItem(data) {
+  var arr = [];
+  data.forEach(function (item) {});
+  return;
 };

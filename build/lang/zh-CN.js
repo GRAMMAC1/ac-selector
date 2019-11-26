@@ -45,7 +45,7 @@ var zh_CN = {
   //  角色
   role: '角色',
   //  清空
-  clearn: '清空',
+  clean: '清空',
   //  其他
   other: '其他',
   //  已选
