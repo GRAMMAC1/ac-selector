@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+// import Table from 'bee-table'
+
 
 var _react = require('react');
 
@@ -18,13 +20,9 @@ var _lang = require('./lang');
 
 var langs = _interopRequireWildcard(_lang);
 
-var _tinperBee = require('tinper-bee');
+var _tinper = require('./components/tinper');
 
-var _beeTable = require('bee-table');
-
-var _beeTable2 = _interopRequireDefault(_beeTable);
-
-var _multiSelect = require('tinper-bee/lib/multiSelect');
+var _multiSelect = require('bee-table/build/lib/multiSelect');
 
 var _multiSelect2 = _interopRequireDefault(_multiSelect);
 
@@ -50,14 +48,19 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : _defaults(subClass, superClass); }
 
-var MultiSelectTable = (0, _multiSelect2["default"])(_beeTable2["default"], _tinperBee.Checkbox);
+var MultiSelectTable = (0, _multiSelect2["default"])(_tinper.Table, _tinper.Checkbox);
 
-var TabPane = _tinperBee.Tabs.TabPane;
+var TabPane = _tinper.Tabs.TabPane;
 
-var TreeNode = _tinperBee.Tree.TreeNode;
+var TreeNode = _tinper.Tree.TreeNode;
 var i18n = _extends({}, langs);
 
 var noop = function noop() {};
+
+/**
+ * @dependencies 依赖的组件版本写死，升级可能会出现bug
+ * @refact 类型声明 测试用例 webpack升级
+ */
 
 var propTypes = {
   locale: _propTypes2["default"].oneOf(['zh_CN', 'zh_TW', 'en_US']),
@@ -257,11 +260,11 @@ var Selector = function (_React$Component) {
     };
 
     _this2.hoverDelIcon = function () {
-      return _react2["default"].createElement(_tinperBee.Icon, { onClick: _this2.delUser, className: 'deleteIcon', type: 'uf-close' });
+      return _react2["default"].createElement(_tinper.Icon, { onClick: _this2.delUser, className: 'deleteIcon', type: 'uf-close' });
     };
 
     _this2.hoverDelOtherIcon = function () {
-      return _react2["default"].createElement(_tinperBee.Icon, { onClick: _this2.delOther, className: 'deleteIcon', type: 'uf-close' });
+      return _react2["default"].createElement(_tinper.Icon, { onClick: _this2.delOther, className: 'deleteIcon', type: 'uf-close' });
     };
 
     _this2.delOther = function () {
@@ -1111,19 +1114,19 @@ var Selector = function (_React$Component) {
             {
               title: title,
               key: item.orgId,
-              icon: item.parentId ? _react2["default"].createElement(_tinperBee.Icon, { type: 'uf-users' }) : _react2["default"].createElement(_tinperBee.Icon, { type: 'uf-group-2' }) },
+              icon: item.parentId ? _react2["default"].createElement(_tinper.Icon, { type: 'uf-users' }) : _react2["default"].createElement(_tinper.Icon, { type: 'uf-group-2' }) },
             loopData(item.childs)
           );
         }
         return _react2["default"].createElement(TreeNode, {
           title: title,
           key: item.orgId,
-          icon: _react2["default"].createElement(_tinperBee.Icon, { type: 'uf-users' }),
+          icon: _react2["default"].createElement(_tinper.Icon, { type: 'uf-users' }),
           isLeaf: true });
       });
     };
     return _react2["default"].createElement(
-      _tinperBee.Modal,
+      _tinper.Modal,
       {
         onEntered: _this.didFinish,
         onHide: _this.close,
@@ -1133,7 +1136,7 @@ var Selector = function (_React$Component) {
         dialogClassName: 'selectDialog',
         backdrop: true },
       _react2["default"].createElement(
-        _tinperBee.Modal.Header,
+        _tinper.Modal.Header,
         { closeButton: true },
         _react2["default"].createElement(
           'span',
@@ -1142,7 +1145,7 @@ var Selector = function (_React$Component) {
         )
       ),
       _react2["default"].createElement(
-        _tinperBee.Modal.Body,
+        _tinper.Modal.Body,
         { className: 'selectModalBody' },
         _react2["default"].createElement(
           'div',
@@ -1151,7 +1154,7 @@ var Selector = function (_React$Component) {
             'div',
             { className: 'left', id: 'user' },
             _react2["default"].createElement(
-              _tinperBee.Tabs,
+              _tinper.Tabs,
               {
                 defaultActiveKey: '1',
                 activeKey: _this.state.activeKey,
@@ -1172,7 +1175,7 @@ var Selector = function (_React$Component) {
                     , placeholder: i18n[locale].pleaseUser,
                     className: 'search'
                   }),
-                  _react2["default"].createElement(_tinperBee.Icon, {
+                  _react2["default"].createElement(_tinper.Icon, {
                     onClick: _this.clickSearch,
                     className: 'searchIcon',
                     type: 'uf-search'
@@ -1189,7 +1192,7 @@ var Selector = function (_React$Component) {
                     return _this.props.emptyText(i18n[locale].noData);
                   }
                 }),
-                _react2["default"].createElement(_tinperBee.Pagination, {
+                _react2["default"].createElement(_tinper.Pagination, {
                   className: 'selector_pagination',
                   first: true,
                   last: true,
@@ -1217,7 +1220,7 @@ var Selector = function (_React$Component) {
                     onKeyUp: _this.search,
                     className: 'search'
                   }),
-                  _react2["default"].createElement(_tinperBee.Icon, {
+                  _react2["default"].createElement(_tinper.Icon, {
                     onClick: _this.clickSearch,
                     className: 'searchIcon',
                     type: 'uf-search'
@@ -1234,7 +1237,7 @@ var Selector = function (_React$Component) {
                     return _this.props.emptyText(i18n[locale].noData);
                   }
                 }),
-                _react2["default"].createElement(_tinperBee.Pagination, {
+                _react2["default"].createElement(_tinper.Pagination, {
                   className: 'selector_pagination',
                   first: true,
                   last: true,
@@ -1260,7 +1263,7 @@ var Selector = function (_React$Component) {
                     , placeholder: i18n[locale].pleaseOrg,
                     className: 'search'
                   }),
-                  _react2["default"].createElement(_tinperBee.Icon, {
+                  _react2["default"].createElement(_tinper.Icon, {
                     onClick: _this.clickSearch,
                     className: 'searchIcon',
                     type: 'uf-search'
@@ -1273,7 +1276,7 @@ var Selector = function (_React$Component) {
                     'div',
                     { className: 'myTree' },
                     _react2["default"].createElement(
-                      _tinperBee.Tree,
+                      _tinper.Tree,
                       {
                         showIcon: true,
                         cancelUnSelect: true,
@@ -1291,7 +1294,7 @@ var Selector = function (_React$Component) {
                   _react2["default"].createElement(
                     'div',
                     { className: 'orgTable' },
-                    _react2["default"].createElement(_beeTable2["default"], {
+                    _react2["default"].createElement(_tinper.Table, {
                       scroll: { y: 440 },
                       columns: _colmuns.orgCol[locale],
                       data: _this.state.orgShowList,
@@ -1313,13 +1316,13 @@ var Selector = function (_React$Component) {
                     placeholder: i18n[locale].pleaseRule,
                     className: 'search'
                   }),
-                  _react2["default"].createElement(_tinperBee.Icon, { className: 'searchIcon', type: 'uf-search' })
+                  _react2["default"].createElement(_tinper.Icon, { className: 'searchIcon', type: 'uf-search' })
                 ),
                 _react2["default"].createElement(
                   'div',
                   { className: 'menuWrapper' },
                   _react2["default"].createElement(
-                    _tinperBee.Menu,
+                    _tinper.Menu,
                     { mode: 'inline', onClick: _this.menuClick },
                     _this.state.ruleMenuList
                   )
@@ -1485,7 +1488,7 @@ var Selector = function (_React$Component) {
                   )
                 )
               ),
-              _react2["default"].createElement(_beeTable2["default"], {
+              _react2["default"].createElement(_tinper.Table, {
                 scroll: { y: 130 },
                 columns: _colmuns.selectedUserCol[locale],
                 data: _this.state.selectedUserData,
@@ -1526,7 +1529,7 @@ var Selector = function (_React$Component) {
                   )
                 )
               ),
-              _react2["default"].createElement(_beeTable2["default"], {
+              _react2["default"].createElement(_tinper.Table, {
                 scroll: { y: 130 },
                 columns: _colmuns.selectedUserCol[locale],
                 data: _this.state.selectedOtherList,
@@ -1541,15 +1544,15 @@ var Selector = function (_React$Component) {
         )
       ),
       _react2["default"].createElement(
-        _tinperBee.Modal.Footer,
+        _tinper.Modal.Footer,
         null,
         _react2["default"].createElement(
-          _tinperBee.Button,
+          _tinper.Button,
           { onClick: _this.close, className: 'cancelBtn' },
           i18n[locale].cacel
         ),
         _react2["default"].createElement(
-          _tinperBee.Button,
+          _tinper.Button,
           { onClick: _this.confirm, colors: 'primary' },
           i18n[locale].accept
         )

@@ -26,3 +26,7 @@ sea-modules
 spm_modules
 .cache
 coverage
+src
+demo
+docs
+dist
