@@ -1,26 +1,38 @@
 # ac-selector
 
-[![Build Status](https://travis-ci.org/GRAMMAC1/ac-selector.svg?branch=master)](https://travis-ci.org/GRAMMAC1/ac-selector)
-
 ## 简介
 
-用友中台选人组件，目前只有智能产品部-消息组和预警在用。目前只支持从服务端获取数据。
+用友业务中台选人组件
 
 ## peerDependencies
 
-- react >= 15.3.0
-- react-dom >= 15.3.0
-- prop-types >= 15.6.0
+- `react` 
+- `react-dom`
+- `prop-types`
 
-## 使用方法
+## INSTALL
 
 ```js
-  npm i ac-Selector
-  import Selector from 'ac-Selector'
-  import 'ac-Selector/build/Selector.css'
+  npm i ac-selector
 ```
 
+## EXAMPLE 
 
+```js
+	import Selector from 'ac-selector'
+	import 'ac-selector/build/selector.css'
+	class Example extends React.Component {
+		render {
+			return (
+				<Selector 
+					show={控制模态框状态}
+					onConfirm={确认按钮回调函数}
+					onClose={关闭模态框回调函数}
+				/>
+			)
+		}
+	} 
+```
 
 ## API
 
@@ -42,6 +54,37 @@
 |`treeConfig`|传入的树（字段在下面示例代码）|`array` | 否 |[]|无|
 |`pageTotal`|分页，总共条数|`number` | 否 |无|无|
 |`pageItems`|分页，总页数|`number` | 否 |无|无|
+
+**`mode`用来指定请求接口请求什么环境，可选值为**
+```js
+{
+	dev: '测试环境',
+	daily: '日常环境',
+	pre: '预发布',
+	diwork: 'diwork ys融合环境',
+	diwork-prod: '生产'
+}
+```
+**默认是`daily`环境**
+
+**当使用`ruleList`时，可能会希望自定义的属性在确认的回调函数里面也可以被返回以做后续的逻辑处理。自定义的属性可以任意，但不能是`key` `type` `typCode` `ruleCode` `ruleName` `reciving`，这些字段的值会被覆盖**
+```js
+假如自定义的ruleList的结构是这样
+[
+	{
+		id: '1111',
+		name: '1111',
+		attrs: [
+				{
+					id: '1-1',
+					reciverType: '4444',
+					name: '1-1aaa'
+				}
+		]
+	}
+]
+那么id reciverType name 这三个字段会在otherList中全部返回
+```
 
 ### 关于扩展的详细可参考 demo2 
 >
@@ -212,9 +255,6 @@ treeConfig= [
     roleCode: '角色code',
     roleName: '角色名称'
   }
-```
-
-```js
   组织
   {
     type: '组织',
@@ -222,17 +262,12 @@ treeConfig= [
     orgId: '组织ID',
     orgName: '组织名称'
   }
-```
-
-```js
   规则
   {
     type: '规则',
     typeCode: 3,
     ruleCode: '规则code',
-    ruleName: '规则名称'
+		ruleName: '规则名称',
+		...{其他用户自定义的属性}
   }
 ```
-
-## TODO
-* 用户自定义展示标签

@@ -32,7 +32,7 @@ import {
   getKeyId,
   addFullAttr,
   deSelectType,
-
+  decodeMenukey
 } from './utils'
 
 let MultiSelectTable = multiSelect(Table, Checkbox)
@@ -184,11 +184,11 @@ class Selector extends React.Component {
 
   // 进入modal首先加载用户列表
   didFinish = () => {
-    // let { selectedUser, selectedOther } = this.props
-    // this.setState({
-    //   selectedUserData: setUserReciving(selectedUser),
-    //   selectedOtherList: setOtherReciving(selectedOther)
-    // })
+    let { selectedUser, selectedOther } = this.props
+    this.setState({
+      selectedUserData: setUserReciving(selectedUser),
+      selectedOtherList: setOtherReciving(selectedOther)
+    })
     const url = `${this.state.prefixUrl}/user/staff/search?pageSize=40&pageNo=1&keyword=`
     requestGet(url)
       .then(response => {
@@ -657,10 +657,10 @@ class Selector extends React.Component {
   confirm = () => {
     let { selectedUserData, selectedOtherList } = this.state
     let userList = mapUserList(selectedUserData)
-    let otherList = mapOtherList(selectedOtherList)
+    // let otherList = mapOtherList(selectedOtherList)
     this.reset()
     // console.log(userList, otherList)
-    this.props.onConfirm(userList, otherList)
+    this.props.onConfirm(userList, selectedOtherList)
   }
   //
   tabHandleChange=(lab)=>{
@@ -891,28 +891,24 @@ class Selector extends React.Component {
       })
   }
   menuClick = ({ key }) => {
+    const parsedKey = decodeMenukey(key)
     let { selectedOtherList } = this.state
     let _list = [...selectedOtherList]
-    const ruleName = key.substring(key.indexOf('&') + 1)
-    const ruleCode = key.substring(0, key.indexOf('&'))
-    // const uri = key.substring(key.indexOf('^') + 1)
     let filterList = []
     _list.forEach(t => {
       if (t.typeCode === 3) {
         filterList.push(t.key)
       }
     })
-    if (filterList.includes(key)) {
-      return
-    } else {
-      const menuItem = {
+    if (!filterList.includes(key)) {
+      const menuItem = Object.assign({}, parsedKey, {
         key,
         type: this.state.defaultLabel,
         typeCode: 3,
-        ruleCode,
-        ruleName,
-        reciving: ruleName
-      }
+        ruleCode: parsedKey.id,
+        ruleName: parsedKey.name,
+        reciving: parsedKey.name
+      }) 
       _list.push(menuItem)
       this.setState({
         selectedOtherList: [..._list],

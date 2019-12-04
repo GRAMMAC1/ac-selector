@@ -12,7 +12,7 @@ export function requestGet(url,option={}){
           url = url + '?' + param
       }
   }
-  var option = {
+  let _option = {
     method: 'GET', // *GET, POST, PUT, DELETE, etc.
     cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
     credentials: 'include', // include, same-origin, *omit
@@ -22,7 +22,7 @@ export function requestGet(url,option={}){
     // },
     mode: 'cors', // no-cors, cors, *same-origin
   }
-  return fetch(url,option) 
+  return fetch(url, _option) 
           .then((response) => {
               if(response.ok){
                   return response.json()

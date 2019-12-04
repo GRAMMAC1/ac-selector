@@ -104,22 +104,27 @@ export const transferToMenu = (treeData) => {
     treeData = arr.concat()
   }
   treeData.forEach((value,key) => {
+    let k = `id=${value.id}&name=${value.name}`;
+    let v = value.name;
     if('attrs' in value){
-        var k = `${value.id}&${value.name}`;
-        var v = value.name;
-        subMenu.push(
-            <SubMenu key={k} title={<span>{v}</span>}>
-            {
-              value.attrs ? transferToMenu(value.attrs):null
-            }
-            </SubMenu>
-        )
+      subMenu.push(
+        <SubMenu key={k} title={<span>{v}</span>}>
+        {
+          value.attrs ? transferToMenu(value.attrs) : null
+        }
+        </SubMenu>
+      )
     }else{
-        var k = `${value.id}&${value.name}`;
-        var v = value.name;
-        subMenu.push(
-            <Menu.Item key={k}>{v}</Menu.Item>
-        )
+      // 生成叶子节点时将所有对象的key处理成`key=value`这种形式
+      let _k = ''
+      for (let i in value) {
+        _k += `${i}=${value[i]}&`
+      }
+      // 处理掉最后一个&
+      _k = _k.substring(0, _k.lastIndexOf('&'))
+      subMenu.push(
+        <Menu.Item key={_k}>{v}</Menu.Item>
+      )
     }
   })
   return subMenu;
@@ -217,4 +222,18 @@ export const getTreeItem = (data) =>{
 
   })
   return 
+}
+
+// 为了支持用户自定义传入规则数据时返回用户自定义的key
+// 将key的格式定义为url param的格式
+// id=1&name=2的形式
+// 对key进行解析，返回
+// { id: 1, name: 2 }
+export const decodeMenukey = (value = '') => {
+  let paramList = value.split('&'), tempArr, res = {}
+  paramList.forEach(t => {
+    tempArr = t.split('=')
+    res[tempArr[0]] = tempArr[1]
+  })
+  return res
 }

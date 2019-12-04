@@ -1,82 +1,91 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports["default"] = void 0;
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-// import Table from 'bee-table'
+var _react = _interopRequireDefault(require("react"));
 
+var _propTypes = _interopRequireDefault(require("prop-types"));
 
-var _react = require('react');
+var langs = _interopRequireWildcard(require("./lang"));
 
-var _react2 = _interopRequireDefault(_react);
+var _tinper = require("./components/tinper");
 
-var _propTypes = require('prop-types');
+var _multiSelect = _interopRequireDefault(require("bee-table/build/lib/multiSelect"));
 
-var _propTypes2 = _interopRequireDefault(_propTypes);
+var _colmuns = require("./colmuns");
 
-var _lang = require('./lang');
+var _request = require("./request");
 
-var langs = _interopRequireWildcard(_lang);
+var _utils = require("./utils");
 
-var _tinper = require('./components/tinper');
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 
-var _multiSelect = require('bee-table/build/lib/multiSelect');
-
-var _multiSelect2 = _interopRequireDefault(_multiSelect);
-
-var _colmuns = require('./colmuns');
-
-var _request = require('./request');
-
-var _utils = require('./utils');
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj["default"] = obj; return newObj; } }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : _defaults(subClass, superClass); }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var MultiSelectTable = (0, _multiSelect2["default"])(_tinper.Table, _tinper.Checkbox);
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var MultiSelectTable = (0, _multiSelect["default"])(_tinper.Table, _tinper.Checkbox);
 var TabPane = _tinper.Tabs.TabPane;
-
 var TreeNode = _tinper.Tree.TreeNode;
-var i18n = _extends({}, langs);
+
+var i18n = _objectSpread({}, langs);
 
 var noop = function noop() {};
-
 /**
  * @dependencies 依赖的组件版本写死，升级可能会出现bug
  * @refact 类型声明 测试用例 webpack升级
  */
 
-var propTypes = {
-  locale: _propTypes2["default"].oneOf(['zh_CN', 'zh_TW', 'en_US']),
-  show: _propTypes2["default"].bool.isRequired,
-  onConfirm: _propTypes2["default"].func.isRequired,
-  onClose: _propTypes2["default"].func.isRequired,
-  mode: _propTypes2["default"].string,
-  selectedUser: _propTypes2["default"].array,
-  selectedOther: _propTypes2["default"].array,
-  documentNo: _propTypes2["default"].string,
-  documentName: _propTypes2["default"].string,
-  ruleList: _propTypes2["default"].array,
-  emptyText: _propTypes2["default"].node,
-  tabConfig: _propTypes2["default"].array
-};
 
+var propTypes = {
+  locale: _propTypes["default"].oneOf(['zh_CN', 'zh_TW', 'en_US']),
+  show: _propTypes["default"].bool.isRequired,
+  onConfirm: _propTypes["default"].func.isRequired,
+  onClose: _propTypes["default"].func.isRequired,
+  mode: _propTypes["default"].string,
+  selectedUser: _propTypes["default"].array,
+  selectedOther: _propTypes["default"].array,
+  documentNo: _propTypes["default"].string,
+  documentName: _propTypes["default"].string,
+  ruleList: _propTypes["default"].array,
+  emptyText: _propTypes["default"].node,
+  tabConfig: _propTypes["default"].array
+};
 var defaultProps = {
   locale: 'zh_CN',
   show: false,
@@ -88,45 +97,51 @@ var defaultProps = {
   documentNo: '',
   documentName: '',
   emptyText: function emptyText(locale) {
-    return _react2["default"].createElement(
-      'div',
-      null,
-      locale
-    );
+    return _react["default"].createElement("div", null, locale);
   },
   tabConfig: [],
   tableData: [],
   treeConfig: []
 };
 
-var Selector = function (_React$Component) {
+var Selector =
+/*#__PURE__*/
+function (_React$Component) {
   _inherits(Selector, _React$Component);
 
   function Selector(props) {
+    var _this2;
+
     _classCallCheck(this, Selector);
 
-    var _this2 = _possibleConstructorReturn(this, _React$Component.call(this, props));
+    _this2 = _possibleConstructorReturn(this, _getPrototypeOf(Selector).call(this, props));
 
-    _this2.didFinish = function () {
-      // let { selectedUser, selectedOther } = this.props
-      // this.setState({
-      //   selectedUserData: setUserReciving(selectedUser),
-      //   selectedOtherList: setOtherReciving(selectedOther)
-      // })
-      var url = _this2.state.prefixUrl + '/user/staff/search?pageSize=40&pageNo=1&keyword=';
+    _defineProperty(_assertThisInitialized(_this2), "didFinish", function () {
+      var _this2$props = _this2.props,
+          selectedUser = _this2$props.selectedUser,
+          selectedOther = _this2$props.selectedOther;
+
+      _this2.setState({
+        selectedUserData: (0, _utils.setUserReciving)(selectedUser),
+        selectedOtherList: (0, _utils.setOtherReciving)(selectedOther)
+      });
+
+      var url = "".concat(_this2.state.prefixUrl, "/user/staff/search?pageSize=40&pageNo=1&keyword=");
       (0, _request.requestGet)(url).then(function (response) {
         if (response.status === 1 && response.data !== null) {
           var selectedUserData = _this2.state.selectedUserData;
 
           var _newList = (0, _utils.resetChecked)(response.data.values, 'userid');
+
           var res = (0, _utils.setChecked)(_newList, selectedUserData, 'userid');
-          var completeRes = (0, _utils.addFullAttr)(res);
-          // console.log(completeRes)
+          var completeRes = (0, _utils.addFullAttr)(res); // console.log(completeRes)
+
           var obj = {
             activePage: response.data.currentPage,
             items: response.data.totalPages,
             total: response.data.pageSize
           };
+
           _this2.setState({
             multiShowList: completeRes,
             staffPage: obj
@@ -135,18 +150,20 @@ var Selector = function (_React$Component) {
       })["catch"](function (error) {
         throw new Error(error);
       });
-    };
+    });
 
-    _this2.search = function (e) {
+    _defineProperty(_assertThisInitialized(_this2), "search", function (e) {
       var activeKey = _this2.state.activeKey,
-          _this = _this2;
+          _this = _assertThisInitialized(_this2);
 
       var url = '';
+
       if (activeKey === '1') {
-        url = _this.state.prefixUrl + '/user/staff/search?pageSize=40&pageNo=1&keyword=' + e.target.value;
+        url = "".concat(_this.state.prefixUrl, "/user/staff/search?pageSize=40&pageNo=1&keyword=").concat(e.target.value);
       } else if (activeKey === '2') {
-        url = _this.state.prefixUrl + '/user/role/search?pageSize=40&pageNo=1&keyword=' + e.target.value;
+        url = "".concat(_this.state.prefixUrl, "/user/role/search?pageSize=40&pageNo=1&keyword=").concat(e.target.value);
       }
+
       if (e.keyCode === 13 || e.keyCode === 108) {
         (0, _request.requestGet)(url).then(function (response) {
           if (response.status === 1 && response.data !== null) {
@@ -160,6 +177,7 @@ var Selector = function (_React$Component) {
               _list = (0, _utils.resetChecked)(response.data.values, 'userid');
               _list = (0, _utils.setChecked)(response.data.values, _this2.state.selectedUserData, 'userid');
               _list = (0, _utils.addFullAttr)(_list);
+
               _this2.setState({
                 multiShowList: _list,
                 staffPage: obj
@@ -173,6 +191,7 @@ var Selector = function (_React$Component) {
               };
               _list2 = (0, _utils.resetChecked)(response.data.values, 'roleId');
               _list2 = (0, _utils.setChecked)(response.data.values, _this2.state.selectedOtherList, 'roleId');
+
               _this2.setState({
                 roleShowList: _list2,
                 rolePage: _obj
@@ -181,7 +200,7 @@ var Selector = function (_React$Component) {
           } else if (response.data === null) {
             if (activeKey === '1') {
               _this2.setState({
-                staffPage: _extends({}, {
+                staffPage: Object.assign({}, {
                   activePage: 1,
                   items: 1,
                   total: 0
@@ -190,7 +209,7 @@ var Selector = function (_React$Component) {
               });
             } else if (activeKey === '2') {
               _this2.setState({
-                rolePage: _extends({}, {
+                rolePage: Object.assign({}, {
                   activePage: 1,
                   items: 1,
                   total: 0
@@ -203,21 +222,23 @@ var Selector = function (_React$Component) {
           throw new Error(error);
         });
       }
-    };
+    });
 
-    _this2.clickSearch = function () {
-      var _this = _this2;
-      var searchUrl = void 0;
+    _defineProperty(_assertThisInitialized(_this2), "clickSearch", function () {
+      var _this = _assertThisInitialized(_this2);
+
+      var searchUrl;
       var _this2$state = _this2.state,
           activeKey = _this2$state.activeKey,
           staffInputValue = _this2$state.staffInputValue,
           roleInputValue = _this2$state.roleInputValue;
 
       if (activeKey === '1') {
-        searchUrl = _this.state.prefixUrl + '/user/staff/search?pageSize=40&pageNo=1&keyword=' + staffInputValue;
+        searchUrl = "".concat(_this.state.prefixUrl, "/user/staff/search?pageSize=40&pageNo=1&keyword=").concat(staffInputValue);
       } else {
-        searchUrl = _this.state.prefixUrl + '/user/role/search?pageSize=40&pageNo=1&keyword=' + roleInputValue;
+        searchUrl = "".concat(_this.state.prefixUrl, "/user/role/search?pageSize=40&pageNo=1&keyword=").concat(roleInputValue);
       }
+
       (0, _request.requestGet)(searchUrl).then(function (response) {
         if (response.status === 1 && response.data !== null) {
           if (activeKey === '1') {
@@ -229,6 +250,7 @@ var Selector = function (_React$Component) {
             };
             _list = (0, _utils.resetChecked)(response.data.values, 'userid');
             _list = (0, _utils.setChecked)(response.data.values, _this2.state.selectedUserData, 'userid');
+
             _this2.setState({
               multiShowList: _list,
               staffPage: obj
@@ -242,6 +264,7 @@ var Selector = function (_React$Component) {
             };
             _list3 = (0, _utils.resetChecked)(response.data.values, 'roleId');
             _list3 = (0, _utils.setChecked)(response.data.values, _this2.state.selectedOtherList, 'roleId');
+
             _this2.setState({
               roleShowList: _list3,
               rolePage: _obj2
@@ -251,35 +274,45 @@ var Selector = function (_React$Component) {
       })["catch"](function (err) {
         throw new Error(err);
       });
-    };
+    });
 
-    _this2.inputChange = function (e) {
+    _defineProperty(_assertThisInitialized(_this2), "inputChange", function (e) {
       _this2.setState({
         "extends": e.target.value
       });
-    };
+    });
 
-    _this2.hoverDelIcon = function () {
-      return _react2["default"].createElement(_tinper.Icon, { onClick: _this2.delUser, className: 'deleteIcon', type: 'uf-close' });
-    };
+    _defineProperty(_assertThisInitialized(_this2), "hoverDelIcon", function () {
+      return _react["default"].createElement(_tinper.Icon, {
+        onClick: _this2.delUser,
+        className: 'deleteIcon',
+        type: 'uf-close'
+      });
+    });
 
-    _this2.hoverDelOtherIcon = function () {
-      return _react2["default"].createElement(_tinper.Icon, { onClick: _this2.delOther, className: 'deleteIcon', type: 'uf-close' });
-    };
+    _defineProperty(_assertThisInitialized(_this2), "hoverDelOtherIcon", function () {
+      return _react["default"].createElement(_tinper.Icon, {
+        onClick: _this2.delOther,
+        className: 'deleteIcon',
+        type: 'uf-close'
+      });
+    });
 
-    _this2.delOther = function () {
+    _defineProperty(_assertThisInitialized(_this2), "delOther", function () {
       var _this2$state2 = _this2.state,
           roleShowList = _this2$state2.roleShowList,
           selectedOtherList = _this2$state2.selectedOtherList,
           orgSelectedKeys = _this2$state2.orgSelectedKeys;
 
-      var _list = [].concat(_toConsumableArray(roleShowList));
+      var _list = _toConsumableArray(roleShowList);
+
       if (selectedOtherList[_this2.delOtherIndex].typeCode === 1) {
         _list = _list.map(function (t) {
           if (t.roleId === selectedOtherList[_this2.delOtherIndex].roleId) {
             t._checked = false;
             return t;
           }
+
           return t;
         });
       } else if (selectedOtherList[_this2.delOtherIndex].typeCode === 2) {
@@ -289,28 +322,33 @@ var Selector = function (_React$Component) {
             index = i;
           }
         });
+
         if (index !== -1) {
-          var tempList = [].concat(_toConsumableArray(orgSelectedKeys));
+          var tempList = _toConsumableArray(orgSelectedKeys);
+
           tempList.splice(index, 1);
+
           _this2.setState({
-            orgSelectedKeys: [].concat(_toConsumableArray(tempList))
+            orgSelectedKeys: _toConsumableArray(tempList)
           });
         }
       }
-      var res = [].concat(_toConsumableArray(selectedOtherList));
-      res.splice(_this2.delOtherIndex, 1);
-      _this2.setState({
-        selectedOtherList: [].concat(_toConsumableArray(res)),
-        selectedOtherCount: res.length,
-        roleShowList: [].concat(_toConsumableArray(_list))
-      });
-    };
 
-    _this2.delUser = function () {
+      var res = _toConsumableArray(selectedOtherList);
+
+      res.splice(_this2.delOtherIndex, 1);
+
+      _this2.setState({
+        selectedOtherList: _toConsumableArray(res),
+        selectedOtherCount: res.length,
+        roleShowList: _toConsumableArray(_list)
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this2), "delUser", function () {
       var _this2$state3 = _this2.state,
           multiShowList = _this2$state3.multiShowList,
           selectedUserData = _this2$state3.selectedUserData;
-
       multiShowList = multiShowList.map(function (item) {
         if (item.userid === selectedUserData[_this2.delIndex].userid) {
           item._checked = false;
@@ -318,41 +356,44 @@ var Selector = function (_React$Component) {
         }
       });
       selectedUserData.splice(_this2.delIndex, 1);
+
       _this2.setState({
-        selectedUserData: [].concat(_toConsumableArray(selectedUserData)),
+        selectedUserData: _toConsumableArray(selectedUserData),
         selectedCount: selectedUserData.length
       });
-    };
+    });
 
-    _this2.onRowHover = function (index) {
+    _defineProperty(_assertThisInitialized(_this2), "onRowHover", function (index) {
       _this2.delIndex = index;
-    };
+    });
 
-    _this2.onRowOtherHover = function (index) {
+    _defineProperty(_assertThisInitialized(_this2), "onRowOtherHover", function (index) {
       _this2.delOtherIndex = index;
-    };
+    });
 
-    _this2.getUserList = function (data, record) {
+    _defineProperty(_assertThisInitialized(_this2), "getUserList", function (data, record) {
       var typeCode = 0;
       var _this2$state4 = _this2.state,
           defaultLabel = _this2$state4.defaultLabel,
           multiShowList = _this2$state4.multiShowList,
           selectedUserData = _this2$state4.selectedUserData;
-
       var delList = (0, _utils.getUserId)(data);
-      var _list = [].concat(_toConsumableArray(selectedUserData));
+
+      var _list = _toConsumableArray(selectedUserData);
+
       var res = (0, _utils.resetChecked)(multiShowList, 'userid');
       res = (0, _utils.setChecked)(multiShowList, data, 'userid');
+
       if (record === undefined) {
         if (data.length) {
           var useridList = (0, _utils.getUserId)(_list);
           data.forEach(function (t) {
             if (!useridList.includes(t.userid)) {
-              _list.push(_extends({}, t, {
+              _list.push(Object.assign({}, t, {
                 type: defaultLabel,
                 typeCode: typeCode,
                 key: t.userid,
-                reciving: t.username + '(' + t.orgName + ')'
+                reciving: "".concat(t.username, "(").concat(t.orgName, ")")
               }));
             }
           });
@@ -360,21 +401,24 @@ var Selector = function (_React$Component) {
           // 得到当前页数据的userid，遍历当前已选的用户列表，如果有当前页的userid就删除当前项
           var deleteUserList = (0, _utils.getUserId)(multiShowList),
               result = [];
+
           _list.forEach(function (t) {
             if (!deleteUserList.includes(t.userid)) {
               result.push(t);
             }
           });
+
           _list = [].concat(result);
         }
       } else {
-        var currItem = _extends({}, record, {
+        var currItem = Object.assign({}, record, {
           type: defaultLabel,
           typeCode: typeCode,
           key: record.userid,
-          reciving: record.orgName ? record.username + '(' + record.orgName + ')' : // : `${record.username}(未知部门)`
-          record.username + '(' + langs[_this2.state.locale] + ')'
+          reciving: record.orgName ? "".concat(record.username, "(").concat(record.orgName, ")") : // : `${record.username}(未知部门)`
+          "".concat(record.username, "(").concat(langs[_this2.state.locale], ")")
         });
+
         if (delList.includes(currItem.userid)) {
           _list.push(currItem);
         } else {
@@ -385,31 +429,35 @@ var Selector = function (_React$Component) {
           });
         }
       }
+
       _this2.setState({
-        multiShowList: [].concat(_toConsumableArray(res)),
-        selectedUserData: [].concat(_toConsumableArray(_list)),
+        multiShowList: _toConsumableArray(res),
+        selectedUserData: _toConsumableArray(_list),
         selectedCount: _list.length
       });
-    };
+    });
 
-    _this2.getRoleList = function (data, record) {
+    _defineProperty(_assertThisInitialized(_this2), "getRoleList", function (data, record) {
       var typeCode = 1;
       var _this2$state5 = _this2.state,
           roleShowList = _this2$state5.roleShowList,
           defaultLabel = _this2$state5.defaultLabel,
           selectedOtherList = _this2$state5.selectedOtherList;
 
-      var _list = [].concat(_toConsumableArray(selectedOtherList));
-      var tempList = [].concat(_toConsumableArray(roleShowList));
+      var _list = _toConsumableArray(selectedOtherList);
+
+      var tempList = _toConsumableArray(roleShowList);
+
       var delList = (0, _utils.getRoleId)(data);
       tempList = (0, _utils.resetChecked)(tempList, 'roleId');
       tempList = (0, _utils.setChecked)(tempList, data, 'roleId');
+
       if (record === undefined) {
         if (data.length) {
           var roleIdList = (0, _utils.getRoleId)(_list);
           data.forEach(function (t) {
             if (!roleIdList.includes(t.roleId)) {
-              _list.push(_extends({}, t, {
+              _list.push(Object.assign({}, t, {
                 key: t.roleId,
                 type: defaultLabel,
                 typeCode: typeCode,
@@ -421,20 +469,23 @@ var Selector = function (_React$Component) {
           // 和用户页签取消全部选中逻辑相同
           var deleteRoleList = (0, _utils.getRoleId)(roleShowList),
               result = [];
+
           _list.forEach(function (t) {
             if (!deleteRoleList.includes(t.roleId)) {
               result.push(t);
             }
           });
+
           _list = [].concat(result);
         }
       } else {
-        var currItem = _extends({}, record, {
+        var currItem = Object.assign({}, record, {
           key: record.roleId,
           type: defaultLabel,
           typeCode: typeCode,
           reciving: record.roleName
         });
+
         if (delList.includes(record.roleId)) {
           _list.push(currItem);
         } else {
@@ -445,24 +496,28 @@ var Selector = function (_React$Component) {
           });
         }
       }
+
       _this2.setState({
-        selectedOtherList: [].concat(_toConsumableArray(_list)),
-        roleShowList: [].concat(_toConsumableArray(tempList)),
+        selectedOtherList: _toConsumableArray(_list),
+        roleShowList: _toConsumableArray(tempList),
         selectedOtherCount: _list.length
       });
-    };
+    });
 
-    _this2.getExtend = function (data, record) {
+    _defineProperty(_assertThisInitialized(_this2), "getExtend", function (data, record) {
       var _this2$state6 = _this2.state,
           roleShowList = _this2$state6.roleShowList,
           defaultLabel = _this2$state6.defaultLabel,
           selectedOtherList = _this2$state6.selectedOtherList;
 
-      var _list = [].concat(_toConsumableArray(selectedOtherList));
-      var tempList = [].concat(_toConsumableArray(roleShowList));
+      var _list = _toConsumableArray(selectedOtherList);
+
+      var tempList = _toConsumableArray(roleShowList);
+
       var delList = (0, _utils.getRoleId)(data);
       tempList = (0, _utils.resetChecked)(tempList, 'roleId');
       tempList = (0, _utils.setChecked)(tempList, data, 'roleId');
+
       if (record === undefined) {
         if (data.length) {
           var roleIdList = (0, _utils.getRoleId)(_list);
@@ -475,15 +530,18 @@ var Selector = function (_React$Component) {
           // 和用户页签取消全部选中逻辑相同
           var deleteRoleList = (0, _utils.getRoleId)(roleShowList),
               result = [];
+
           _list.forEach(function (t) {
             if (!deleteRoleList.includes(t.roleId)) {
               result.push(t);
             }
           });
+
           _list = [].concat(result);
         }
       } else {
         var currItem = record;
+
         if (delList.includes(record.roleId)) {
           _list.push(currItem);
         } else {
@@ -494,60 +552,63 @@ var Selector = function (_React$Component) {
           });
         }
       }
+
       _this2.setState({
-        selectedOtherList: [].concat(_toConsumableArray(_list)),
-        roleShowList: [].concat(_toConsumableArray(tempList)),
+        selectedOtherList: _toConsumableArray(_list),
+        roleShowList: _toConsumableArray(tempList),
         selectedOtherCount: _list.length
       });
-    };
+    });
 
-    _this2.extendPageSelect = function (tabMark, index) {
+    _defineProperty(_assertThisInitialized(_this2), "extendPageSelect", function (tabMark, index) {
       _this2.props.extendPage(tabMark, index);
+
       _this2.setState({
         extendPageIndex: index
       });
-    };
+    });
 
-    _this2.uniqueByAttr = function (arr, type) {
+    _defineProperty(_assertThisInitialized(_this2), "uniqueByAttr", function (arr, type) {
       var res = new Map();
       return arr.filter(function (item) {
         if (item[type] !== 'undefined') {
           return !res.has(item[type]) && res.set(item[type], 1);
         }
       });
-    };
+    });
 
-    _this2.deSelectAll = function (code, e) {
+    _defineProperty(_assertThisInitialized(_this2), "deSelectAll", function (code, e) {
       e.stopPropagation();
+
       if (code) {
         var multiShowList = _this2.state.multiShowList;
-
         multiShowList = multiShowList.map(function (item) {
           item._checked = false;
           return item;
         });
+
         _this2.setState({
           multiShowList: multiShowList,
           selectedCount: 0,
           selectedUserData: []
         });
       } else {
-        var roleShowList = _this2.state.roleShowList;
-        // 清空左侧已勾选项
+        var roleShowList = _this2.state.roleShowList; // 清空左侧已勾选项
 
         roleShowList = roleShowList.map(function (item) {
           item._checked = false;
           return item;
         });
+
         _this2.setState({
           roleShowList: roleShowList,
           selectedOtherCount: 0,
           selectedOtherList: []
         });
       }
-    };
+    });
 
-    _this2.reset = function () {
+    _defineProperty(_assertThisInitialized(_this2), "reset", function () {
       _this2.setState({
         "extends": '',
         activeKey: '1',
@@ -555,7 +616,8 @@ var Selector = function (_React$Component) {
         roleShowList: [],
         selectedUserData: [],
         selectedOtherList: [],
-        ruleMenuList: [], // 规则
+        ruleMenuList: [],
+        // 规则
         selectedCount: 0,
         selectedOtherCount: 0,
         staffInputValue: '',
@@ -563,36 +625,38 @@ var Selector = function (_React$Component) {
         orgSelectedKeys: [],
         defaultLabel: '用户'
       });
-    };
+    });
 
-    _this2.close = function () {
+    _defineProperty(_assertThisInitialized(_this2), "close", function () {
       // 清空上一次用户状态
       _this2.reset();
-      _this2.props.onClose();
-    };
 
-    _this2.confirm = function () {
+      _this2.props.onClose();
+    });
+
+    _defineProperty(_assertThisInitialized(_this2), "confirm", function () {
       var _this2$state7 = _this2.state,
           selectedUserData = _this2$state7.selectedUserData,
           selectedOtherList = _this2$state7.selectedOtherList;
+      var userList = (0, _utils.mapUserList)(selectedUserData); // let otherList = mapOtherList(selectedOtherList)
 
-      var userList = (0, _utils.mapUserList)(selectedUserData);
-      var otherList = (0, _utils.mapOtherList)(selectedOtherList);
-      _this2.reset();
-      // console.log(userList, otherList)
-      _this2.props.onConfirm(userList, otherList);
-    };
+      _this2.reset(); // console.log(userList, otherList)
 
-    _this2.tabHandleChange = function (lab) {
+
+      _this2.props.onConfirm(userList, selectedOtherList);
+    });
+
+    _defineProperty(_assertThisInitialized(_this2), "tabHandleChange", function (lab) {
       // console.log(lab)
       _this2.setState({
         defaultLabel: lab
       });
-    };
+    });
 
-    _this2.onChange = function (activeKey, node) {
+    _defineProperty(_assertThisInitialized(_this2), "onChange", function (activeKey, node) {
       // console.log(activeKey,node)
-      var _this = _this2;
+      var _this = _assertThisInitialized(_this2);
+
       if (activeKey < 4) {
         _this2.setState({
           "extends": '',
@@ -600,51 +664,59 @@ var Selector = function (_React$Component) {
           defaultLabel: (0, _utils.setLabel)(activeKey)
         });
       }
+
       _this2.setState({
         "extends": '',
         activeKey: activeKey,
-        orgInputValue: ""
-        // defaultLabel: setLabel(activeKey)
+        orgInputValue: "" // defaultLabel: setLabel(activeKey)
+
       });
+
       if (activeKey === '1') {
         _this2.didFinish();
       }
+
       if (activeKey === '2') {
-        var url = _this.state.prefixUrl + '/user/role/search?pageSize=40&pageNo=1&keyword=';
-        // let { roleShowList } = this.state
+        var url = "".concat(_this.state.prefixUrl, "/user/role/search?pageSize=40&pageNo=1&keyword="); // let { roleShowList } = this.state
         // if (!roleShowList.length) {
+
         (0, _request.requestGet)(url).then(function (response) {
           if (response.status === 1) {
             var selectedOtherList = _this2.state.selectedOtherList;
-
             var _page = {
               activePage: response.data.currentPage,
               items: response.data.totalPages,
               total: response.data.pageSize
             };
+
             _this2.setState({
               rolePage: _page
             });
+
             var _newList = (0, _utils.resetChecked)(response.data.values, 'roleId');
+
             var res = (0, _utils.setChecked)(_newList, selectedOtherList, 'roleId');
+
             _this2.setState({
               roleShowList: res
             });
           }
         })["catch"](function (error) {
           throw new Error(error);
-        });
-        // }
+        }); // }
       } else if (activeKey === '3') {
         var selectedOtherList = _this2.state.selectedOtherList;
 
-        var _url = _this.state.prefixUrl + '/user/org/list?pageSize=40&pageNo=1&orgIds=';
+        var _url = "".concat(_this.state.prefixUrl, "/user/org/list?pageSize=40&pageNo=1&orgIds=");
+
         (0, _request.requestGet)(_url).then(function (response) {
           if (response.status === 1) {
             _this2.setState({
               orgTreeList: response.data
             });
-            _this2.orgTreeList = [].concat(_toConsumableArray(response.data));
+
+            _this2.orgTreeList = _toConsumableArray(response.data);
+
             if (selectedOtherList.length) {
               var checkedKeys = [];
               selectedOtherList.forEach(function (t) {
@@ -652,6 +724,7 @@ var Selector = function (_React$Component) {
                   checkedKeys.push(t.orgId);
                 }
               });
+
               _this2.setState({
                 orgSelectedKeys: [].concat(checkedKeys)
               });
@@ -670,14 +743,16 @@ var Selector = function (_React$Component) {
             ruleMenuList: (0, _utils.transferToMenu)(_this2.props.ruleList)
           });
         } else {
-          var _url2 = _this.state.prefixUrl + '/user/rules?documentNo=' + _this2.props.documentNo + '&documentName=' + _this2.props.documentName;
+          var _url2 = "".concat(_this.state.prefixUrl, "/user/rules?documentNo=").concat(_this2.props.documentNo, "&documentName=").concat(_this2.props.documentName);
+
           (0, _request.requestGet)(_url2).then(function (response) {
             if (response.status === 1) {
               var menuList = [{
                 id: 'root-0',
                 name: _this2.props.documentName,
-                attrs: [].concat(_toConsumableArray(response.data.data))
+                attrs: _toConsumableArray(response.data.data)
               }];
+
               _this2.setState({
                 ruleMenuList: (0, _utils.transferToMenu)(menuList)
               });
@@ -687,13 +762,14 @@ var Selector = function (_React$Component) {
           });
         }
       }
-    };
+    });
 
-    _this2.treeOnSelect = function (info) {
-      var url = _this2.state.prefixUrl + '//user/org/user?pageSize=40&pageNo=1&orgIds=[\'' + info + '\']';
+    _defineProperty(_assertThisInitialized(_this2), "treeOnSelect", function (info) {
+      var url = "".concat(_this2.state.prefixUrl, "//user/org/user?pageSize=40&pageNo=1&orgIds=['").concat(info, "']");
       (0, _request.requestGet)(url).then(function (response) {
         if (response.status === 1) {
           var _newList = (0, _utils.resetChecked)(response.data, 'userid');
+
           _this2.setState({
             orgShowList: _newList
           });
@@ -701,16 +777,18 @@ var Selector = function (_React$Component) {
       })["catch"](function (error) {
         throw new Error(error);
       });
-    };
+    });
 
-    _this2.treeOnCheck = function (info, e) {
+    _defineProperty(_assertThisInitialized(_this2), "treeOnCheck", function (info, e) {
       // console.log(info,e)
       var typeCode = 2;
       var defaultLabel = _this2.state.defaultLabel;
       var selectedOtherList = _this2.state.selectedOtherList;
 
-      var checkedNodes = [].concat(_toConsumableArray(e.checkedNodes));
-      var _list = [].concat(_toConsumableArray(selectedOtherList));
+      var checkedNodes = _toConsumableArray(e.checkedNodes);
+
+      var _list = _toConsumableArray(selectedOtherList);
+
       var newList = (0, _utils.deSelect)(_list, typeCode);
       var tempRes = checkedNodes.map(function (t, i) {
         return {
@@ -722,24 +800,25 @@ var Selector = function (_React$Component) {
           orgId: info[i]
         };
       });
-      var res = newList.concat(tempRes);
-      // console.log(res)
-      _this2.setState({
-        selectedOtherList: [].concat(_toConsumableArray(res)),
-        selectedOtherCount: res.length,
-        orgSelectedKeys: [].concat(_toConsumableArray(info))
-      });
-    };
+      var res = newList.concat(tempRes); // console.log(res)
 
-    _this2.ExpandedTreeOnCheck = function (info, e) {
+      _this2.setState({
+        selectedOtherList: _toConsumableArray(res),
+        selectedOtherCount: res.length,
+        orgSelectedKeys: _toConsumableArray(info)
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this2), "ExpandedTreeOnCheck", function (info, e) {
       // console.log(info,e)
-      var defaultLabel = _this2.state.defaultLabel;
-      // console.log(this.state.defaultLabel)
+      var defaultLabel = _this2.state.defaultLabel; // console.log(this.state.defaultLabel)
 
       var selectedOtherList = _this2.state.selectedOtherList;
 
-      var checkedNodes = [].concat(_toConsumableArray(e.checkedNodes));
-      var _list = [].concat(_toConsumableArray(selectedOtherList));
+      var checkedNodes = _toConsumableArray(e.checkedNodes);
+
+      var _list = _toConsumableArray(selectedOtherList);
+
       var newList = (0, _utils.deSelectType)(_list, defaultLabel);
       var tempRes = checkedNodes.map(function (t, i) {
         // console.log(info[i])
@@ -751,20 +830,21 @@ var Selector = function (_React$Component) {
           orgId: info[i]
         };
       });
-      var res = newList.concat(tempRes);
-      // console.log(tempRes)
+      var res = newList.concat(tempRes); // console.log(tempRes)
+
       _this2.setState({
-        selectedOtherList: [].concat(_toConsumableArray(res)),
+        selectedOtherList: _toConsumableArray(res),
         selectedOtherCount: res.length
       });
+
       return;
-    };
+    });
 
-    _this2.roleSelect = function (e) {
-      var _this = _this2;
-      var url = _this.state.prefixUrl + '/user/role/search?pageSize=40&pageNo=' + e + '&keyword=';
+    _defineProperty(_assertThisInitialized(_this2), "roleSelect", function (e) {
+      var _this = _assertThisInitialized(_this2);
+
+      var url = "".concat(_this.state.prefixUrl, "/user/role/search?pageSize=40&pageNo=").concat(e, "&keyword=");
       var selectedOtherList = _this2.state.selectedOtherList;
-
       (0, _request.requestGet)(url).then(function (response) {
         if (response.status === 1 && response.data !== null) {
           var obj = {
@@ -774,6 +854,7 @@ var Selector = function (_React$Component) {
           };
           var res = (0, _utils.resetChecked)(response.data.values, 'roleId');
           res = (0, _utils.setChecked)(response.data.values, selectedOtherList, 'roleId');
+
           _this2.setState({
             rolePage: obj,
             roleShowList: res
@@ -782,11 +863,12 @@ var Selector = function (_React$Component) {
       })["catch"](function (err) {
         throw new Error(err);
       });
-    };
+    });
 
-    _this2.staffSelect = function (e) {
-      var _this = _this2;
-      var url = _this.state.prefixUrl + '/user/staff/search?pageSize=40&pageNo=' + e + '&keyword=';
+    _defineProperty(_assertThisInitialized(_this2), "staffSelect", function (e) {
+      var _this = _assertThisInitialized(_this2);
+
+      var url = "".concat(_this.state.prefixUrl, "/user/staff/search?pageSize=40&pageNo=").concat(e, "&keyword=");
       (0, _request.requestGet)(url).then(function (response) {
         if (response.status === 1 && response.data !== null) {
           var obj = {
@@ -797,6 +879,7 @@ var Selector = function (_React$Component) {
           var res = (0, _utils.resetChecked)(response.data.values, 'userid');
           res = (0, _utils.setChecked)(res, _this2.state.selectedUserData, 'userid');
           var completeRes = (0, _utils.addFullAttr)(res);
+
           _this2.setState({
             staffPage: obj,
             multiShowList: completeRes
@@ -805,62 +888,70 @@ var Selector = function (_React$Component) {
       })["catch"](function (err) {
         throw new Error(err);
       });
-    };
+    });
 
-    _this2.menuClick = function (_ref) {
+    _defineProperty(_assertThisInitialized(_this2), "menuClick", function (_ref) {
       var key = _ref.key;
+      var parsedKey = (0, _utils.decodeMenukey)(key);
       var selectedOtherList = _this2.state.selectedOtherList;
 
-      var _list = [].concat(_toConsumableArray(selectedOtherList));
-      var ruleName = key.substring(key.indexOf('&') + 1);
-      var ruleCode = key.substring(0, key.indexOf('&'));
-      // const uri = key.substring(key.indexOf('^') + 1)
+      var _list = _toConsumableArray(selectedOtherList);
+
       var filterList = [];
+
       _list.forEach(function (t) {
         if (t.typeCode === 3) {
           filterList.push(t.key);
         }
       });
-      if (filterList.includes(key)) {
-        return;
-      } else {
-        var menuItem = {
+
+      if (!filterList.includes(key)) {
+        var menuItem = Object.assign({}, parsedKey, {
           key: key,
           type: _this2.state.defaultLabel,
           typeCode: 3,
-          ruleCode: ruleCode,
-          ruleName: ruleName,
-          reciving: ruleName
-        };
+          ruleCode: parsedKey.id,
+          ruleName: parsedKey.name,
+          reciving: parsedKey.name
+        });
+
         _list.push(menuItem);
+
         _this2.setState({
-          selectedOtherList: [].concat(_toConsumableArray(_list)),
+          selectedOtherList: _toConsumableArray(_list),
           selectedOtherCount: _list.length
         });
       }
-    };
+    });
 
-    _this2.searchOrg = function (e) {
+    _defineProperty(_assertThisInitialized(_this2), "searchOrg", function (e) {
       var value = e.target.value;
+
       _this2.setState({
         orgInputValue: value
-      });
-      // if (!value.trim()) {
+      }); // if (!value.trim()) {
       //   return
       // }
+
+
       var res = [];
+
       function deepTraversal(list, callback) {
         var stack = [];
+
         while (list) {
           callback(list);
+
           if (list.childs) {
             for (var i = list.childs.length - 1; i >= 0; i--) {
               stack.push(list.childs[i]);
             }
           }
+
           list = stack.pop();
         }
       }
+
       _this2.orgTreeList.forEach(function (t) {
         deepTraversal(t, function (node) {
           if (node.orgName.indexOf(value) > -1) {
@@ -868,79 +959,102 @@ var Selector = function (_React$Component) {
           }
         });
       });
+
       _this2.setState({
         orgExpandedKeys: [].concat(res),
         autoExpandParent: true
       });
-    };
+    });
 
-    _this2.searchOrgTree = function (e) {
+    _defineProperty(_assertThisInitialized(_this2), "searchOrgTree", function (e) {
       var value = e.target.value;
+
       _this2.setState({
         orgInputValue: value
       });
+
       if (!value.trim()) {
         return;
       }
+
       var res = [];
+
       function deepTraversal(list, callback) {
         var stack = [];
+
         while (list) {
           callback(list);
+
           if (list.childs) {
             for (var i = list.childs.length - 1; i >= 0; i--) {
               stack.push(list.childs[i]);
             }
           }
+
           list = stack.pop();
         }
       }
+
       _this2.state.exendTreeList.forEach(function (t) {
         deepTraversal(t, function (node) {
           if (node.orgName.indexOf(value) > -1) {
             res.push(node.orgId);
           }
         });
-      });
-      // console.log(res)
+      }); // console.log(res)
+
+
       _this2.setState({
         orgTreeExpandedKeys: [].concat(res),
         autoTreeExpandParent: true
       });
-    };
+    });
 
-    _this2.onExpand = function (keys) {
+    _defineProperty(_assertThisInitialized(_this2), "onExpand", function (keys) {
       // console.log(a,b,c)
       _this2.setState({
-        orgExpandedKeys: [].concat(_toConsumableArray(keys)),
+        orgExpandedKeys: _toConsumableArray(keys),
         autoExpandParent: false
       });
-    };
+    });
 
-    _this2.onTreeExpand = function (keys) {
+    _defineProperty(_assertThisInitialized(_this2), "onTreeExpand", function (keys) {
       // console.log(keys)
       _this2.setState({
-        orgTreeExpandedKeys: [].concat(_toConsumableArray(keys)),
+        orgTreeExpandedKeys: _toConsumableArray(keys),
         autoTreeExpandParent: false
       });
-    };
+    });
 
     _this2.orgTreeList = []; // 备份完整的组织树
+
     _this2.state = {
       locale: props.locale,
       show: false,
-      filterIndex: '', // 根据首字母筛选用户
-      selectedCount: 0, // 当前已选择的总数量
-      selectedOtherCount: 0, //当前已选择的非用户数量
-      selectedUserData: [], // 已选用户
-      selectedOtherList: [], // 已选非用户List
-      defaultLabel: '用户', // 默认显示的标签页
-      multiShowList: [], // 用户列表
-      roleShowList: [], // 角色列表
-      orgShowList: [], // 组织列表
-      orgTreeList: [], // 组织🌲
-      ruleMenuList: [], // 规则
-      activeKey: '1', // 当前激活的tab
+      filterIndex: '',
+      // 根据首字母筛选用户
+      selectedCount: 0,
+      // 当前已选择的总数量
+      selectedOtherCount: 0,
+      //当前已选择的非用户数量
+      selectedUserData: [],
+      // 已选用户
+      selectedOtherList: [],
+      // 已选非用户List
+      defaultLabel: '用户',
+      // 默认显示的标签页
+      multiShowList: [],
+      // 用户列表
+      roleShowList: [],
+      // 角色列表
+      orgShowList: [],
+      // 组织列表
+      orgTreeList: [],
+      // 组织🌲
+      ruleMenuList: [],
+      // 规则
+      activeKey: '1',
+      // 当前激活的tab
       prefixUrl: '',
       staffInputValue: '',
       roleInputValue: '',
@@ -951,9 +1065,12 @@ var Selector = function (_React$Component) {
         total: 0
       },
       rolePage: {
-        activePage: 1, // 当前第几页
-        items: 1, // 总页数
+        activePage: 1,
+        // 当前第几页
+        items: 1,
+        // 总页数
         total: 0 // 总数
+
       },
       orgSelectedKeys: [],
       orgExpandedKeys: [],
@@ -965,606 +1082,453 @@ var Selector = function (_React$Component) {
     return _this2;
   }
 
-  Selector.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
-    // let _newUserList = setUserReciving(nextProps.selectedUser)
-    // let _newOtherList = setUserReciving(nextProps.selectedOther)
-    // console.log('ssss',nextProps.tableData)
-    // console.log('2222',_newUserList)
-    var _newList = (0, _utils.resetChecked)(nextProps.tableData, 'roleId');
-    var res = (0, _utils.setChecked)(_newList, this.state.selectedOtherList, 'roleId');
-    // console.log('vvvvv',res)
-    // if(_newOtherList[0]. === ){
+  _createClass(Selector, [{
+    key: "componentWillReceiveProps",
+    value: function componentWillReceiveProps(nextProps) {
+      // let _newUserList = setUserReciving(nextProps.selectedUser)
+      // let _newOtherList = setUserReciving(nextProps.selectedOther)
+      // console.log('ssss',nextProps.tableData)
+      // console.log('2222',_newUserList)
+      var _newList = (0, _utils.resetChecked)(nextProps.tableData, 'roleId');
 
-    // }
+      var res = (0, _utils.setChecked)(_newList, this.state.selectedOtherList, 'roleId'); // console.log('vvvvv',res)
+      // if(_newOtherList[0]. === ){
+      // }
 
-    this.setState({
-      roleShowList: res,
-      // locale: nextProps.locale,
-      show: nextProps.show,
-      exendTreeList: nextProps.treeConfig
-      // selectedOtherList: _newOtherList,
-      // selectedOtherCount: _newOtherList.length,
-      // selectedUserData: _newUserList,
-      // selectedCount: _newUserList.length
-    });
-  };
+      this.setState({
+        roleShowList: res,
+        // locale: nextProps.locale,
+        show: nextProps.show,
+        exendTreeList: nextProps.treeConfig // selectedOtherList: _newOtherList,
+        // selectedOtherCount: _newOtherList.length,
+        // selectedUserData: _newUserList,
+        // selectedCount: _newUserList.length
 
-  Selector.prototype.componentDidMount = function componentDidMount() {
-    var mode = this.props.mode;
-
-    switch (mode) {
-      case 'dev':
-        this.setState({
-          prefixUrl: 'http://iuap-message-platform-web.test.app.yyuap.com/message-platform-web'
-        });
-        break;
-      case 'daily':
-        this.setState({
-          prefixUrl: 'https://u8cmsg-daily.yyuap.com/message-platform-web'
-        });
-        break;
-      case 'pre':
-        this.setState({
-          prefixUrl: 'https://msg-y3me-pre.diwork.com/message-platform-web'
-        });
-        break;
-      case 'diwork':
-        this.setState({
-          prefixUrl: 'https://msg-y3me-daily.yyuap.com/message-platform-web'
-        });
-        break;
-      case 'diwork-prod':
-        this.setState({
-          prefixUrl: 'https://message-yonsuite.diwork.com/message-platform-web'
-        });
-        break;
-      default:
-        this.setState({
-          prefixUrl: 'https://u8cmsg-daily.yyuap.com/message-platform-web'
-        });
-        break;
+      });
     }
-  };
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var mode = this.props.mode;
 
-  // 进入modal首先加载用户列表
+      switch (mode) {
+        case 'dev':
+          this.setState({
+            prefixUrl: 'http://iuap-message-platform-web.test.app.yyuap.com/message-platform-web'
+          });
+          break;
 
-  // 搜索
+        case 'daily':
+          this.setState({
+            prefixUrl: 'https://u8cmsg-daily.yyuap.com/message-platform-web'
+          });
+          break;
 
-  // 扩展的输入框
+        case 'pre':
+          this.setState({
+            prefixUrl: 'https://msg-y3me-pre.diwork.com/message-platform-web'
+          });
+          break;
 
-  // 动态渲染删除图标
+        case 'diwork':
+          this.setState({
+            prefixUrl: 'https://msg-y3me-daily.yyuap.com/message-platform-web'
+          });
+          break;
 
-  // 删除某一项
+        case 'diwork-prod':
+          this.setState({
+            prefixUrl: 'https://message-yonsuite.diwork.com/message-platform-web'
+          });
+          break;
 
-  // 获得选择的用户列表
+        default:
+          this.setState({
+            prefixUrl: 'https://u8cmsg-daily.yyuap.com/message-platform-web'
+          });
+          break;
+      }
+    } // 进入modal首先加载用户列表
 
-  // 获取角色列表
+  }, {
+    key: "render",
+    value: function render() {
+      var _this3 = this;
 
+      var _this = this;
 
-  // 数组根据属性去重
+      var locale = this.state.locale;
+      var tabConfig = this.props.tabConfig;
 
-  // 清空选择人
+      var loopData = function loopData(data) {
+        return data.map(function (item) {
+          var index = item.orgName.indexOf(_this.state.orgInputValue);
+          var beforeName = item.orgName.substring(0, index);
+          var afterName = item.orgName.substring(index + _this.state.orgInputValue.length, item.orgName.length);
+          var title = index > -1 ? _react["default"].createElement("span", null, beforeName, _react["default"].createElement("span", {
+            className: "u-tree-searchable-filter"
+          }, _this.state.orgInputValue), _react["default"].createElement("span", {
+            style: {
+              display: 'none'
+            }
+          }, item.orgName), afterName) : _react["default"].createElement("span", null, _react["default"].createElement("span", null), _react["default"].createElement("span", null, item.orgName), _react["default"].createElement("span", {
+            style: {
+              display: 'none'
+            }
+          }, item.orgName));
 
-  // 重置state
-
-  // 关闭模态框
-
-  /**
-   * @description 确认选人
-   */
-
-  //
-
-  // tree select
-
-  // tree check
-
-  // tree check
-
-  // 角色分页
-
-  // 用户分页
-
-
-  Selector.prototype.render = function render() {
-    var _this3 = this;
-
-    var _this = this;
-    var locale = this.state.locale;
-    var tabConfig = this.props.tabConfig;
-
-    var loopData = function loopData(data) {
-      return data.map(function (item) {
-        var index = item.orgName.indexOf(_this.state.orgInputValue);
-        var beforeName = item.orgName.substring(0, index);
-        var afterName = item.orgName.substring(index + _this.state.orgInputValue.length, item.orgName.length);
-        var title = index > -1 ? _react2["default"].createElement(
-          'span',
-          null,
-          beforeName,
-          _react2["default"].createElement(
-            'span',
-            { className: 'u-tree-searchable-filter' },
-            _this.state.orgInputValue
-          ),
-          _react2["default"].createElement(
-            'span',
-            { style: { display: 'none' } },
-            item.orgName
-          ),
-          afterName
-        ) : _react2["default"].createElement(
-          'span',
-          null,
-          _react2["default"].createElement('span', null),
-          _react2["default"].createElement(
-            'span',
-            null,
-            item.orgName
-          ),
-          _react2["default"].createElement(
-            'span',
-            { style: { display: 'none' } },
-            item.orgName
-          )
-        );
-        if (item.childs) {
-          return _react2["default"].createElement(
-            TreeNode,
-            {
+          if (item.childs) {
+            return _react["default"].createElement(TreeNode, {
               title: title,
               key: item.orgId,
-              icon: item.parentId ? _react2["default"].createElement(_tinper.Icon, { type: 'uf-users' }) : _react2["default"].createElement(_tinper.Icon, { type: 'uf-group-2' }) },
-            loopData(item.childs)
-          );
-        }
-        return _react2["default"].createElement(TreeNode, {
-          title: title,
-          key: item.orgId,
-          icon: _react2["default"].createElement(_tinper.Icon, { type: 'uf-users' }),
-          isLeaf: true });
-      });
-    };
-    return _react2["default"].createElement(
-      _tinper.Modal,
-      {
+              icon: item.parentId ? _react["default"].createElement(_tinper.Icon, {
+                type: 'uf-users'
+              }) : _react["default"].createElement(_tinper.Icon, {
+                type: 'uf-group-2'
+              })
+            }, loopData(item.childs));
+          }
+
+          return _react["default"].createElement(TreeNode, {
+            title: title,
+            key: item.orgId,
+            icon: _react["default"].createElement(_tinper.Icon, {
+              type: 'uf-users'
+            }),
+            isLeaf: true
+          });
+        });
+      };
+
+      return _react["default"].createElement(_tinper.Modal, {
         onEntered: _this.didFinish,
         onHide: _this.close,
         show: _this.state.show,
         width: 1200,
         className: 'selectModalContainer',
         dialogClassName: 'selectDialog',
-        backdrop: true },
-      _react2["default"].createElement(
-        _tinper.Modal.Header,
-        { closeButton: true },
-        _react2["default"].createElement(
-          'span',
-          { className: 'headerTitle' },
-          i18n[locale].addMsgAcpt
-        )
-      ),
-      _react2["default"].createElement(
-        _tinper.Modal.Body,
-        { className: 'selectModalBody' },
-        _react2["default"].createElement(
-          'div',
-          { className: 'selectContainer clearfix' },
-          _react2["default"].createElement(
-            'div',
-            { className: 'left', id: 'user' },
-            _react2["default"].createElement(
-              _tinper.Tabs,
-              {
-                defaultActiveKey: '1',
-                activeKey: _this.state.activeKey,
-                onChange: this.onChange,
-                className: 'deptTitle' },
-              _react2["default"].createElement(
-                TabPane,
-                { tab: i18n[locale].user, key: 1 },
-                _react2["default"].createElement(
-                  'div',
-                  { className: 'searchWrapper' },
-                  _react2["default"].createElement('input', {
-                    value: _this.state.staffInputValue,
-                    onChange: _this.inputChange.bind(this, 'staffInputValue'),
-                    type: 'text',
-                    onKeyUp: _this.search
-                    // placeholder={'请输入您要查找的用户'}
-                    , placeholder: i18n[locale].pleaseUser,
-                    className: 'search'
-                  }),
-                  _react2["default"].createElement(_tinper.Icon, {
-                    onClick: _this.clickSearch,
-                    className: 'searchIcon',
-                    type: 'uf-search'
-                  })
-                ),
-                _react2["default"].createElement(MultiSelectTable, {
-                  scroll: { y: 210 }
-                  // columns={multiColumns}
-                  , columns: _colmuns.multiColumns[locale],
-                  multiSelect: _utils.multiSelectType,
-                  getSelectedDataFunc: _this.getUserList,
-                  data: _this.state.multiShowList,
-                  emptyText: function emptyText() {
-                    return _this.props.emptyText(i18n[locale].noData);
-                  }
-                }),
-                _react2["default"].createElement(_tinper.Pagination, {
-                  className: 'selector_pagination',
-                  first: true,
-                  last: true,
-                  prev: true,
-                  next: true,
-                  maxButtons: 5,
-                  boundaryLinks: true,
-                  total: _this.state.staffPage.total,
-                  activePage: _this.state.staffPage.activePage,
-                  items: _this.state.staffPage.items,
-                  onSelect: _this.staffSelect
-                })
-              ),
-              _react2["default"].createElement(
-                TabPane,
-                { tab: i18n[locale].role, key: 2 },
-                _react2["default"].createElement(
-                  'div',
-                  { className: 'searchWrapper' },
-                  _react2["default"].createElement('input', {
-                    value: _this.state.roleInputValue,
-                    onChange: _this.inputChange.bind(this, 'roleInputValue'),
-                    type: 'text',
-                    placeholder: i18n[locale].pleaseRole,
-                    onKeyUp: _this.search,
-                    className: 'search'
-                  }),
-                  _react2["default"].createElement(_tinper.Icon, {
-                    onClick: _this.clickSearch,
-                    className: 'searchIcon',
-                    type: 'uf-search'
-                  })
-                ),
-                _react2["default"].createElement(MultiSelectTable, {
-                  id: 'role',
-                  scroll: { y: 210 },
-                  columns: _colmuns.roleMultiCol,
-                  multiSelect: _utils.multiSelectType,
-                  getSelectedDataFunc: _this.getRoleList,
-                  data: _this.state.roleShowList,
-                  emptyText: function emptyText() {
-                    return _this.props.emptyText(i18n[locale].noData);
-                  }
-                }),
-                _react2["default"].createElement(_tinper.Pagination, {
-                  className: 'selector_pagination',
-                  first: true,
-                  last: true,
-                  prev: true,
-                  next: true,
-                  maxButtons: 5,
-                  boundaryLinks: true,
-                  total: _this.state.rolePage.total,
-                  activePage: _this.state.rolePage.activePage,
-                  items: _this.state.rolePage.items,
-                  onSelect: _this.roleSelect
-                })
-              ),
-              _react2["default"].createElement(
-                TabPane,
-                { tab: i18n[locale].org, key: 3 },
-                _react2["default"].createElement(
-                  'div',
-                  { className: 'searchWrapper' },
-                  _react2["default"].createElement('input', {
-                    onChange: _this.searchOrg
-                    // placeholder={'请输入您要查找的组织'}
-                    , placeholder: i18n[locale].pleaseOrg,
-                    className: 'search'
-                  }),
-                  _react2["default"].createElement(_tinper.Icon, {
-                    onClick: _this.clickSearch,
-                    className: 'searchIcon',
-                    type: 'uf-search'
-                  })
-                ),
-                _react2["default"].createElement(
-                  'div',
-                  { className: 'clearfix' },
-                  _react2["default"].createElement(
-                    'div',
-                    { className: 'myTree' },
-                    _react2["default"].createElement(
-                      _tinper.Tree,
-                      {
-                        showIcon: true,
-                        cancelUnSelect: true,
-                        checkedKeys: _this.state.orgSelectedKeys,
-                        checkable: true,
-                        checkStrictly: true,
-                        onExpand: _this.onExpand,
-                        autoExpandParent: _this.state.autoExpandParent,
-                        expandedKeys: _this.state.orgExpandedKeys,
-                        onSelect: _this.treeOnSelect,
-                        onCheck: _this.treeOnCheck },
-                      loopData(_this.state.orgTreeList)
-                    )
-                  ),
-                  _react2["default"].createElement(
-                    'div',
-                    { className: 'orgTable' },
-                    _react2["default"].createElement(_tinper.Table, {
-                      scroll: { y: 440 },
-                      columns: _colmuns.orgCol[locale],
-                      data: _this.state.orgShowList,
-                      emptyText: function emptyText() {
-                        return _this.props.emptyText(i18n[locale].noData);
-                      }
-                    })
-                  )
-                )
-              ),
-              _react2["default"].createElement(
-                TabPane,
-                { tab: i18n[locale].rule, key: 4 },
-                _react2["default"].createElement(
-                  'div',
-                  { className: 'searchWrapper' },
-                  _react2["default"].createElement('input', {
-                    // placeholder={'请输入您要查找的规则'}
-                    placeholder: i18n[locale].pleaseRule,
-                    className: 'search'
-                  }),
-                  _react2["default"].createElement(_tinper.Icon, { className: 'searchIcon', type: 'uf-search' })
-                ),
-                _react2["default"].createElement(
-                  'div',
-                  { className: 'menuWrapper' },
-                  _react2["default"].createElement(
-                    _tinper.Menu,
-                    { mode: 'inline', onClick: _this.menuClick },
-                    _this.state.ruleMenuList
-                  )
-                )
-              ),
-              tabConfig.map(function (item, index) {
-                if (item.tabType === 'table') {
-                  return _react2["default"].createElement(
-                    TabPane,
-                    { id: item.tabMark,
-                      tab: _react2["default"].createElement(
-                        'div',
-                        { style: { height: '100%' },
-                          onClick: function onClick(e) {
-                            _this3.props.tabHandleFunc(item.tabMark, index, e);
-                            _this3.tabHandleChange(item.tabName);
-                          }
-                        },
-                        item.tabName
-                      ), key: index + 5 },
-                    _react2["default"].createElement(
-                      'div',
-                      { className: 'searchWrapper' },
-                      _react2["default"].createElement('input', {
-                        value: _this.state["extends"],
-                        onChange: _this.inputChange,
-                        type: 'text',
-                        onKeyUp: function onKeyUp(e) {
-                          return item.tableConfig.enterSearchFunc(item.tabMark, e);
-                        },
-                        placeholder: item.tableConfig.searchPlaceholder,
-                        className: 'search'
-                      }),
-                      _react2["default"].createElement(_tinper.Icon, {
-                        onClick: function onClick(e) {
-                          return item.tableConfig.clickSearchFunc(item.tabMark, e);
-                        },
-                        className: 'searchIcon',
-                        type: 'uf-search'
-                      })
-                    ),
-                    _react2["default"].createElement(MultiSelectTable, {
-                      scroll: { y: 210 }
-                      // columns={multiColumns}
-                      , columns: item.tableConfig.tableColumns,
-                      multiSelect: _utils.multiSelectType,
-                      getSelectedDataFunc: _this.getExtend,
-                      data: _this.state.roleShowList,
-                      emptyText: function emptyText() {
-                        return _this.props.emptyText(i18n[locale].noData);
-                      }
-                    }),
-                    _react2["default"].createElement(_tinper.Pagination, {
-                      className: 'selector_pagination',
-                      first: true,
-                      last: true,
-                      prev: true,
-                      next: true,
-                      maxButtons: 5,
-                      boundaryLinks: true,
-                      total: _this.props.pageTotal,
-                      activePage: _this.state.extendPageIndex,
-                      items: _this.props.pageItems,
-                      onSelect: function onSelect(index) {
-                        return _this3.extendPageSelect(item.tabMark, index);
-                      }
-                    })
-                  );
-                }
-                if (item.tabType === 'tree') {
-                  var _React$createElement;
+        backdrop: true
+      }, _react["default"].createElement(_tinper.Modal.Header, {
+        closeButton: true
+      }, _react["default"].createElement("span", {
+        className: 'headerTitle'
+      }, i18n[locale].addMsgAcpt)), _react["default"].createElement(_tinper.Modal.Body, {
+        className: 'selectModalBody'
+      }, _react["default"].createElement("div", {
+        className: 'selectContainer clearfix'
+      }, _react["default"].createElement("div", {
+        className: 'left',
+        id: 'user'
+      }, _react["default"].createElement(_tinper.Tabs, {
+        defaultActiveKey: '1',
+        activeKey: _this.state.activeKey,
+        onChange: this.onChange,
+        className: 'deptTitle'
+      }, _react["default"].createElement(TabPane, {
+        tab: i18n[locale].user,
+        key: 1
+      }, _react["default"].createElement("div", {
+        className: 'searchWrapper'
+      }, _react["default"].createElement("input", {
+        value: _this.state.staffInputValue,
+        onChange: _this.inputChange.bind(this, 'staffInputValue'),
+        type: "text",
+        onKeyUp: _this.search // placeholder={'请输入您要查找的用户'}
+        ,
+        placeholder: i18n[locale].pleaseUser,
+        className: 'search'
+      }), _react["default"].createElement(_tinper.Icon, {
+        onClick: _this.clickSearch,
+        className: 'searchIcon',
+        type: "uf-search"
+      })), _react["default"].createElement(MultiSelectTable, {
+        scroll: {
+          y: 210
+        } // columns={multiColumns}
+        ,
+        columns: _colmuns.multiColumns[locale],
+        multiSelect: _utils.multiSelectType,
+        getSelectedDataFunc: _this.getUserList,
+        data: _this.state.multiShowList,
+        emptyText: function emptyText() {
+          return _this.props.emptyText(i18n[locale].noData);
+        }
+      }), _react["default"].createElement(_tinper.Pagination, {
+        className: 'selector_pagination',
+        first: true,
+        last: true,
+        prev: true,
+        next: true,
+        maxButtons: 5,
+        boundaryLinks: true,
+        total: _this.state.staffPage.total,
+        activePage: _this.state.staffPage.activePage,
+        items: _this.state.staffPage.items,
+        onSelect: _this.staffSelect
+      })), _react["default"].createElement(TabPane, {
+        tab: i18n[locale].role,
+        key: 2
+      }, _react["default"].createElement("div", {
+        className: 'searchWrapper'
+      }, _react["default"].createElement("input", {
+        value: _this.state.roleInputValue,
+        onChange: _this.inputChange.bind(this, 'roleInputValue'),
+        type: "text",
+        placeholder: i18n[locale].pleaseRole,
+        onKeyUp: _this.search,
+        className: 'search'
+      }), _react["default"].createElement(_tinper.Icon, {
+        onClick: _this.clickSearch,
+        className: 'searchIcon',
+        type: "uf-search"
+      })), _react["default"].createElement(MultiSelectTable, {
+        id: 'role',
+        scroll: {
+          y: 210
+        },
+        columns: _colmuns.roleMultiCol,
+        multiSelect: _utils.multiSelectType,
+        getSelectedDataFunc: _this.getRoleList,
+        data: _this.state.roleShowList,
+        emptyText: function emptyText() {
+          return _this.props.emptyText(i18n[locale].noData);
+        }
+      }), _react["default"].createElement(_tinper.Pagination, {
+        className: 'selector_pagination',
+        first: true,
+        last: true,
+        prev: true,
+        next: true,
+        maxButtons: 5,
+        boundaryLinks: true,
+        total: _this.state.rolePage.total,
+        activePage: _this.state.rolePage.activePage,
+        items: _this.state.rolePage.items,
+        onSelect: _this.roleSelect
+      })), _react["default"].createElement(TabPane, {
+        tab: i18n[locale].org,
+        key: 3
+      }, _react["default"].createElement("div", {
+        className: 'searchWrapper'
+      }, _react["default"].createElement("input", {
+        onChange: _this.searchOrg // placeholder={'请输入您要查找的组织'}
+        ,
+        placeholder: i18n[locale].pleaseOrg,
+        className: 'search'
+      }), _react["default"].createElement(_tinper.Icon, {
+        onClick: _this.clickSearch,
+        className: 'searchIcon',
+        type: "uf-search"
+      })), _react["default"].createElement("div", {
+        className: 'clearfix'
+      }, _react["default"].createElement("div", {
+        className: 'myTree'
+      }, _react["default"].createElement(_tinper.Tree, {
+        showIcon: true,
+        cancelUnSelect: true,
+        checkedKeys: _this.state.orgSelectedKeys,
+        checkable: true,
+        checkStrictly: true,
+        onExpand: _this.onExpand,
+        autoExpandParent: _this.state.autoExpandParent,
+        expandedKeys: _this.state.orgExpandedKeys,
+        onSelect: _this.treeOnSelect,
+        onCheck: _this.treeOnCheck
+      }, loopData(_this.state.orgTreeList))), _react["default"].createElement("div", {
+        className: 'orgTable'
+      }, _react["default"].createElement(_tinper.Table, {
+        scroll: {
+          y: 440
+        },
+        columns: _colmuns.orgCol[locale],
+        data: _this.state.orgShowList,
+        emptyText: function emptyText() {
+          return _this.props.emptyText(i18n[locale].noData);
+        }
+      })))), _react["default"].createElement(TabPane, {
+        tab: i18n[locale].rule,
+        key: 4
+      }, _react["default"].createElement("div", {
+        className: 'searchWrapper'
+      }, _react["default"].createElement("input", {
+        // placeholder={'请输入您要查找的规则'}
+        placeholder: i18n[locale].pleaseRule,
+        className: 'search'
+      }), _react["default"].createElement(_tinper.Icon, {
+        className: 'searchIcon',
+        type: "uf-search"
+      })), _react["default"].createElement("div", {
+        className: 'menuWrapper'
+      }, _react["default"].createElement(_tinper.Menu, {
+        mode: 'inline',
+        onClick: _this.menuClick
+      }, _this.state.ruleMenuList))), tabConfig.map(function (item, index) {
+        if (item.tabType === 'table') {
+          return _react["default"].createElement(TabPane, {
+            id: item.tabMark,
+            tab: _react["default"].createElement("div", {
+              style: {
+                height: '100%'
+              },
+              onClick: function onClick(e) {
+                _this3.props.tabHandleFunc(item.tabMark, index, e);
 
-                  return _react2["default"].createElement(
-                    TabPane,
-                    (_React$createElement = { tab: item.tabName
-                    }, _defineProperty(_React$createElement, 'tab', _react2["default"].createElement(
-                      'div',
-                      { style: { height: '100%' },
-                        onClick: function onClick(e) {
-                          _this3.props.tabHandleFunc(item.tabMark, index, e);
-                          _this3.tabHandleChange(item.tabName);
-                        }
-                      },
-                      item.tabName
-                    )), _defineProperty(_React$createElement, 'key', index + 5), _React$createElement),
-                    _react2["default"].createElement(
-                      'div',
-                      { className: 'searchWrapper' },
-                      _react2["default"].createElement('input', {
-                        onChange: _this.searchOrgTree
-                        // placeholder={'请输入您要查找的组织'}
-                        , placeholder: i18n[locale].pleaseOrg,
-                        className: 'search'
-                      }),
-                      _react2["default"].createElement(_tinper.Icon, {
-                        onClick: _this.clickSearch,
-                        className: 'searchIcon',
-                        type: 'uf-search'
-                      })
-                    ),
-                    _react2["default"].createElement(
-                      'div',
-                      { className: 'clearfix' },
-                      _react2["default"].createElement(
-                        'div',
-                        { className: 'myTree' },
-                        _react2["default"].createElement(
-                          _tinper.Tree,
-                          {
-                            showIcon: true,
-                            cancelUnSelect: true,
-                            checkedKeys: _this.state.selectedOtherList.map(function (val) {
-                              if (val.type === item.tabName) {
-                                return val.orgId;
-                              }
-                            }),
-                            checkable: true,
-                            checkStrictly: true,
-                            onExpand: _this.onTreeExpand,
-                            autoExpandParent: _this.state.autoTreeExpandParent,
-                            expandedKeys: _this.state.orgTreeExpandedKeys
-                            // onSelect={_this.treeOnSelect}
-                            , onCheck: _this.ExpandedTreeOnCheck },
-                          loopData(_this.state.exendTreeList)
-                        )
-                      )
-                    )
-                  );
-                }
-              })
-            )
-          ),
-          _react2["default"].createElement(
-            'div',
-            { className: 'right' },
-            _react2["default"].createElement(
-              'div',
-              null,
-              _react2["default"].createElement(
-                'div',
-                { className: 'selectedUser clearfix' },
-                _react2["default"].createElement(
-                  'p',
-                  { className: 'fll mt12' },
-                  i18n[locale].user
-                ),
-                _react2["default"].createElement(
-                  'p',
-                  { className: 'flr mt12' },
-                  _react2["default"].createElement(
-                    'span',
-                    { className: 'color-selected' },
-                    i18n[locale].choose,
-                    '\uFF1A',
-                    _this.state.selectedCount
-                  ),
-                  _react2["default"].createElement(
-                    'span',
-                    {
-                      className: 'clear',
-                      onClick: _this.deSelectAll.bind(this, 1) },
-                    i18n[locale].clean
-                  )
-                )
-              ),
-              _react2["default"].createElement(_tinper.Table, {
-                scroll: { y: 130 },
-                columns: _colmuns.selectedUserCol[locale],
-                data: _this.state.selectedUserData,
-                hoverContent: _this.hoverDelIcon,
-                onRowHover: _this.onRowHover,
-                emptyText: function emptyText() {
-                  return _this.props.emptyText(i18n[locale].noData);
-                }
-              })
-            ),
-            _react2["default"].createElement(
-              'div',
-              null,
-              _react2["default"].createElement(
-                'div',
-                { className: 'selectedUser clearfix' },
-                _react2["default"].createElement(
-                  'p',
-                  { className: 'fll mt12' },
-                  i18n[locale].other
-                ),
-                _react2["default"].createElement(
-                  'p',
-                  { className: 'flr mt12' },
-                  _react2["default"].createElement(
-                    'span',
-                    { className: 'color-selected' },
-                    i18n[locale].choose,
-                    '\uFF1A',
-                    _this.state.selectedOtherCount
-                  ),
-                  _react2["default"].createElement(
-                    'span',
-                    {
-                      className: 'clear',
-                      onClick: _this.deSelectAll.bind(this, 0) },
-                    i18n[locale].clean
-                  )
-                )
-              ),
-              _react2["default"].createElement(_tinper.Table, {
-                scroll: { y: 130 },
-                columns: _colmuns.selectedUserCol[locale],
-                data: _this.state.selectedOtherList,
-                hoverContent: _this.hoverDelOtherIcon,
-                onRowHover: _this.onRowOtherHover,
-                emptyText: function emptyText() {
-                  return _this.props.emptyText(i18n[locale].noData);
-                }
-              })
-            )
-          )
-        )
-      ),
-      _react2["default"].createElement(
-        _tinper.Modal.Footer,
-        null,
-        _react2["default"].createElement(
-          _tinper.Button,
-          { onClick: _this.close, className: 'cancelBtn' },
-          i18n[locale].cacel
-        ),
-        _react2["default"].createElement(
-          _tinper.Button,
-          { onClick: _this.confirm, colors: 'primary' },
-          i18n[locale].accept
-        )
-      )
-    );
-  };
+                _this3.tabHandleChange(item.tabName);
+              }
+            }, item.tabName),
+            key: index + 5
+          }, _react["default"].createElement("div", {
+            className: 'searchWrapper'
+          }, _react["default"].createElement("input", {
+            value: _this.state["extends"],
+            onChange: _this.inputChange,
+            type: "text",
+            onKeyUp: function onKeyUp(e) {
+              return item.tableConfig.enterSearchFunc(item.tabMark, e);
+            },
+            placeholder: item.tableConfig.searchPlaceholder,
+            className: 'search'
+          }), _react["default"].createElement(_tinper.Icon, {
+            onClick: function onClick(e) {
+              return item.tableConfig.clickSearchFunc(item.tabMark, e);
+            },
+            className: 'searchIcon',
+            type: "uf-search"
+          })), _react["default"].createElement(MultiSelectTable, {
+            scroll: {
+              y: 210
+            } // columns={multiColumns}
+            ,
+            columns: item.tableConfig.tableColumns,
+            multiSelect: _utils.multiSelectType,
+            getSelectedDataFunc: _this.getExtend,
+            data: _this.state.roleShowList,
+            emptyText: function emptyText() {
+              return _this.props.emptyText(i18n[locale].noData);
+            }
+          }), _react["default"].createElement(_tinper.Pagination, {
+            className: 'selector_pagination',
+            first: true,
+            last: true,
+            prev: true,
+            next: true,
+            maxButtons: 5,
+            boundaryLinks: true,
+            total: _this.props.pageTotal,
+            activePage: _this.state.extendPageIndex,
+            items: _this.props.pageItems,
+            onSelect: function onSelect(index) {
+              return _this3.extendPageSelect(item.tabMark, index);
+            }
+          }));
+        }
+
+        if (item.tabType === 'tree') {
+          var _React$createElement;
+
+          return _react["default"].createElement(TabPane, (_React$createElement = {
+            tab: item.tabName
+          }, _defineProperty(_React$createElement, "tab", _react["default"].createElement("div", {
+            style: {
+              height: '100%'
+            },
+            onClick: function onClick(e) {
+              _this3.props.tabHandleFunc(item.tabMark, index, e);
+
+              _this3.tabHandleChange(item.tabName);
+            }
+          }, item.tabName)), _defineProperty(_React$createElement, "key", index + 5), _React$createElement), _react["default"].createElement("div", {
+            className: 'searchWrapper'
+          }, _react["default"].createElement("input", {
+            onChange: _this.searchOrgTree // placeholder={'请输入您要查找的组织'}
+            ,
+            placeholder: i18n[locale].pleaseOrg,
+            className: 'search'
+          }), _react["default"].createElement(_tinper.Icon, {
+            onClick: _this.clickSearch,
+            className: 'searchIcon',
+            type: "uf-search"
+          })), _react["default"].createElement("div", {
+            className: 'clearfix'
+          }, _react["default"].createElement("div", {
+            className: 'myTree'
+          }, _react["default"].createElement(_tinper.Tree, {
+            showIcon: true,
+            cancelUnSelect: true,
+            checkedKeys: _this.state.selectedOtherList.map(function (val) {
+              if (val.type === item.tabName) {
+                return val.orgId;
+              }
+            }),
+            checkable: true,
+            checkStrictly: true,
+            onExpand: _this.onTreeExpand,
+            autoExpandParent: _this.state.autoTreeExpandParent,
+            expandedKeys: _this.state.orgTreeExpandedKeys // onSelect={_this.treeOnSelect}
+            ,
+            onCheck: _this.ExpandedTreeOnCheck
+          }, loopData(_this.state.exendTreeList)))));
+        }
+      }))), _react["default"].createElement("div", {
+        className: 'right'
+      }, _react["default"].createElement("div", null, _react["default"].createElement("div", {
+        className: "selectedUser clearfix"
+      }, _react["default"].createElement("p", {
+        className: 'fll mt12'
+      }, i18n[locale].user), _react["default"].createElement("p", {
+        className: 'flr mt12'
+      }, _react["default"].createElement("span", {
+        className: 'color-selected'
+      }, i18n[locale].choose, "\uFF1A", _this.state.selectedCount), _react["default"].createElement("span", {
+        className: 'clear',
+        onClick: _this.deSelectAll.bind(this, 1)
+      }, i18n[locale].clean))), _react["default"].createElement(_tinper.Table, {
+        scroll: {
+          y: 130
+        },
+        columns: _colmuns.selectedUserCol[locale],
+        data: _this.state.selectedUserData,
+        hoverContent: _this.hoverDelIcon,
+        onRowHover: _this.onRowHover,
+        emptyText: function emptyText() {
+          return _this.props.emptyText(i18n[locale].noData);
+        }
+      })), _react["default"].createElement("div", null, _react["default"].createElement("div", {
+        className: "selectedUser clearfix"
+      }, _react["default"].createElement("p", {
+        className: 'fll mt12'
+      }, i18n[locale].other), _react["default"].createElement("p", {
+        className: 'flr mt12'
+      }, _react["default"].createElement("span", {
+        className: 'color-selected'
+      }, i18n[locale].choose, "\uFF1A", _this.state.selectedOtherCount), _react["default"].createElement("span", {
+        className: 'clear',
+        onClick: _this.deSelectAll.bind(this, 0)
+      }, i18n[locale].clean))), _react["default"].createElement(_tinper.Table, {
+        scroll: {
+          y: 130
+        },
+        columns: _colmuns.selectedUserCol[locale],
+        data: _this.state.selectedOtherList,
+        hoverContent: _this.hoverDelOtherIcon,
+        onRowHover: _this.onRowOtherHover,
+        emptyText: function emptyText() {
+          return _this.props.emptyText(i18n[locale].noData);
+        }
+      }))))), _react["default"].createElement(_tinper.Modal.Footer, null, _react["default"].createElement(_tinper.Button, {
+        onClick: _this.close,
+        className: 'cancelBtn'
+      }, i18n[locale].cacel), _react["default"].createElement(_tinper.Button, {
+        onClick: _this.confirm,
+        colors: 'primary'
+      }, i18n[locale].accept)));
+    }
+  }]);
 
   return Selector;
-}(_react2["default"].Component);
+}(_react["default"].Component);
 
 Selector.defaultProps = defaultProps;
 Selector.propTypes = propTypes;
-
-exports["default"] = Selector;
-module.exports = exports['default'];
+var _default = Selector;
+exports["default"] = _default;

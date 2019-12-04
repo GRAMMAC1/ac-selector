@@ -51,6 +51,21 @@ return (
     documentName={'采购订单'}
     selectedUser={selectedUser}
     selectedOther={selectData}
+    ruleList={
+      [
+        {
+          id: '1111',
+          name: '1111',
+          attrs: [
+              {
+                id: '1-1',
+                reciverType: '4444',
+                name: '1-1aaa'
+              }
+          ]
+        }
+      ]
+    }
   />
   <Button onClick={_this.show} colors={'primary'}>显示</Button>
   <Button onClick={_this.close}>关闭</Button>

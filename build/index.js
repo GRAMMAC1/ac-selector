@@ -1,14 +1,13 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports["default"] = void 0;
 
-var _Selector = require('./Selector');
-
-var _Selector2 = _interopRequireDefault(_Selector);
+var _selector = _interopRequireDefault(require("./selector"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-exports["default"] = _Selector2["default"];
-module.exports = exports['default'];
+var _default = _selector["default"];
+exports["default"] = _default;
