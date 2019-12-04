@@ -20,7 +20,7 @@
 
 ```js
 	import Selector from 'ac-selector'
-	import 'ac-selector/build/selector.css'
+	import 'ac-selector/build/Selector.css'
 	class Example extends React.Component {
 		render {
 			return (
