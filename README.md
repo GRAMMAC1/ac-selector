@@ -1,5 +1,7 @@
 # ac-selector
 
+![npm version](https://img.shields.io/npm/v/ac-selector?style=flat-square)
+
 ## 简介
 
 用友业务中台选人组件
