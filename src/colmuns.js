@@ -1,4 +1,5 @@
 import React from 'react'
+import * as lang from './lang'
 
 export const selectedUserCol = {
   zh_CN: [
@@ -41,10 +42,12 @@ export const selectedUserCol = {
   ]
 }
 
-export const roleMultiCol = [
-  { key: 'rolename', title: '角色名', dataIndex: 'roleName', width: 100 },
-  { key: 'rolecode', title: '角色编码', dataIndex: 'roleCode' }
-]
+export const roleMultiCol = locale => (
+  [
+    { key: 'rolename', title: lang[locale].roleId, dataIndex: 'roleName', width: 100 },
+    { key: 'rolecode', title: lang[locale].roleName, dataIndex: 'roleCode' }
+  ]
+) 
 
 export const orgCol = {
   zh_CN: [
