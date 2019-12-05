@@ -130,96 +130,41 @@ export const filterCaptial = [
 
 export const selectData = [
   {
+    key: '1249795575075072',
     orgId: '1249795575075072',
     orgName: 'zbl公司222',
     type: '组织',
-    typeCode: 2
+    typeCode: 2,
+    reciving: 'zbl公司222'
   },
   {
+    key: '1249799305859328',
     orgId: '1249799305859328',
     orgName: 'zbl部门1',
     type: '组织',
-    typeCode: 2
+    typeCode: 2,
+    reciving: 'zbl部门1'
   },
   {
-    orgId: '12497993059328',
-    orgName: 'zbl部门3',
-    type: '组织',
-    typeCode: 2
-  },
-  {
-    orgId: '12497993058598',
-    orgName: 'zbl部门4',
-    type: '组织',
-    typeCode: 2
-  },
-  {
+    key: '12',
     ruleCode: '12',
     ruleName: '修改人5',
     type: '规则',
-    typeCode: 3
-  },
-  {
-    ruleCode: '123',
-    ruleName: '修改人6',
-    type: '规则',
-    typeCode: 3
+    typeCode: 3,
+    reciving: 'zbl部门1'
   }
 ]
 
 export const selectedUser = [
   {
+    key: 'a1e8075a-93c3-4552-9a06-e05128ee34b7',
     orgName: '未知部门',
     email: 'zhaojian770627@163.com',
     username: 'zhaojianc',
     mobile: '18601913836',
     type: '用户',
     userid: 'a1e8075a-93c3-4552-9a06-e05128ee34b7',
-    typeCode: 0
-  },
-  {
-    orgName: '未知部门',
-    email: 'zongtf3@yonyou.com',
-    username: '18610018262',
-    mobile: '18610018262',
-    type: '用户',
-    userid: '1b1123f0-5d62-41fe-b619-15922397f917',
-    typeCode: 0
-  },
-  {
-    orgName: '未知部门',
-    email: 'YHT-105-5841559369734972@yht.com',
-    username: 'aaa',
-    mobile: '15810624300',
-    type: '用户',
-    userid: 'd1ba5a77-def1-4e65-9457-7bae09ebb67f',
-    typeCode: 0
-  },
-  {
-    orgName: 'FHR-022',
-    email: 'YHT-693-2561560322273290@yht.com',
-    username: 'zjc612',
-    mobile: '138113111223',
-    type: '用户',
-    userid: '58cd6055-f8c0-4d51-a9d9-a733e4ef1872',
-    typeCode: 0
-  },
-  {
-    orgName: 'FHR-024',
-    email: 'YHT-693-2561560322273290@yht.com',
-    username: 'zjc612',
-    mobile: '138111131223',
-    type: '用户',
-    userid: '58cd6055-f8c0-4d51-a9d9-a733e4ef1872',
-    typeCode: 0
-  },
-  {
-    orgName: 'FHR-025',
-    email: 'YHT-693-2561560322273290@yht.com',
-    username: 'zjc612',
-    mobile: '138111311223',
-    type: '用户',
-    userid: '58cd6055-f8c0-4d51-a9d9-a733e4ef1872',
-    typeCode: 0
+    typeCode: 0,
+    reciving: 'zhaojianc'
   }
 ]

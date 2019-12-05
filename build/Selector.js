@@ -122,8 +122,8 @@ function (_React$Component) {
           selectedOther = _this2$props.selectedOther;
 
       _this2.setState({
-        selectedUserData: (0, _utils.setUserReciving)(selectedUser),
-        selectedOtherList: (0, _utils.setOtherReciving)(selectedOther)
+        selectedUserData: selectedUser,
+        selectedOtherList: selectedOther
       });
 
       var url = "".concat(_this2.state.prefixUrl, "/user/staff/search?pageSize=40&pageNo=1&keyword=");
@@ -1286,7 +1286,7 @@ function (_React$Component) {
         scroll: {
           y: 210
         },
-        columns: _colmuns.roleMultiCol,
+        columns: (0, _colmuns.roleMultiCol)(locale),
         multiSelect: _utils.multiSelectType,
         getSelectedDataFunc: _this.getRoleList,
         data: _this.state.roleShowList,

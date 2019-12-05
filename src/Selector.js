@@ -186,8 +186,8 @@ class Selector extends React.Component {
   didFinish = () => {
     let { selectedUser, selectedOther } = this.props
     this.setState({
-      selectedUserData: setUserReciving(selectedUser),
-      selectedOtherList: setOtherReciving(selectedOther)
+      selectedUserData: selectedUser,
+      selectedOtherList: selectedOther
     })
     const url = `${this.state.prefixUrl}/user/staff/search?pageSize=40&pageNo=1&keyword=`
     requestGet(url)
