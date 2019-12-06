@@ -1,6 +1,6 @@
 {
  "name": "ac-selector",
- "version": "2.2.3",
+ "version": "2.2.4",
  "description": "选人组件",
  "keywords": [
   "react",
@@ -21,7 +21,7 @@
  "main": "./build/index.js",
  "scripts": {
   "dev": "webpack-dev-server --config ./config/webpack.dev.js",
-  "build": "lessc ./src/selector.less ./build/selector.css && babel src -d build",
+  "build": "rm -rf build && lessc ./src/selector.less ./build/Selector.css && babel src -d build",
   "compiler": "babel src -d build"
  },
  "dependencies": {
