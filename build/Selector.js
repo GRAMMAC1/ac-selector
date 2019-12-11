@@ -1229,7 +1229,7 @@ var Selector = function (_React$Component) {
                 _react2["default"].createElement(MultiSelectTable, {
                   id: 'role',
                   scroll: { y: 210 },
-                  columns: _colmuns.roleMultiCol,
+                  columns: _colmuns.roleMultiCol[locale],
                   multiSelect: _utils.multiSelectType,
                   getSelectedDataFunc: _this.getRoleList,
                   data: _this.state.roleShowList,
