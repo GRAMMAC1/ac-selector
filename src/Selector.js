@@ -1137,7 +1137,7 @@ class Selector extends React.Component {
                   <MultiSelectTable
                     id={'role'}
                     scroll={{ y: 210 }}
-                    columns={roleMultiCol}
+                    columns={roleMultiCol[locale]}
                     multiSelect={multiSelectType}
                     getSelectedDataFunc={_this.getRoleList}
                     data={_this.state.roleShowList}
