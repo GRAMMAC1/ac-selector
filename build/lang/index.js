@@ -1,24 +1,31 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.zh_TW = exports.en_US = exports.zh_CN = undefined;
+Object.defineProperty(exports, "zh_CN", {
+  enumerable: true,
+  get: function get() {
+    return _zhCN["default"];
+  }
+});
+Object.defineProperty(exports, "en_US", {
+  enumerable: true,
+  get: function get() {
+    return _enUS["default"];
+  }
+});
+Object.defineProperty(exports, "zh_TW", {
+  enumerable: true,
+  get: function get() {
+    return _zhTW["default"];
+  }
+});
 
-var _zhCN = require('./zh-CN');
+var _zhCN = _interopRequireDefault(require("./zh-CN"));
 
-var _zhCN2 = _interopRequireDefault(_zhCN);
+var _enUS = _interopRequireDefault(require("./en-US"));
 
-var _enUS = require('./en-US');
-
-var _enUS2 = _interopRequireDefault(_enUS);
-
-var _zhTW = require('./zh-TW');
-
-var _zhTW2 = _interopRequireDefault(_zhTW);
+var _zhTW = _interopRequireDefault(require("./zh-TW"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-exports.zh_CN = _zhCN2["default"];
-exports.en_US = _enUS2["default"];
-exports.zh_TW = _zhTW2["default"];

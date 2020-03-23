@@ -55,6 +55,35 @@ export const roleMultiCol = {
 		{ key: 'rolecode', title: 'Role Code', dataIndex: 'roleCode' }
 	],
 }
+/*
+username: "19904888888"
+email: ""
+phone: "19904888888"
+wxAccountId: "gh_26b301786a30"
+wxOpenId: "oQzPCwf9c64gKKHzo8y2lxR5C5fs"
+weChatId: "wugqm"
+*/
+export const wechatMultiCol = {
+	zh_CN: [
+		{ key: 'username', title: '姓名', dataIndex: 'username',  },
+		{ key: 'weChatId', title: '微信号', dataIndex: 'weChatId' },
+		{ key: 'phone', title: '手机号', dataIndex: 'phone' },
+		{ key: 'email', title: '邮箱', dataIndex: 'email' },
+
+	],
+	zh_TW: [
+		{ key: 'username', title: '姓名', dataIndex: 'username', },
+		{ key: 'weChatId', title: '微信号', dataIndex: 'weChatId' },
+		{ key: 'phone', title: '手机号', dataIndex: 'phone' },
+		{ key: 'email', title: '邮箱', dataIndex: 'email' },
+	],
+	en_US: [
+		{ key: 'username', title: 'Name', dataIndex: 'username',  },
+		{ key: 'weChatId', title: 'WeChat', dataIndex: 'weChatId' },
+		{ key: 'phone', title: 'Cellphone Number', dataIndex: 'phone' },
+		{ key: 'email', title: 'Email', dataIndex: 'email' },
+	],
+}
 
 export const orgCol = {
 	zh_CN: [
@@ -148,30 +177,30 @@ export const selectData = [
 		type: '组织',
 		typeCode: 2
 	},
-	{
-		orgId: '12497993059328',
-		orgName: 'zbl部门3',
-		type: '组织',
-		typeCode: 2
-	},
-	{
-		orgId: '12497993058598',
-		orgName: 'zbl部门4',
-		type: '组织',
-		typeCode: 2
-	},
-	{
-		ruleCode: '12',
-		ruleName: '修改人5',
-		type: '规则',
-		typeCode: 3
-	},
-	{
-		ruleCode: '123',
-		ruleName: '修改人6',
-		type: '规则',
-		typeCode: 3
-	}
+	// {
+	// 	orgId: '12497993059328',
+	// 	orgName: 'zbl部门3',
+	// 	type: '组织',
+	// 	typeCode: 2
+	// },
+	// {
+	// 	orgId: '12497993058598',
+	// 	orgName: 'zbl部门4',
+	// 	type: '组织',
+	// 	typeCode: 2
+	// },
+	// {
+	// 	ruleCode: '12',
+	// 	ruleName: '修改人5',
+	// 	type: '规则',
+	// 	typeCode: 3
+	// },
+	// {
+	// 	ruleCode: '123',
+	// 	ruleName: '修改人6',
+	// 	type: '规则',
+	// 	typeCode: 3
+	// }
 ]
 
 export const selectedUser = [
@@ -230,3 +259,21 @@ export const selectedUser = [
 		typeCode: 0
 	}
 ]
+
+export const pageLocale = {
+	
+	en_US:{'lang':'en',
+	'total': 'Total',
+	'items': 'Items',
+	'show': 'page',
+	'goto':'goto',
+	'page':'',
+	'ok':'ok'},
+	zh_TW:{'lang':'zh_TW',
+	'total': '共',
+	'items': '條',
+	'show': 'page',
+	'goto':'goto',
+	'page':'',
+	'ok':'ok'}
+}

@@ -12,7 +12,7 @@ export function requestGet(url,option={}){
           url = url + '?' + param
       }
   }
-  var option = {
+   option = {
     method: 'GET', // *GET, POST, PUT, DELETE, etc.
     cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
     credentials: 'include', // include, same-origin, *omit

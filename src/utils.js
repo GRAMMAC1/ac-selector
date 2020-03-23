@@ -73,7 +73,7 @@ export const setOtherReciving = source => {
           key: `${t.ruleCode}&${t.ruleName}`
         })
       default:
-        return {}
+        return t
     }
   })
   return res
@@ -90,6 +90,8 @@ export function setLabel (key) {
       return '组织'
     case '4':
       return '规则'
+    case '0':
+      return '微信'
   }
 }
 
@@ -104,22 +106,27 @@ export const transferToMenu = (treeData) => {
     treeData = arr.concat()
   }
   treeData.forEach((value,key) => {
+    let k = `id=${value.id}&name=${value.name}`;
+    let v = value.name;
     if('attrs' in value){
-        var k = `${value.id}&${value.name}`;
-        var v = value.name;
-        subMenu.push(
-            <SubMenu key={k} title={<span>{v}</span>}>
-            {
-              value.attrs ? transferToMenu(value.attrs):null
-            }
-            </SubMenu>
-        )
+      subMenu.push(
+        <SubMenu key={k} title={<span>{v}</span>}>
+        {
+          value.attrs ? transferToMenu(value.attrs) : null
+        }
+        </SubMenu>
+      )
     }else{
-        var k = `${value.id}&${value.name}`;
-        var v = value.name;
-        subMenu.push(
-            <Menu.Item key={k}>{v}</Menu.Item>
-        )
+      // 生成叶子节点时将所有对象的key处理成`key=value`这种形式
+      let _k = ''
+      for (let i in value) {
+        _k += `${i}=${value[i]}&`
+      }
+      // 处理掉最后一个&
+      _k = _k.substring(0, _k.lastIndexOf('&'))
+      subMenu.push(
+        <Menu.Item key={_k}>{v}</Menu.Item>
+      )
     }
   })
   return subMenu;
@@ -128,6 +135,7 @@ export const transferToMenu = (treeData) => {
 export const mapUserList = (userList = []) => {
   let res = []
   res = userList.map(t => ({
+    ...t,
     type: t.type,
     typeCode: t.typeCode,
     userid: t.userid,
@@ -145,6 +153,7 @@ export const mapOtherList = (otherList = []) => {
     switch (t.typeCode) {
       case 1:
         return {
+          ...t,
           type: t.type,
           typeCode: t.typeCode,
           roleId: t.roleId,
@@ -153,6 +162,7 @@ export const mapOtherList = (otherList = []) => {
         }
       case 2: 
         return {
+          ...t,
           type: t.type,
           typeCode: t.typeCode,
           orgId: t.orgId,
@@ -160,6 +170,7 @@ export const mapOtherList = (otherList = []) => {
         }
       case 3:
         return {
+          ...t,
           type: t.type,
           typeCode: t.typeCode,
           ruleCode: t.ruleCode,
@@ -167,7 +178,7 @@ export const mapOtherList = (otherList = []) => {
           uri: t.uri
         }
       default:
-        return []
+        return t
     }
   })
   return res
@@ -206,6 +217,10 @@ export const getRoleId = (data = []) => {
   let res = data.map(t => t.roleId)
   return res
 }
+export const getWeId = (data = []) => {
+  let res = data.map(t => t.wxOpenId)
+  return res
+}
 export const getKeyId = (data = []) => {
   let res = data.map(t => t.key)
   return res
@@ -217,4 +232,18 @@ export const getTreeItem = (data) =>{
 
   })
   return 
+}
+
+// 为了支持用户自定义传入规则数据时返回用户自定义的key
+// 将key的格式定义为url param的格式
+// id=1&name=2的形式
+// 对key进行解析，返回
+// { id: 1, name: 2 }
+export const decodeMenukey = (value = '') => {
+  let paramList = value.split('&'), tempArr, res = {}
+  paramList.forEach(t => {
+    tempArr = t.split('=')
+    res[tempArr[0]] = tempArr[1]
+  })
+  return res
 }

@@ -1,8 +1,9 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports["default"] = void 0;
 var zh_CN = {
   // 暂无数据
   noData: '暂无数据',
@@ -63,8 +64,8 @@ var zh_CN = {
   // 请输入您要查找的角色
   pleaseRole: '请输入您要查找的角色',
   //  添加消息接收人
-  addMsgAcpt: '添加消息接收人'
+  addMsgAcpt: '添加消息接收人',
+  wechat: '微信'
 };
-
-exports["default"] = zh_CN;
-module.exports = exports['default'];
+var _default = zh_CN;
+exports["default"] = _default;

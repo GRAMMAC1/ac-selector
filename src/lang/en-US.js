@@ -58,7 +58,8 @@ const zh_CN = {
   // 请输入您要查找的角色
   pleaseRole:'Please enter the role',
   //  添加消息接收人
-  addMsgAcpt:'Add message recipient'
+  addMsgAcpt:'Add message recipient',
+  wechat:'WeChat'
 }
 
 export default zh_CN

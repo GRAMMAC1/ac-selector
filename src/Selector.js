@@ -12,9 +12,20 @@ import {
   Pagination,
   Menu
 } from './components/tinper'
+import './Selector.less'
+
+// import 'bee-button/build/Button.css'
+// import 'bee-modal/build/Modal.css'
+// import 'bee-icon/build/Icon.css'
+// import 'bee-tabs/build/Tabs.css'
+// import 'bee-pagination/build/Pagination.css'
+// import 'bee-menus/build/Menu.css'
+// import 'bee-checkbox/build/Checkbox.css'
+// import 'bee-tree/build/Checkbox.css'
+// import 'bee-table/build/Table.css'
 // import Table from 'bee-table'
 import multiSelect from 'bee-table/build/lib/multiSelect'
-import { selectedUserCol, roleMultiCol, orgCol, multiColumns } from './colmuns'
+import { selectedUserCol, roleMultiCol, orgCol, multiColumns,pageLocale, wechatMultiCol } from './colmuns'
 import { requestGet } from './request'
 import {
   resetChecked,
@@ -32,6 +43,8 @@ import {
   getKeyId,
   addFullAttr,
   deSelectType,
+  decodeMenukey,
+  getWeId
 
 } from './utils'
 
@@ -77,6 +90,7 @@ const defaultProps = {
   tabConfig:[],
   tableData:[],
   treeConfig:[],
+  pageSize:40
 }
 
 class Selector extends React.Component {
@@ -117,7 +131,13 @@ class Selector extends React.Component {
       autoExpandParent: true,
       exendTreeList:[],
       orgTreeExpandedKeys: [],
-      autoTreeExpandParent: true
+      autoTreeExpandParent: true,
+      weList:[], //公众号
+      weListDB:[],
+      weArray:[], //对应数据
+      weIndex:'',
+      weLeftVal:'',
+      weSearchVal:''
     }
   }
 
@@ -184,12 +204,12 @@ class Selector extends React.Component {
 
   // 进入modal首先加载用户列表
   didFinish = () => {
-    // let { selectedUser, selectedOther } = this.props
-    // this.setState({
-    //   selectedUserData: setUserReciving(selectedUser),
-    //   selectedOtherList: setOtherReciving(selectedOther)
-    // })
-    const url = `${this.state.prefixUrl}/user/staff/search?pageSize=40&pageNo=1&keyword=`
+    let { selectedUser, selectedOther } = this.props
+    this.setState({
+      selectedUserData: setUserReciving(selectedUser),
+      selectedOtherList: setOtherReciving(selectedOther)
+    })
+    const url = `${this.state.prefixUrl}/user/staff/search?pageSize=${this.props.pageSize}&pageNo=1&keyword=`
     requestGet(url)
       .then(response => {
         if (response.status === 1 && response.data !== null) {
@@ -219,9 +239,9 @@ class Selector extends React.Component {
       _this = this
     let url = ''
     if (activeKey === '1') {
-      url = `${_this.state.prefixUrl}/user/staff/search?pageSize=40&pageNo=1&keyword=${e.target.value}`
+      url = `${_this.state.prefixUrl}/user/staff/search?pageSize=${this.props.pageSize}&pageNo=1&keyword=${e.target.value}`
     } else if (activeKey === '2') {
-      url = `${_this.state.prefixUrl}/user/role/search?pageSize=40&pageNo=1&keyword=${e.target.value}`
+      url = `${_this.state.prefixUrl}/user/role/search?pageSize=${this.props.pageSize}&pageNo=1&keyword=${e.target.value}`
     }
     if (e.keyCode === 13 || e.keyCode === 108) {
       requestGet(url)
@@ -301,9 +321,9 @@ class Selector extends React.Component {
     let searchUrl
     const { activeKey, staffInputValue, roleInputValue } = this.state
     if (activeKey === '1') {
-      searchUrl = `${_this.state.prefixUrl}/user/staff/search?pageSize=40&pageNo=1&keyword=${staffInputValue}`
+      searchUrl = `${_this.state.prefixUrl}/user/staff/search?pageSize=${this.props.pageSize}&pageNo=1&keyword=${staffInputValue}`
     } else {
-      searchUrl = `${_this.state.prefixUrl}/user/role/search?pageSize=40&pageNo=1&keyword=${roleInputValue}`
+      searchUrl = `${_this.state.prefixUrl}/user/role/search?pageSize=${this.props.pageSize}&pageNo=1&keyword=${roleInputValue}`
     }
     requestGet(searchUrl)
       .then(response => {
@@ -350,10 +370,13 @@ class Selector extends React.Component {
       })
   }
   // 扩展的输入框
-  inputChange = ( e) => {
-    this.setState({
-      extends: e.target.value
-    })
+  inputChange = (type,e) => {
+
+      this.setState({
+        [type]: e.target.value
+      })
+    
+   
   }
   // 动态渲染删除图标
   hoverDelIcon = () => {
@@ -537,7 +560,81 @@ class Selector extends React.Component {
       selectedOtherCount: _list.length
     })
   }
-
+  // weixinliebiao
+  getWeList = (data, record) => {
+    const typeCode = 4 //
+    let { weArray, defaultLabel, selectedOtherList, } = this.state
+    // console.log(data,record)
+    let delList = getWeId(data)
+    let _list = [...selectedOtherList]
+    let tempList = [...weArray]
+    // let delList = getRoleId(data)
+    tempList = resetChecked(weArray, 'wxOpenId')
+    tempList = setChecked(weArray, data, 'wxOpenId')
+  //  console.log(data,record)
+    if (record === undefined) {
+      if (data.length) {
+        let weList = getWeId(_list)
+        data.forEach(t => {
+          if (!weList.includes(t.wxOpenId)) {
+            _list.push(
+              Object.assign({}, t, {
+                key: t.wxOpenId,
+                type: defaultLabel,
+                typeCode,
+                reciving: t.weChatId
+              })
+            )
+          }
+        })
+      } else {
+        // 和用户页签取消全部选中逻辑相同
+        let deleteWeList = getWeId(weArray),
+          result = []
+        _list.forEach(t => {
+          if (!deleteWeList.includes(t.wxOpenId)) {
+            result.push(t)
+          }
+        })
+        _list = [...result]
+      }
+    } else {
+      let currItem = Object.assign({}, record, {
+        key: record.wxOpenId,
+        type: defaultLabel,
+        typeCode,
+        reciving: record.weChatId
+      })
+      if (delList.includes(record.wxOpenId)) {
+        _list.push(currItem)
+      } else {
+        _list = _list.filter(t => {
+          if (t.wxOpenId !== record.wxOpenId) {
+            return t
+          }
+        })
+      }
+    }
+    // console.log(_list,tempList,_list.length)
+    this.setState({
+      selectedOtherList: [..._list],
+      weArray: [...tempList],
+      selectedOtherCount: _list.length
+    })
+    return
+  }
+  //微信 左侧搜索
+  weLeftSearch = (e) =>{
+    this.setState({
+      weLeftVal:e.target.value,
+      weList:e.target.value 
+      ? this.state.weList.filter(item=>{
+        return item.accountName.indexOf(e.target.value) != -1
+      } ) 
+      : this.state.weListDB
+    })
+  }
+  //获取角色列表
   getExtend = (data,record)=>{
     let { roleShowList, defaultLabel, selectedOtherList, } = this.state
     let _list = [...selectedOtherList]
@@ -658,9 +755,11 @@ class Selector extends React.Component {
     let { selectedUserData, selectedOtherList } = this.state
     let userList = mapUserList(selectedUserData)
     let otherList = mapOtherList(selectedOtherList)
-    this.reset()
     // console.log(userList, otherList)
+    // console.log(selectedOtherList)
     this.props.onConfirm(userList, otherList)
+    // this.props.onConfirm(selectedUserData, selectedOtherList)
+    this.reset()
   }
   //
   tabHandleChange=(lab)=>{
@@ -669,10 +768,19 @@ class Selector extends React.Component {
       defaultLabel:lab
     })
   }
+  //wexin
+  weIndexChange = id => {
+    this.setState({
+      weIndex:id
+    })
+    ////////
+    this.weGetData(id)
+  }
+  //qiehuan tag
   onChange = (activeKey,node) => {
     // console.log(activeKey,node)
     const _this = this
-    if(activeKey<4) {
+    if(activeKey<=4) {
       this.setState({
         extends:'',
         activeKey,
@@ -686,10 +794,32 @@ class Selector extends React.Component {
       // defaultLabel: setLabel(activeKey)
     })
     if(activeKey === '1'){
-      this.didFinish()
+      const url = `${this.state.prefixUrl}/user/staff/search?pageSize=${this.props.pageSize}&pageNo=1&keyword=`
+    requestGet(url)
+      .then(response => {
+        if (response.status === 1 && response.data !== null) {
+          const { selectedUserData } = this.state
+          let _newList = resetChecked(response.data.values, 'userid')
+          let res = setChecked(_newList, selectedUserData, 'userid')
+          let completeRes = addFullAttr(res)
+          // console.log(completeRes)
+          let obj = {
+            activePage: response.data.currentPage,
+            items: response.data.totalPages,
+            total: response.data.pageSize
+          }
+          this.setState({
+            multiShowList: completeRes,
+            staffPage: obj
+          })
+        }
+      })
+      .catch(error => {
+        throw new Error(error)
+      })
     }
     if (activeKey === '2') {
-      const url = `${_this.state.prefixUrl}/user/role/search?pageSize=40&pageNo=1&keyword=`
+      const url = `${_this.state.prefixUrl}/user/role/search?pageSize=${this.props.pageSize}&pageNo=1&keyword=`
       // let { roleShowList } = this.state
       // if (!roleShowList.length) {
         requestGet(url)
@@ -771,8 +901,49 @@ class Selector extends React.Component {
             throw new Error(err)
           })
       }
+    } if(activeKey === '0'){
+      const url = `${_this.state.prefixUrl}/user/wechat/accounts`
+       requestGet(url).then(res=>{
+         const id = res.data&&res.data[0]?res.data[0].accountId:''
+         this.setState({
+           weListDB:res.data,
+           weList:res.data,
+           weIndex:id
+         })
+         if(id){
+           this.weGetData(id)
+         }
+       })
+    }
+    
+  }
+
+  // 搜索微信
+  weGetData = (id,keyWords='')=>{
+    const url = `${this.state.prefixUrl}/user/wechat/users?accountId=${id}&keyWords=${keyWords}`
+    requestGet(url).then(res=>{
+      // console.log(res)
+      let _newList = resetChecked(res.data, 'wxOpenId')
+      let list = setChecked(_newList, this.state.selectedOtherList, 'wxOpenId')
+      // console.log(_newList)
+      this.setState({
+        weArray:list
+      })
+    })
+         
+  }
+  // weixinyouce
+  weSearchAc = (e) =>{
+    this.setState({weSearchVal:e.target.value})
+  }
+  weSearchUp = e=>{
+    if(e.keyCode==13){
+      this.weGetData(this.state.weIndex,this.state.weSearchVal)
     }
   }
+
+
+
   // tree select
   treeOnSelect = info => {
     let url = `${this.state.prefixUrl}//user/org/user?pageSize=40&pageNo=1&orgIds=['${info}']`
@@ -843,7 +1014,7 @@ class Selector extends React.Component {
   // 角色分页
   roleSelect = e => {
     const _this = this
-    let url = `${_this.state.prefixUrl}/user/role/search?pageSize=40&pageNo=${e}&keyword=`
+    let url = `${_this.state.prefixUrl}/user/role/search?pageSize=${this.props.pageSize}&pageNo=${e}&keyword=`
     let { selectedOtherList } = this.state
     requestGet(url)
       .then(response => {
@@ -868,7 +1039,7 @@ class Selector extends React.Component {
   // 用户分页
   staffSelect = e => {
     const _this = this
-    let url = `${_this.state.prefixUrl}/user/staff/search?pageSize=40&pageNo=${e}&keyword=`
+    let url = `${_this.state.prefixUrl}/user/staff/search?pageSize=${this.props.pageSize}&pageNo=${e}&keyword=`
     requestGet(url)
       .then(response => {
         if (response.status === 1 && response.data !== null) {
@@ -891,28 +1062,25 @@ class Selector extends React.Component {
       })
   }
   menuClick = ({ key }) => {
+    // debugger
+    const parsedKey = decodeMenukey(key)
     let { selectedOtherList } = this.state
     let _list = [...selectedOtherList]
-    const ruleName = key.substring(key.indexOf('&') + 1)
-    const ruleCode = key.substring(0, key.indexOf('&'))
-    // const uri = key.substring(key.indexOf('^') + 1)
     let filterList = []
     _list.forEach(t => {
       if (t.typeCode === 3) {
         filterList.push(t.key)
       }
     })
-    if (filterList.includes(key)) {
-      return
-    } else {
-      const menuItem = {
+    if (!filterList.includes(key)) {
+      const menuItem = Object.assign({}, parsedKey, {
         key,
         type: this.state.defaultLabel,
         typeCode: 3,
-        ruleCode,
-        ruleName,
-        reciving: ruleName
-      }
+        ruleCode: parsedKey.id,
+        ruleName: parsedKey.name,
+        reciving: parsedKey.name
+      }) 
       _list.push(menuItem)
       this.setState({
         selectedOtherList: [..._list],
@@ -1004,8 +1172,8 @@ class Selector extends React.Component {
 
   render() {
     const _this = this
-    const { locale } = this.state
-    const { tabConfig } = this.props
+    const { locale,weArray,weList,weIndex,weLeftVal,weSearchVal } = this.state
+    const { tabConfig,isWechat } = this.props
     const loopData = data =>
       data.map(item => {
         const index = item.orgName.indexOf(_this.state.orgInputValue)
@@ -1109,6 +1277,7 @@ class Selector extends React.Component {
                     last
                     prev
                     next
+                    locale={pageLocale[this.props.locale]}
                     maxButtons={5}
                     boundaryLinks
                     total={_this.state.staffPage.total}
@@ -1149,6 +1318,7 @@ class Selector extends React.Component {
                     last
                     prev
                     next
+                    locale={pageLocale[this.props.locale]}
                     maxButtons={5}
                     boundaryLinks
                     total={_this.state.rolePage.total}
@@ -1214,6 +1384,51 @@ class Selector extends React.Component {
                     </Menu>
                   </div>
                 </TabPane>
+                {/* <TabPane tab={'微信'} key={4}> */}
+                {isWechat?<TabPane tab={i18n[locale].wechat} key={0}>
+                  <div className={'we-box'}>
+                    <div className={'we-left'}>
+                      <div className={'we-searchWrapper'}>
+                        <input value={weLeftVal} onChange={this.weLeftSearch} type="text" className={'search-sm'}/>
+                        <Icon
+                          onClick={_this.weLeftSearch}
+                          className={'searchIcon-sm'}
+                          type="uf-search"
+                        />
+                      </div>
+                      <ul className={'we-list'}>
+                        {weList.map(item=>{
+                          return <li><span className={weIndex === item.accountId?'we-click':''}
+                            onClick={()=>this.weIndexChange(item.accountId)}
+                          >{item.accountName}</span></li>
+                        })}
+                        
+                      </ul>
+                    </div>
+                    <div className={'we-r'}>
+                      <div className={'we-searchWrapper'}>
+                        <input type="text" value={weSearchVal} onChange={this.weSearchAc} onKeyUp={this.weSearchUp} className={'search'}/>
+                          <Icon
+                            onClick={()=>this.weGetData(weIndex,weSearchVal)}
+                            className={'searchIcon'}
+                            type="uf-search"
+                          />
+                      </div>
+                      <div>
+                        <MultiSelectTable
+                          id={'wechat'}
+                          className={'wechaTable'}
+                          scroll={{ y: 210 }}
+                          columns={wechatMultiCol[locale]}
+                          multiSelect={multiSelectType}
+                          getSelectedDataFunc={_this.getWeList}
+                          data={_this.state.weArray}
+                          emptyText={()=>_this.props.emptyText(i18n[locale].noData)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </TabPane>:null}
                 {/* 新增 */}
                 {
                   tabConfig.map((item,index)=>{
@@ -1229,7 +1444,7 @@ class Selector extends React.Component {
                           <div className={'searchWrapper'}>
                             <input
                               value={_this.state.extends}
-                              onChange={_this.inputChange}
+                              onChange={_this.inputChange.bind(this, 'extends')}
                               type="text"
                               onKeyUp={(e)=>item.tableConfig.enterSearchFunc(item.tabMark,e)}
                               placeholder={item.tableConfig.searchPlaceholder}
@@ -1256,6 +1471,7 @@ class Selector extends React.Component {
                             last
                             prev
                             next
+                            locale={pageLocale[this.props.locale]}
                             maxButtons={5}
                             boundaryLinks
                             total={_this.props.pageTotal}
@@ -1269,6 +1485,7 @@ class Selector extends React.Component {
                     if(item.tabType === 'tree'){
                       return (
                         <TabPane tab={item.tabName}
+                          // @ts-ignore
                           tab={<div style={{height:'100%'}} 
                           onClick={(e)=>{
                             this.props.tabHandleFunc(item.tabMark,index,e)
@@ -1325,7 +1542,7 @@ class Selector extends React.Component {
                   <p className={'flr mt12'}>
                     <span className={'color-selected'}>
                       {/* 已选：{_this.state.selectedCount} */}
-                      {i18n[locale].choose}：{_this.state.selectedCount}
+                      {i18n[locale].choose}：{_this.state.selectedUserData.length}
                     </span>
                     <span
                       className={'clear'}
@@ -1351,7 +1568,7 @@ class Selector extends React.Component {
                   <p className={'flr mt12'}>
                     <span className={'color-selected'}>
                       {/* 已选：{_this.state.selectedOtherCount} */}
-                      {i18n[locale].choose}：{_this.state.selectedOtherCount}
+                      {i18n[locale].choose}：{_this.state.selectedOtherList.length}
                     </span>
                     <span
                       className={'clear'}

@@ -1,5 +1,24 @@
-
+@import (inline) '../node_modules/bee-button/build/Button.css';
+@import (inline) '../node_modules/bee-modal/build/Modal.css';
+@import (inline) '../node_modules/bee-icon/build/Icon.css';
+@import (inline) '../node_modules/bee-checkbox/build/Checkbox.css';
+@import (inline) '../node_modules/bee-tabs/build/Tabs.css';
+@import (inline) '../node_modules/bee-tree/build/Tree.css';
+@import (inline) '../node_modules/bee-pagination/build/Pagination.css';
+@import (inline) '../node_modules/bee-menus/build/Menu.css';
+@import (inline) '../node_modules/bee-table/build/Table.css';
+// import 'bee-button/build/Button.css'
+// import 'bee-modal/build/Modal.css'
+// import 'bee-icon/build/Icon.css'
+// import 'bee-checkbox/build/Checkbox.css'
+// import 'bee-tabs/build/Tabs.css'
+// import 'bee-tree/build/Tree.css'
+// import 'bee-pagination/build/Pagination.css'
+// import 'bee-menus/build/Menu.css'
+// import 'bee-table/build/Table.css'
 // 清除Modal Body的浮动
+
+// @import (inline) '../node_modules/bee-button/build/Button.css';
 .u-modal-body::after {
   content: "";
   display: block;
@@ -62,7 +81,7 @@
   margin-right: 15px;
 }
 .left {
-  width: 740px;
+  width: 739px;
   height: 460;
   float: left;
   border-right: 1px solid #C8C8C8;
@@ -141,7 +160,7 @@
 .myTree {
   float: left;
   height: 240px;
-  width: 308px;
+  width: 306px;
   overflow-y: auto;
 }
 .orgTable {
@@ -162,5 +181,62 @@
 }
 .u-modal .u-modal-dialog{
   margin: 6% auto 0 !important
+}
+.we-box{
+  display: flex;
+
+}
+.we-left{
+  width: 170px;
+  min-height: 302px;
+  border-right: 1px solid #D9D9D9;
+}
+.search-sm{
+  display: inline-block;
+  width: 130px;
+  height: 32px;
+  padding-left: 8px;
+  margin: 8px 0 8px 16px;
+  // line-height: 32px;
+  border-radius: 4px;
+  outline: none;
+  border: 1px solid #D9D9D9;
+  &:focus {
+    border: 1px solid #505766;
+  }
+}
+.searchIcon-sm {
+  position: absolute;
+  top: 0;
+  left: 138px;
+  cursor: pointer;
+}
+.we-searchWrapper{
+  position: relative;
+  height: 48px;
+  line-height: 48px;
+  color: #ccc;
+}
+.we-click{
+  padding: 2px;
+  border-radius: 2px;
+  font-size: 12px;
+  background-color: #fde4c0;
+}
+.we-list li{
+  padding: 5px 20px;
+}
+.we-list li span{
+  cursor: pointer;
+}
+.we-r{
+  width: 580px;
+}
+
+.selectContainer .u-table-thead th,.selectContainer .u-table table{
+  text-align: center;
+}
+.wechaTable{
+  width: 580px;
 }
 
