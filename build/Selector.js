@@ -895,21 +895,6 @@ function (_React$Component) {
 
           if (id) {
             _this2.weGetData(id);
-
-            return;
-
-            var _url5 = "".concat(_this.state.prefixUrl, "/user/wechat/users?accountId=").concat(id, "&keyWords=");
-
-            (0, _request.requestGet)(_url5).then(function (res) {
-              // console.log(res)
-              var _newList = (0, _utils.resetChecked)(res.data, 'wxOpenId');
-
-              var list = (0, _utils.setChecked)(_newList, _this2.state.selectedOtherList, 'wxOpenId'); // console.log(_newList)
-
-              _this2.setState({
-                weArray: list
-              });
-            });
           }
         });
       }
@@ -1602,8 +1587,9 @@ function (_React$Component) {
         },
         className: 'searchIcon',
         type: "uf-search"
-      })), _react["default"].createElement(MultiSelectTable, {
+      })), _react["default"].createElement("div", null, _react["default"].createElement(MultiSelectTable, {
         id: 'wechat',
+        className: 'wechaTable',
         scroll: {
           y: 210
         },
@@ -1614,7 +1600,7 @@ function (_React$Component) {
         emptyText: function emptyText() {
           return _this.props.emptyText(i18n[locale].noData);
         }
-      })))) : null, tabConfig.map(function (item, index) {
+      }))))) : null, tabConfig.map(function (item, index) {
         if (item.tabType === 'table') {
           return _react["default"].createElement(TabPane, {
             id: item.tabMark,

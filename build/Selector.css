@@ -9171,3 +9171,6 @@ ul {
 .selectContainer .u-table table {
   text-align: center;
 }
+.wechaTable {
+  width: 580px;
+}

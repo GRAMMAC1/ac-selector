@@ -117,51 +117,51 @@ var wechatMultiCol = {
     title: '姓名',
     dataIndex: 'username'
   }, {
-    key: 'email',
-    title: '邮箱',
-    dataIndex: 'email'
+    key: 'weChatId',
+    title: '微信号',
+    dataIndex: 'weChatId'
   }, {
     key: 'phone',
     title: '手机号',
     dataIndex: 'phone'
   }, {
-    key: 'weChatId',
-    title: '微信号',
-    dataIndex: 'weChatId'
+    key: 'email',
+    title: '邮箱',
+    dataIndex: 'email'
   }],
   zh_TW: [{
     key: 'username',
     title: '姓名',
     dataIndex: 'username'
   }, {
-    key: 'email',
-    title: '邮箱',
-    dataIndex: 'email'
+    key: 'weChatId',
+    title: '微信号',
+    dataIndex: 'weChatId'
   }, {
     key: 'phone',
     title: '手机号',
     dataIndex: 'phone'
   }, {
-    key: 'weChatId',
-    title: '微信号',
-    dataIndex: 'weChatId'
+    key: 'email',
+    title: '邮箱',
+    dataIndex: 'email'
   }],
   en_US: [{
     key: 'username',
     title: 'Name',
     dataIndex: 'username'
   }, {
-    key: 'email',
-    title: 'Email',
-    dataIndex: 'email'
+    key: 'weChatId',
+    title: 'WeChat',
+    dataIndex: 'weChatId'
   }, {
     key: 'phone',
     title: 'Cellphone Number',
     dataIndex: 'phone'
   }, {
-    key: 'weChatId',
-    title: 'WeChat',
-    dataIndex: 'weChatId'
+    key: 'email',
+    title: 'Email',
+    dataIndex: 'email'
   }]
 };
 exports.wechatMultiCol = wechatMultiCol;
