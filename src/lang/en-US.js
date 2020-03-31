@@ -14,9 +14,9 @@ const zh_CN = {
   //  姓名
   name:'Name',
   //  账号(邮箱)
-  idEmail:'Account(Email)',
+  idEmail:'Account (Email)',
   //  手机
-  phone:'Mobile',
+  phone:'Mobile No.',
   //  部门
   part:'Department',
   //  zbl公司
@@ -40,7 +40,7 @@ const zh_CN = {
   //  角色
   role:'Role',
   //  清空
-  clean:'Clean',
+  clean:'Clear',
   //  其他
   other:'Other',
   //  已选
@@ -48,7 +48,7 @@ const zh_CN = {
   //  取消
   cacel:'Cancel',
   //  确定
-  accept:'Accept',
+  accept:'OK',
   //  请输入您要查找的规则
   pleaseRule:'Please enter the rule',
   //  请输入您要查找的组织
