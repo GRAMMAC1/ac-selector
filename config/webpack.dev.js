@@ -39,7 +39,7 @@ const devConfig = merge(baseConf, {
     })
   ],
   devServer: {
-    port: 2999,
+    port: 8077,
     open: true
   }
 })
