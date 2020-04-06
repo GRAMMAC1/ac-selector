@@ -1,7 +1,8 @@
 import React from 'react'
 import { Menu } from './components/tinper'
-
+import * as langs from './lang'
 const SubMenu = Menu.SubMenu
+const i18n = { ...langs }
 
 // 重置_checked属性为false && 为表格添加key
 export function resetChecked (list, type) {
@@ -30,15 +31,19 @@ export function setChecked (source, ref, type) {
   return res
 }
 // 非正式环境数据不全,补全用户列表为空的问题
-export const addFullAttr = (data = []) => {
+export const addFullAttr = (data = [],local) => {
   let res = data.map((t, i) =>  ({
     key: t.key ? t.key : `userid-${i}`,
     _checked: t._checked,
     userid: t.userid ? t.userid : `userid-${i}`,
-    username: t.username ? t.username : '未知姓名',
-    email: t.email ? t.email : '未知邮箱',
-    mobile: t.mobile ? t.mobile : '未知号码',
-    orgName: t.orgName ? t.orgName : '未知部门',
+    username: t.username ? t.username : i18n[local].unknName,
+    email: t.email ? t.email : i18n[local].unknEmail,
+    mobile: t.mobile ? t.mobile : i18n[local].unknNo,
+    orgName: t.orgName ? t.orgName : i18n[local].unknPart,
+    // username: t.username ? t.username : '未知姓名',
+    // email: t.email ? t.email : '未知邮箱',
+    // mobile: t.mobile ? t.mobile : '未知号码',
+    // orgName: t.orgName ? t.orgName : '未知部门',
   }))
   return res
 }

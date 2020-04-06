@@ -47,7 +47,8 @@ return (
     show={_this.state.show}
     onConfirm={_this.onConfirm}
     onClose={_this.onCancel}
-    mode={'daily'}
+      mode={ 'daily' }
+      locale={'en_US'}
     documentNo={'st_purchaseorder'}
     documentName={'采购订单'}
     ruleList={[{name:'1',id:'2',a:'d'}]}

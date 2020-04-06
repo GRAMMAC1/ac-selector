@@ -105,7 +105,7 @@ class Selector extends React.Component {
       selectedOtherCount: 0, //当前已选择的非用户数量
       selectedUserData: [], // 已选用户
       selectedOtherList: [], // 已选非用户List
-      defaultLabel: '用户', // 默认显示的标签页
+      defaultLabel: i18n[props.locale].user, // 默认显示的标签页
       multiShowList: [], // 用户列表
       roleShowList: [], // 角色列表
       orgShowList: [], // 组织列表
@@ -216,7 +216,7 @@ class Selector extends React.Component {
           const { selectedUserData } = this.state
           let _newList = resetChecked(response.data.values, 'userid')
           let res = setChecked(_newList, selectedUserData, 'userid')
-          let completeRes = addFullAttr(res)
+          let completeRes = addFullAttr(res,this.props.locale)
           // console.log(completeRes)
           let obj = {
             activePage: response.data.currentPage,
@@ -739,7 +739,7 @@ class Selector extends React.Component {
       staffInputValue: '',
       roleInputValue: '',
       orgSelectedKeys: [],
-      defaultLabel: '用户'
+      defaultLabel: i18n[this.props.locale].user
     })
   }
   // 关闭模态框
