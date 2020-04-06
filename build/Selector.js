@@ -137,7 +137,7 @@ function (_React$Component) {
           var _newList = (0, _utils.resetChecked)(response.data.values, 'userid');
 
           var res = (0, _utils.setChecked)(_newList, selectedUserData, 'userid');
-          var completeRes = (0, _utils.addFullAttr)(res); // console.log(completeRes)
+          var completeRes = (0, _utils.addFullAttr)(res, _this2.props.locale); // console.log(completeRes)
 
           var obj = {
             activePage: response.data.currentPage,
@@ -706,7 +706,7 @@ function (_React$Component) {
         staffInputValue: '',
         roleInputValue: '',
         orgSelectedKeys: [],
-        defaultLabel: '用户'
+        defaultLabel: i18n[_this2.props.locale].user
       });
     });
 
@@ -1205,7 +1205,7 @@ function (_React$Component) {
       // 已选用户
       selectedOtherList: [],
       // 已选非用户List
-      defaultLabel: '用户',
+      defaultLabel: i18n[props.locale].user,
       // 默认显示的标签页
       multiShowList: [],
       // 用户列表
